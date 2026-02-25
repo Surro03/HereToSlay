@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-import Entity.*;
+import groovy.xml.Entity.*;
 
 public class Eroe extends Carta {
 

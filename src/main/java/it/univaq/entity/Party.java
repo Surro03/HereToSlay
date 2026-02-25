@@ -1,5 +1,7 @@
 package it.univaq.entity;
 
+import java.util.List;
+
 public class Party {
 
 	private int Player;
