@@ -9,4 +9,15 @@ public class Dado {
 		throw new UnsupportedOperationException();
 	}
 
+    public Dado(Integer valore) {
+        Valore = valore;
+    }
+
+    public Integer getValore() {
+        return Valore;
+    }
+
+    public void setValore(Integer valore) {
+        Valore = valore;
+    }
 }

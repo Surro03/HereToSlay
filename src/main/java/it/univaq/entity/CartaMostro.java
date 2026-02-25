@@ -7,4 +7,42 @@ public class CartaMostro {
 	private Integer requisito;
 	private String Nome;
 
+    public CartaMostro(Integer condizioniVittoria, String descrizione, Integer requisito, String nome) {
+        this.condizioniVittoria = condizioniVittoria;
+        this.descrizione = descrizione;
+        this.requisito = requisito;
+        Nome = nome;
+    }
+
+    public Integer getCondizioniVittoria() {
+        return condizioniVittoria;
+    }
+
+    public void setCondizioniVittoria(Integer condizioniVittoria) {
+        this.condizioniVittoria = condizioniVittoria;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+    public Integer getRequisito() {
+        return requisito;
+    }
+
+    public void setRequisito(Integer requisito) {
+        this.requisito = requisito;
+    }
+
+    public String getNome() {
+        return Nome;
+    }
+
+    public void setNome(String nome) {
+        Nome = nome;
+    }
 }
