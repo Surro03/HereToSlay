@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Party {
 
-	private int Player;
+	private Integer Player;
 	private List<Carta> Carte;
 
 	/**

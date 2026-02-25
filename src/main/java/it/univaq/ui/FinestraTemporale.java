@@ -1,7 +1,8 @@
 package it.univaq.ui;
+import java.time.Instant;
 
 public class FinestraTemporale {
 
-	private DateTime fine;
+	private Instant fine;
 
 }

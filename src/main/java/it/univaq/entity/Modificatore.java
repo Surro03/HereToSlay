@@ -2,9 +2,9 @@ package it.univaq.entity;
 
 public class Modificatore extends Carta {
 
-	private int Valore;
-	private Float valore1;
-	private Float valore2;
-	private String effetto;
+	private Integer Valore;
+	private Float Valore1;
+	private Float Valore2;
+	private String Effetto;
 
 }

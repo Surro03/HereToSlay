@@ -2,6 +2,6 @@ package it.univaq.entity;
 
 public class OggettoDiSupporto extends Oggetto {
 
-	private String effetto;
+	private String Effetto;
 
 }
