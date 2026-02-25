@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-public class Magia extends Carta {
+public class CartaMagia extends Carta {
 
 	private String Effetto;
 

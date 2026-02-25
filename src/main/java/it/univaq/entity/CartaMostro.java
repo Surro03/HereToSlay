@@ -2,9 +2,9 @@ package it.univaq.entity;
 
 public class CartaMostro {
 
-	private int CondizioniVittoria;
-	private int Descrizione;
-	private int Requisito;
+	private Integer condizioniVittoria;
+	private String descrizione;
+	private Integer requisito;
 	private String Nome;
 
 }

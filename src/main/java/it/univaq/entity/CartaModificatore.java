@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-public class Modificatore extends Carta {
+public class CartaModificatore extends Carta {
 
 	private Integer Valore;
 	private Float Valore1;

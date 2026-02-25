@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-public class Sfida extends Carta {
+public class CartaSfida extends Carta {
 
 	private Integer Classe;
 

@@ -1,6 +1,6 @@
 package it.univaq.controller;
 
-import it.univaq.entity.Modificatore;
+import it.univaq.entity.CartaModificatore;
 import it.univaq.technical.FaseEffetto;
 import it.univaq.entity.Carta;
 import it.univaq.entity.Dado;
@@ -66,7 +66,7 @@ public class HereToSlay {
 	 * @param carta
 	 * @param Target
 	 */
-	public void giocaCarta(Modificatore carta, Player Target) {
+	public void giocaCarta(CartaModificatore carta, Player Target) {
 		// TODO - implement HereToSlay.giocaCarta
 		throw new UnsupportedOperationException();
 	}
