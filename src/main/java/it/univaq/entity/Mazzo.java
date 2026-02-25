@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-public class Mazzo {
+public abstract class Mazzo {
 
 	private Integer NumCarte;
 

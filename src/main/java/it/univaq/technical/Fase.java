@@ -1,4 +1,4 @@
 package it.univaq.technical;
 
-public class Fase {
+public abstract class Fase {
 }

@@ -1,7 +1,7 @@
 package it.univaq.entity;
 
 
-public interface class Carta {
+public abstract class Carta {
 
 	private int Id;
 	private int Descrizione;
