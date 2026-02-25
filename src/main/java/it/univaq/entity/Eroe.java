@@ -1,16 +1,13 @@
 package it.univaq.entity;
 
-import groovy.xml.Entity.*;
-
 public class Eroe extends Carta {
 
-	private int Classe;
-	private int NumOggetti;
-	private int Requisito;
-	private String nome;
-	private String effetto;
-	private Integer costo;
-	private ClasseEroe classeEroe;
+	private Integer NumOggetti;
+	private Integer Requisito;
+	private String Nome;
+	private String Effetto;
+	private Integer Costo;
+	private ClasseEroe ClasseEroe;
 
 	public void eseguiEffetto() {
 		// TODO - implement Eroe.eseguiEffetto

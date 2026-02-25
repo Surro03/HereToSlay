@@ -5,8 +5,8 @@ import it.univaq.ui.Player;
 
 public class FaseModificatori extends Fase {
 
-	private Float valorePlayer1;
-	private Float valorePlayer2;
+	private Float ValorePlayer1;
+	private Float ValorePlayer2;
 
 	/**
 	 * 

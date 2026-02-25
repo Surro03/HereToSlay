@@ -1,11 +1,11 @@
 package it.univaq.entity;
 
-public enum ClasseEroe {
-	;
+public enum ClasseEroe {;
 
-	private int MAGO;
-	private int GUERRIERO;
-	private int LADRO;
-	private int PALADINO;
-
+	private String Mago;
+	private String Guerriero;
+	private String Ladro;
+	private String Paladino;
+	private String Ranger;
+	private String Bardo;
 }

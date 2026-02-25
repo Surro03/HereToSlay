@@ -39,6 +39,6 @@ public class GeneratoreDiEventi {
 		throw new UnsupportedOperationException();
 	}
 
-	private finestraTemporale finestraTemporaleGenerata;
+	private FinestraTemporale finestraTemporaleGenerata;
 
 }

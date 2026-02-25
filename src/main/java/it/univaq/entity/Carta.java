@@ -1,10 +1,11 @@
 package it.univaq.entity;
 
+import java.sql.Blob;
 
 public abstract class Carta {
 
-	private int Id;
-	private int Descrizione;
-	private int Immagine;
+	private String Id;
+	private String Descrizione;
+	private Blob Immagine;
 
 }

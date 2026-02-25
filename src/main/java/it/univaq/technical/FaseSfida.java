@@ -2,8 +2,8 @@ package it.univaq.technical;
 
 public class FaseSfida extends Fase {
 
-	private Integer idSfidante;
-	private Integer idPlayer;
+	private Integer IdSfidante;
+	private Integer IdPlayer;
 	private Float ValorePlayer;
 	private Float ValoreSfidatne;
 
