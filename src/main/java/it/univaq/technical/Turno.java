@@ -12,7 +12,7 @@ public class Turno {
 	private Fase faseAttuale;
 
     public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno ) {
-        Turno.pilaFasi = pilaFasi;
+        this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.faseAttuale = pilaFasi.getFirst();
     }
@@ -27,7 +27,7 @@ public class Turno {
 	}
 
 	public void getFaseCorrente() {
-		// TODO - implement Turno.getFaseCorrente
+		this.faseAttuale = 
 		throw new UnsupportedOperationException();
 	}
 

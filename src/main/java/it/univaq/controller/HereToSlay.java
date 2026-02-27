@@ -1,10 +1,11 @@
 package it.univaq.controller;
 
 import it.univaq.entity.CartaModificatore;
-import it.univaq.technical.FaseEffetto;
 import it.univaq.entity.Carta;
 import it.univaq.entity.Dado;
 import it.univaq.entity.Tavolo;
+import it.univaq.technical.Fase;
+import it.univaq.technical.FaseEffetto;
 import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
 
@@ -12,24 +13,24 @@ import java.util.List;
 
 public class HereToSlay {
 
-	private Integer MaxGiocatori;
-	private int IdPartita;
-	private int Opzioni;
-	private List<Player> ElencoGiocatori;
-	private Player GiocatoreAttivo;
-	private Tavolo Tavolo;
-	private Turno TurnoAttuale;
-	private Dado Dado;
-	private Carta CartaAttiva;
+	private Integer maxGiocatori;
+	private Integer idPartita;
+	private Integer opzioni;
+	private List<Player> elencoGiocatori;
+	private Player giocatoreAttivo;
+	private Tavolo tavolo;
+	private Turno turnoAttuale;
+	private Dado dado;
+	private Carta cartaAttiva;
 
 	/**
 	 * 
-	 * @param Carta
-	 * @param Tipo
-	 * @param Target
-	 * @param Opzione
+	 * @param carta
+	 * @param tipo
+	 * @param target
+	 * @param opzione
 	 */
-	public void giocaCarta(Carta Carta, int Tipo, Player Target, int Opzione) {
+	public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
 		// TODO - implement HereToSlay.giocaCarta
 		throw new UnsupportedOperationException();
 	}
@@ -43,8 +44,8 @@ public class HereToSlay {
 		// TODO - implement HereToSlay.rispostaUtente
         switch (scelta) {
             case "Si":
-                HereToSlay.utilizzaEffetto(CartaAttiva);
-                TurnoAttuale.aggiungiFase();
+                HereToSlay.utilizzaEffetto(cartaAttiva);
+                turnoAttuale.aggiungiFase(new FaseEffetto());
         }
 		throw new UnsupportedOperationException();
 	}
@@ -53,16 +54,16 @@ public class HereToSlay {
 	 * 
 	 * @param mossaSelezionata
 	 */
-	public void richiestaMossa(int mossaSelezionata) {
+	public void richiestaMossa(String mossaSelezionata) {
 		// TODO - implement HereToSlay.richiestaMossa
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public static void utilizzaEffetto(Carta Carta) {
+	public static void utilizzaEffetto(Carta carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
 		throw new UnsupportedOperationException();
 	}

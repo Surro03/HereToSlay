@@ -1,12 +1,14 @@
 package it.univaq.ui;
 
+import it.univaq.technical.Fase;
+
 public class GeneratoreDiEventi {
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void generaEvento(int Fase) {
+	public void generaEvento(Fase fase) {
 		// TODO - implement GeneratoreDiEventi.generaEvento
 		throw new UnsupportedOperationException();
 	}
@@ -18,9 +20,9 @@ public class GeneratoreDiEventi {
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void aggiungiFase(int Fase) {
+	public void aggiungiFase(Fase fase) {
 		// TODO - implement GeneratoreDiEventi.aggiungiFase
 		throw new UnsupportedOperationException();
 	}

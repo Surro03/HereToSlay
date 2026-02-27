@@ -2,17 +2,17 @@ package it.univaq.entity;
 
 public class CartaSfida extends Carta {
 
-	private Integer Classe;
+	private Integer classe;
 
     public CartaSfida(Integer classe) {
-        Classe = classe;
+        this.classe = classe;
     }
 
     public Integer getClasse() {
-        return Classe;
+        return classe;
     }
 
     public void setClasse(Integer classe) {
-        Classe = classe;
+        this.classe = classe;
     }
 }

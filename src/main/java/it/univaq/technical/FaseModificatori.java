@@ -5,16 +5,16 @@ import it.univaq.ui.Player;
 
 public class FaseModificatori extends Fase {
 
-	private Float ValorePlayer1;
-	private Float ValorePlayer2;
+	private Float valorePlayer1;
+	private Float valorePlayer2;
 
 	/**
 	 * 
-	 * @param Carta
-	 * @param Target
-	 * @param Opzione
+	 * @param carta
+	 * @param target
+	 * @param opzione
 	 */
-	public void calcoloPunteggio(Carta Carta, Player Target, int Opzione) {
+	public void calcoloPunteggio(Carta carta, Player target, Integer opzione) {
 		// TODO - implement FaseModificatori.calcoloPunteggio
 		throw new UnsupportedOperationException();
 	}

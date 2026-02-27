@@ -2,12 +2,12 @@ package it.univaq.entity;
 
 public class CartaEroe extends Carta {
 
-	private Integer NumOggetti;
-	private Integer Requisito;
-	private String Nome;
-	private String Effetto;
-	private Integer Costo;
-	private ClasseEroe ClasseEroe;
+	private Integer numOggetti;
+	private Integer requisito;
+	private String nome;
+	private String effetto;
+	private Integer costo;
+	private ClasseEroe classeEroe;
 
 	public void eseguiEffetto() {
 		// TODO - implement Eroe.eseguiEffetto
@@ -15,59 +15,59 @@ public class CartaEroe extends Carta {
 	}
 
     public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, Integer costo, ClasseEroe classeEroe) {
-        NumOggetti = numOggetti;
-        Requisito = requisito;
-        Nome = nome;
-        Effetto = effetto;
-        Costo = costo;
-        ClasseEroe = classeEroe;
+        this.numOggetti = numOggetti;
+        this.requisito = requisito;
+        this.nome = nome;
+        this.effetto = effetto;
+        this.costo = costo;
+        this.classeEroe = classeEroe;
     }
 
     public Integer getNumOggetti() {
-        return NumOggetti;
+        return numOggetti;
     }
 
     public void setNumOggetti(Integer numOggetti) {
-        NumOggetti = numOggetti;
+        this.numOggetti = numOggetti;
     }
 
     public Integer getRequisito() {
-        return Requisito;
+        return requisito;
     }
 
     public void setRequisito(Integer requisito) {
-        Requisito = requisito;
+        this.requisito = requisito;
     }
 
     public String getNome() {
-        return Nome;
+        return nome;
     }
 
     public void setNome(String nome) {
-        Nome = nome;
+        this.nome = nome;
     }
 
     public String getEffetto() {
-        return Effetto;
+        return effetto;
     }
 
     public void setEffetto(String effetto) {
-        Effetto = effetto;
+        this.effetto = effetto;
     }
 
     public Integer getCosto() {
-        return Costo;
+        return costo;
     }
 
     public void setCosto(Integer costo) {
-        Costo = costo;
+        this.costo = costo;
     }
 
     public ClasseEroe getClasseEroe() {
-        return ClasseEroe;
+        return classeEroe;
     }
 
     public void setClasseEroe(ClasseEroe classeEroe) {
-        ClasseEroe = classeEroe;
+        this.classeEroe = classeEroe;
     }
 }

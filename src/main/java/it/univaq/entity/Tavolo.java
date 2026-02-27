@@ -4,27 +4,27 @@ public class Tavolo {
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void scartaCarta(Carta Carta) {
+	public void scartaCarta(Carta carta) {
 		// TODO - implement Tavolo.scartaCarta
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Player
+	 * @param player
 	 */
-	public void checkVittoria(int Player) {
+	public void checkVittoria(int player) {
 		// TODO - implement Tavolo.checkVittoria
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void ScartaCarta(Carta Carta) {
+	public void ScartaCarta(Carta carta) {
 		// TODO - implement Tavolo.ScartaCarta
 		throw new UnsupportedOperationException();
 	}

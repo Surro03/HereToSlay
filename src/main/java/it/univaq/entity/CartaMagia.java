@@ -2,17 +2,17 @@ package it.univaq.entity;
 
 public class CartaMagia extends Carta {
 
-	private String Effetto;
+	private String effetto;
 
     public CartaMagia(String effetto) {
-        Effetto = effetto;
+        this.effetto = effetto;
     }
 
     public String getEffetto() {
-        return Effetto;
+        return effetto;
     }
 
     public void setEffetto(String effetto) {
-        Effetto = effetto;
+        this.effetto = effetto;
     }
 }

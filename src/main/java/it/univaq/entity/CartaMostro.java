@@ -5,13 +5,13 @@ public class CartaMostro {
 	private Integer condizioniVittoria;
 	private String descrizione;
 	private Integer requisito;
-	private String Nome;
+	private String nome;
 
     public CartaMostro(Integer condizioniVittoria, String descrizione, Integer requisito, String nome) {
         this.condizioniVittoria = condizioniVittoria;
         this.descrizione = descrizione;
         this.requisito = requisito;
-        Nome = nome;
+        this.nome = nome;
     }
 
     public Integer getCondizioniVittoria() {
@@ -39,10 +39,10 @@ public class CartaMostro {
     }
 
     public String getNome() {
-        return Nome;
+        return nome;
     }
 
     public void setNome(String nome) {
-        Nome = nome;
+        this.nome = nome;
     }
 }

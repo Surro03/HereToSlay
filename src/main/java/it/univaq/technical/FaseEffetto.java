@@ -5,13 +5,13 @@ import it.univaq.ui.Player;
 
 public class FaseEffetto extends Fase {
 
-	private Carta Carta;
+	private Carta carta;
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void salvaCarta(Carta Carta) {
+	public void salvaCarta(Carta carta) {
 		// TODO - implement FaseEffetto.salvaCarta
 		throw new UnsupportedOperationException();
 	}
@@ -29,87 +29,4 @@ public class FaseEffetto extends Fase {
 		// TODO - implement FaseEffetto.ottieniEffetto
 		throw new UnsupportedOperationException();
 	}
-
-    public static class Turno {
-
-        private int pilaFasi;
-        private Player giocatoreDiTurno;
-        private Fase faseAttuale;
-
-        /**
-         *
-         * @param Fase
-         */
-        public void resetTimer(int Fase) {
-            // TODO - implement Turno.resetTimer
-            throw new UnsupportedOperationException();
-        }
-
-        public void getFaseCorrente() {
-            // TODO - implement Turno.getFaseCorrente
-            throw new UnsupportedOperationException();
-        }
-
-        public void timeout() {
-            // TODO - implement Turno.timeout
-            throw new UnsupportedOperationException();
-        }
-
-        public void terminaFaseAttuale() {
-            // TODO - implement Turno.terminaFaseAttuale
-            throw new UnsupportedOperationException();
-        }
-
-        public void cartaGiocata() {
-            // TODO - implement Turno.cartaGiocata
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         *
-         * @param fase
-         */
-        public void iniziaFase(int fase) {
-            // TODO - implement Turno.iniziaFase
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         *
-         * @param Fase
-         */
-        public void aggiungiFase(int Fase) {
-            // TODO - implement Turno.aggiungiFase
-            throw new UnsupportedOperationException();
-        }
-
-        public void fineFaseAttuale() {
-            // TODO - implement Turno.fineFaseAttuale
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         *
-         * @param mossaSelezionata
-         */
-        public void verificaPA(int mossaSelezionata) {
-            // TODO - implement Turno.verificaPA
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         *
-         * @param mossaSelezionata
-         */
-        public void eseguiMossa(int mossaSelezionata) {
-            // TODO - implement Turno.eseguiMossa
-            throw new UnsupportedOperationException();
-        }
-
-        public void checkPARimasti() {
-            // TODO - implement Turno.checkPARimasti
-            throw new UnsupportedOperationException();
-        }
-
-    }
 }
