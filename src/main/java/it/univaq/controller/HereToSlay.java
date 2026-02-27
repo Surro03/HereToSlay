@@ -5,6 +5,7 @@ import it.univaq.technical.FaseEffetto;
 import it.univaq.entity.Carta;
 import it.univaq.entity.Dado;
 import it.univaq.entity.Tavolo;
+import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class HereToSlay {
 	private List<Player> ElencoGiocatori;
 	private Player GiocatoreAttivo;
 	private Tavolo Tavolo;
-	private FaseEffetto.Turno TurnoAttuale;
+	private Turno TurnoAttuale;
 	private Dado Dado;
 	private Carta CartaAttiva;
 
@@ -38,8 +39,13 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void rispostaUtente() {
+	public void rispostaUtente(String scelta) {
 		// TODO - implement HereToSlay.rispostaUtente
+        switch (scelta) {
+            case "Si":
+                HereToSlay.utilizzaEffetto(CartaAttiva);
+                TurnoAttuale.aggiungiFase();
+        }
 		throw new UnsupportedOperationException();
 	}
 
@@ -56,7 +62,7 @@ public class HereToSlay {
 	 * 
 	 * @param Carta
 	 */
-	public void utilizzaEffetto(Carta Carta) {
+	public static void utilizzaEffetto(Carta Carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
 		throw new UnsupportedOperationException();
 	}
