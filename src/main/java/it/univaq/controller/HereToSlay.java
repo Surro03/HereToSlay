@@ -43,27 +43,28 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public String rispostaUtente(@NotNull String scelta) {
+    public String rispostaUtente(@NotNull String scelta) {
         switch (scelta) {
             case "Si":
-                this.turnoAttuale.aggiungiFase(new FaseEffetto());
-                Fase faseAttualeEffetto = this.getFaseAttuale();
-                if (faseAttualeEffetto instanceof FaseEffetto faseEffetto) {
-                    faseEffetto.salvaCarta(cartaAttiva);
-                }
+                // 1.Gestione Fase Effetto
+                FaseEffetto nuovaFaseEffetto = new FaseEffetto();
+                nuovaFaseEffetto.salvaCarta(cartaAttiva);
+                this.turnoAttuale.aggiungiFase(nuovaFaseEffetto);
+                // 2.Tiro dadi
                 Integer valoreDadi = this.tiraDadi();
-                this.turnoAttuale.aggiungiFase(new FaseModificatori());
-                Fase faseAttualeModificatori = this.getFaseAttuale();
-                if (faseAttualeModificatori instanceof FaseModificatori faseModificatori) {
-                faseModificatori.salvaPunteggio(valoreDadi, giocatoreAttivo.getId());
-                }
+                // 3.Gestione Fase Modificatori
+                FaseModificatori nuovaFaseModificatori = new FaseModificatori();
+                nuovaFaseModificatori.salvaPunteggio(valoreDadi, giocatoreAttivo.getId());
+                this.turnoAttuale.aggiungiFase(nuovaFaseModificatori);
                 return "Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori";
-                break;
+
             case "No":
                 return "Fine Punto Azione";
 
+            default:
+                return "Scelta non valida";
         }
-	}
+    }
 
     public Fase getFaseAttuale() {
         return this.turnoAttuale.getFaseCorrente();
