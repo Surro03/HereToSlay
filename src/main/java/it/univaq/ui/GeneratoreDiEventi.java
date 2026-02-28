@@ -1,14 +1,13 @@
 package it.univaq.ui;
 
 import it.univaq.technical.Fase;
+
+import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
 
 import java.time.Instant;
 
 public class GeneratoreDiEventi {
-
-    private FinestraTemporale finestraTemporaleGenerata;
-    private static final long SECONDI_DURATA = 60;
 
 	/**
 	 * 
@@ -57,6 +56,11 @@ public class GeneratoreDiEventi {
 		throw new UnsupportedOperationException();
 	}
 
+	public void resetTimer() {
+		// TODO - implement GeneratoreDiEventi.resetTimer
+		throw new UnsupportedOperationException();
+	}
 
+	private FinestraTemporale finestraTemporaleGenerata;
 
 }

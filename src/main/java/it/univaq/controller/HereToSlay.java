@@ -1,5 +1,12 @@
 package it.univaq.controller;
 
+import it.univaq.entity.CartaModificatore;
+import it.univaq.entity.Carta;
+import it.univaq.entity.Dado;
+import it.univaq.entity.Tavolo;
+import it.univaq.technical.Fase;
+import it.univaq.technical.FaseEffetto;
+import it.univaq.technical.FaseModificatori;
 import it.univaq.entity.*;
 import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
@@ -8,8 +15,10 @@ import it.univaq.ui.FinestraTemporale;
 import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Random;
 
 public class HereToSlay {
 
@@ -81,32 +90,70 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void rispostaUtente(String scelta) {
-		// TODO - implement HereToSlay.rispostaUtente
+    public String rispostaUtente(@NotNull String scelta) {
+        switch (scelta) {
+            case "Si":
+                // 1.Gestione Fase Effetto
+                FaseEffetto nuovaFaseEffetto = new FaseEffetto();
+                nuovaFaseEffetto.salvaCarta(cartaAttiva);
+                this.turnoAttuale.aggiungiFase(nuovaFaseEffetto);
+                // 2.Tiro dadi
+                Integer valoreDadi = this.tiraDadi();
+                // 3.Gestione Fase Modificatori
+                FaseModificatori nuovaFaseModificatori = new FaseModificatori();
+                nuovaFaseModificatori.salvaPunteggio(valoreDadi, giocatoreAttivo.getId());
+                this.turnoAttuale.aggiungiFase(nuovaFaseModificatori);
+                return "Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori";
 
-	}
+            case "No":
+                return "Fine Punto Azione";
+
+            default:
+                return "Scelta non valida";
+        }
+    }
+
+    public Fase getFaseAttuale() {
+        return this.turnoAttuale.getFaseCorrente();
+    }
 
 	/**
 	 * 
 	 * @param mossaSelezionata
 	 */
-	public void richiestaMossa(int mossaSelezionata) {
+	public void richiestaMossa(String mossaSelezionata) {
 		// TODO - implement HereToSlay.richiestaMossa
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public static void utilizzaEffetto(Carta Carta) {
+	public void utilizzaEffetto(Carta carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
 		throw new UnsupportedOperationException();
 	}
 
-	public void tiraDadi() {
-		// TODO - implement HereToSlay.tiraDadi
+	/**
+	 * 
+	 * @param carta
+	 * @param Target
+	 */
+	public void giocaCarta(CartaModificatore carta, Player Target) {
+		// TODO - implement HereToSlay.giocaCarta
 		throw new UnsupportedOperationException();
+	}
+
+	public Integer tiraDadi() {
+        Random random = new Random();
+        int n = 0;
+        Integer valoreDadi = 0;
+        while (n < 2) {
+            valoreDadi = 1 + random.nextInt(6);
+            n++;
+        }
+        return valoreDadi;
 	}
 
 }

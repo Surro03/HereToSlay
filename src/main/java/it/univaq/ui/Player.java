@@ -5,27 +5,27 @@ public class Player {
 	/**
 	 * æ
 	 */
-	private Integer Id;
-	private String Nome;
+	private Integer id;
+	private String nome;
 
     public Player(Integer id, String nome) {
-        Id = id;
-        Nome = nome;
+        this.id = id;
+        this.nome = nome;
     }
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getNome() {
-        return Nome;
+        return nome;
     }
 
     public void setNome(String nome) {
-        Nome = nome;
+        this.nome = nome;
     }
 }

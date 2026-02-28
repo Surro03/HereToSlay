@@ -4,9 +4,9 @@ public class PilaScarti extends Mazzo {
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void aggiungiCarta(Carta Carta) {
+	public void aggiungiCarta(Carta carta) {
 		// TODO - implement PilaScarti.aggiungiCarta
 		throw new UnsupportedOperationException();
 	}

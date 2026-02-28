@@ -4,23 +4,23 @@ import java.util.List;
 
 public class Party {
 
-	private Integer Player;
+	private Integer player;
 	private List<Carta> Carte;
 
 	/**
 	 * 
-	 * @param Player
+	 * @param player
 	 */
-	public void checkVittoria(int Player) {
+	public void checkVittoria(int player) {
 		// TODO - implement Party.checkVittoria
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Player
+	 * @param player
 	 */
-	public void ottieniNumClassi(int Player) {
+	public void ottieniNumClassi(int player) {
 		// TODO - implement Party.ottieniNumClassi
 		throw new UnsupportedOperationException();
 	}

@@ -5,15 +5,14 @@ import it.univaq.ui.Player;
 
 public class FaseEffetto extends Fase {
 
-	private Carta Carta;
+	private Carta carta;
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void salvaCarta(Carta Carta) {
-		// TODO - implement FaseEffetto.salvaCarta
-		throw new UnsupportedOperationException();
+	public void salvaCarta(Carta carta) {
+		this.carta = carta;
 	}
 
 	/**
@@ -29,8 +28,4 @@ public class FaseEffetto extends Fase {
 		// TODO - implement FaseEffetto.ottieniEffetto
 		throw new UnsupportedOperationException();
 	}
-
-
-
-
 }

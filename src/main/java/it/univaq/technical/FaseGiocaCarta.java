@@ -8,9 +8,9 @@ public class FaseGiocaCarta extends Fase {
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param carta
 	 */
-	public void salvaCartaGiocata(Carta Carta) {
+	public void salvaCartaGiocata(Carta carta) {
 		// TODO - implement FaseGiocaCarta.salvaCartaGiocata
 		throw new UnsupportedOperationException();
 	}

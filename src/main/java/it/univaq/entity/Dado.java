@@ -2,7 +2,7 @@ package it.univaq.entity;
 
 public class Dado {
 
-	private Integer Valore;
+	private Integer valore;
 
 	public void tiraDado() {
 		// TODO - implement Dado.tiraDado
@@ -10,14 +10,14 @@ public class Dado {
 	}
 
     public Dado(Integer valore) {
-        Valore = valore;
+        this.valore = valore;
     }
 
     public Integer getValore() {
-        return Valore;
+        return valore;
     }
 
     public void setValore(Integer valore) {
-        Valore = valore;
+        this.valore = valore;
     }
 }
