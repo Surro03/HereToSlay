@@ -47,7 +47,7 @@ public class HereToSlay {
 			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
 		}
 		FaseSfida Fasesfida = new FaseSfida();
-		TurnoAttuale.iniziaFase(Fasesfida);
+		turnoCorrente.iniziaFase(Fasesfida);
 	}
 
 	public void timeout() {
