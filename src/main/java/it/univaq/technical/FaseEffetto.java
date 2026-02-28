@@ -19,7 +19,7 @@ public class FaseEffetto extends Fase {
 	 * 
 	 * @param punteggioDefinitivo
 	 */
-	public void checkAttivazioneEffetto(int punteggioDefinitivo) {
+	public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) {
 		// TODO - implement FaseEffetto.checkAttivazioneEffetto
 		throw new UnsupportedOperationException();
 	}

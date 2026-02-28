@@ -9,6 +9,7 @@ public class CartaEroe extends Carta {
 	private Integer costo;
 	private ClasseEroe classeEroe;
 
+    @Override
 	public void eseguiEffetto() {
 		// TODO - implement Eroe.eseguiEffetto
 		throw new UnsupportedOperationException();

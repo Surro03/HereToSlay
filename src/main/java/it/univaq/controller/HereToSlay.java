@@ -1,9 +1,6 @@
 package it.univaq.controller;
 
-import it.univaq.entity.CartaModificatore;
-import it.univaq.entity.Carta;
-import it.univaq.entity.Dado;
-import it.univaq.entity.Tavolo;
+import it.univaq.entity.*;
 import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
 import it.univaq.technical.FaseModificatori;
@@ -68,6 +65,21 @@ public class HereToSlay {
 
     public Fase getFaseAttuale() {
         return this.turnoAttuale.getFaseCorrente();
+    }
+
+    public String checkAttivazioneEffetto(int punteggioDefinitivo) {
+        Fase faseEffetto = this.getFaseAttuale();
+        if (faseEffetto instanceof FaseEffetto faseEffetto1) {
+            Boolean attivazione = faseEffetto1.checkAttivazioneEffetto(punteggioDefinitivo);
+            if (attivazione){
+                cartaAttiva.eseguiEffetto();
+                return "Fine Punto Azione";
+            }
+            else{
+                return "Non puoi attivare l'effetto";
+            }
+        }
+        return "Non puoi attivare l'effetto";
     }
 
 	/**

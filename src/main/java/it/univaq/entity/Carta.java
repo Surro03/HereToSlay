@@ -9,4 +9,7 @@ public abstract class Carta {
 	private String Descrizione;
 	private Blob Immagine;
 
+    public void eseguiEffetto(){
+
+    }
 }
