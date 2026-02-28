@@ -38,6 +38,18 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
+	public void giocoCarta(Carta Carta){
+		FaseCorrente= turnoCorrente.getFaseCorrente();
+		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
+			faseGiocaCarta.salvaCartaGiocata(Carta);
+			System.out.println("Carta salvata correttamente nella fase.");
+		} else {
+			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
+		}
+		FaseSfida Fasesfida = new FaseSfida();
+		TurnoAttuale.iniziaFase(Fasesfida);
+	}
+
 	public void timeout() {
 		// TODO - implement HereToSlay.timeout
 		throw new UnsupportedOperationException();
@@ -76,16 +88,17 @@ public class HereToSlay {
 				System.out.println("Gioca Carta Magia");
 				break;
 			case 4:
-				System.out.println("Attacca Un Mostro");
-				break;
-			case 5:
 				System.out.println("Pesca Carta dal Mazzo");
 				break;
+			case 5:
+				System.out.println("Utilizza effetto Eroe");
+				break;
 			case 6:
-				System.out.println("Scarta Mano");
+				System.out.println("Attacca Un Mostro");
 				break;
 			case 7:
-				System.out.println("Utilizza effetto Eroe");
+				System.out.println("Scarta Mano");
+
 				break;
 			default:
 				System.out.println("Mossa non valida");
@@ -115,16 +128,8 @@ public class HereToSlay {
 	 * @param Target
 	 */
 	public void giocaCarta(CartaModificatore carta, Player Target) {
-		FaseCorrente= turnoCorrente.getFaseCorrente();
-		FaseSfida Fasesfida = new FaseSfida();
-		TurnoAttuale.iniziaFase(Fasesfida);
-
-
-
-
-
-
-
+		// TODO - implement HereToSlay.utilizzaEffetto
+		throw new UnsupportedOperationException();
 	}
 
 	public void tiraDadi() {
