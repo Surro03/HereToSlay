@@ -72,7 +72,7 @@ public class HereToSlay {
         if (faseEffetto instanceof FaseEffetto faseEffetto1) {
             Boolean attivazione = faseEffetto1.checkAttivazioneEffetto(punteggioDefinitivo);
             if (attivazione){
-                cartaAttiva.eseguiEffetto();
+                faseEffetto1.ottieniEffetto();
                 return "Fine Punto Azione";
             }
             else{
