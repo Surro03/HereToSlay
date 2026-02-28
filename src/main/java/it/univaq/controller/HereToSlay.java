@@ -1,10 +1,11 @@
 package it.univaq.controller;
 
-import it.univaq.entity.CartaModificatore;
+import it.univaq.entity.*;
+import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
-import it.univaq.entity.Carta;
-import it.univaq.entity.Dado;
-import it.univaq.entity.Tavolo;
+import it.univaq.technical.FaseModificatori;
+import it.univaq.ui.FinestraTemporale;
+import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
 
@@ -12,25 +13,66 @@ import java.util.List;
 
 public class HereToSlay {
 
-	private Integer MaxGiocatori;
-	private int IdPartita;
-	private int Opzioni;
-	private List<Player> ElencoGiocatori;
-	private Player GiocatoreAttivo;
-	private Tavolo Tavolo;
-	private Turno TurnoAttuale;
-	private Dado Dado;
-	private Carta CartaAttiva;
+	private Integer maxGiocatori;
+	private Integer idPartita;
+	private Integer opzioni;
+	private List<Player> elencoGiocatori;
+	private Player giocatoreAttivo;
+	private Tavolo tavolo;
+	private Turno turnoAttuale;
+	private Dado dado;
+	private Carta cartaAttiva;
+    private FaseModificatori faseModificatori;
+    private GeneratoreDiEventi generatoreDiEventi;
+    private FinestraTemporale  finestraTemporale;
 
 	/**
 	 * 
-	 * @param Carta
-	 * @param Tipo
-	 * @param Target
-	 * @param Opzione
+	 * @param carta
+	 * @param tipo
+	 * @param target
+	 * @param opzione
 	 */
-	public void giocaCarta(Carta Carta, int Tipo, Player Target, int Opzione) {
-		// TODO - implement HereToSlay.giocaCarta
+	public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
+        switch (carta) {
+            case CartaEroe cartaEroe: System.out.println("da fare");
+                break;
+
+            case CartaMagia cartaMagia: System.out.println("da fare");
+                break;
+
+            case CartaOggettoMaledetto cartaOggettoMaledetto:  System.out.println("da fare");
+                break;
+
+            case CartaOggettoDiSupporto cartaOggettoDiSupporto:  System.out.println("da fare");
+                break;
+
+            case CartaOggetto cartaOggetto: System.out.println("da fare");
+                break;
+
+            case CartaSfida cartaSfida:
+                turnoAttuale.iniziaFase(faseModificatori);
+                generatoreDiEventi.startTimer(faseModificatori);
+                faseModificatori.salvaPunteggio(2.0F,5.0F);
+                break;
+
+            case CartaModificatore cartaModificatore:  {
+                while (finestraTemporale.isAncoraValida()){
+                    generatoreDiEventi.resetTimer(faseModificatori);
+                    turnoAttuale.getFaseCorrente();
+                }
+
+            }
+            break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + carta);
+        }
+
+
+        if (carta.getClass().equals(CartaModificatore.class)) {
+
+        }
 		throw new UnsupportedOperationException();
 	}
 
@@ -41,12 +83,7 @@ public class HereToSlay {
 
 	public void rispostaUtente(String scelta) {
 		// TODO - implement HereToSlay.rispostaUtente
-        switch (scelta) {
-            case "Si":
-                HereToSlay.utilizzaEffetto(CartaAttiva);
-                TurnoAttuale.aggiungiFase();
-        }
-		throw new UnsupportedOperationException();
+
 	}
 
 	/**
@@ -64,16 +101,6 @@ public class HereToSlay {
 	 */
 	public static void utilizzaEffetto(Carta Carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param carta
-	 * @param Target
-	 */
-	public void giocaCarta(CartaModificatore carta, Player Target) {
-		// TODO - implement HereToSlay.giocaCarta
 		throw new UnsupportedOperationException();
 	}
 

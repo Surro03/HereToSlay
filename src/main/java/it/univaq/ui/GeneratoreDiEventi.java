@@ -1,12 +1,20 @@
 package it.univaq.ui;
 
+import it.univaq.technical.Fase;
+import it.univaq.technical.FaseEffetto;
+
+import java.time.Instant;
+
 public class GeneratoreDiEventi {
+
+    private FinestraTemporale finestraTemporaleGenerata;
+    private static final long SECONDI_DURATA = 60;
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void generaEvento(int Fase) {
+	public void generaEvento(Fase fase) {
 		// TODO - implement GeneratoreDiEventi.generaEvento
 		throw new UnsupportedOperationException();
 	}
@@ -18,27 +26,37 @@ public class GeneratoreDiEventi {
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void aggiungiFase(int Fase) {
+	public void aggiungiFase(Fase fase) {
 		// TODO - implement GeneratoreDiEventi.aggiungiFase
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void startTimer(int Fase) {
-		// TODO - implement GeneratoreDiEventi.startTimer
+	public synchronized void startTimer(Fase fase) {
+        Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
+        this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
+        this.finestraTemporaleGenerata.getSecondiRimanenti();
+
+        System.out.println("Timer fase: " + fase + "avviato. Scade alle: " + scadenza);
+	}
+
+	public synchronized void resetTimer(Fase fase) {
+        if (this.finestraTemporaleGenerata != null) {
+            Instant nuovaScadenza = Instant.now().plusSeconds(SECONDI_DURATA);
+            this.finestraTemporaleGenerata.setFine(nuovaScadenza);
+            this.finestraTemporaleGenerata.getSecondiRimanenti();
+
+            System.out.println("Timer resettato per: " + fase + ". Nuova scadenza: " + nuovaScadenza);
+        }
+
 		throw new UnsupportedOperationException();
 	}
 
-	public void resetTimer() {
-		// TODO - implement GeneratoreDiEventi.resetTimer
-		throw new UnsupportedOperationException();
-	}
 
-	private FinestraTemporale finestraTemporaleGenerata;
 
 }

@@ -1,6 +1,7 @@
 package it.univaq.technical;
 
 import it.univaq.entity.Carta;
+import it.univaq.entity.CartaModificatore;
 import it.univaq.ui.Player;
 
 public class FaseModificatori extends Fase {
@@ -8,24 +9,35 @@ public class FaseModificatori extends Fase {
 	private Float ValorePlayer1;
 	private Float ValorePlayer2;
 
+
 	/**
 	 * 
-	 * @param Carta
-	 * @param Target
-	 * @param Opzione
+	 * @param carta
+	 * @param target
+	 * @param opzione
 	 */
-	public void calcoloPunteggio(Carta Carta, Player Target, int Opzione) {
-		// TODO - implement FaseModificatori.calcoloPunteggio
-		throw new UnsupportedOperationException();
+	public float calcoloPunteggio(Carta carta, Player target, int opzione) {
+		if (carta instanceof CartaModificatore) {
+            CartaModificatore c = (CartaModificatore) carta;
+            c.getValore1();
+            if (puntiModificatorePlayer2 != null) {
+                puntiModificatorePlayer2 = puntiModificatorePlayer2 +  c.getValore1();
+            } else  {
+                puntiModificatorePlayer2 = c.getValore1();
+            }
+        }
 	}
 
 	/**
 	 * 
 	 * @param punteggioP
+     * @param punteggioS
 	 */
-	public void salvaPunteggio(int punteggioP) {
-		// TODO - implement FaseModificatori.salvaPunteggio
-		throw new UnsupportedOperationException();
+	public boolean salvaPunteggio(Float punteggioP, Float punteggioS) {
+		punteggioP = ValorePlayer1;
+        punteggioS = ValorePlayer2;
+        return true;
+
 	}
 
 	public void ottieniPunteggi() {
