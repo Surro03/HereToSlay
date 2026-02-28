@@ -12,8 +12,7 @@ public class FaseEffetto extends Fase {
 	 * @param carta
 	 */
 	public void salvaCarta(Carta carta) {
-		// TODO - implement FaseEffetto.salvaCarta
-		throw new UnsupportedOperationException();
+		this.carta = carta;
 	}
 
 	/**

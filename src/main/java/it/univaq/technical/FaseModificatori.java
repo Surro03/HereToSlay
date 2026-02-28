@@ -3,10 +3,14 @@ package it.univaq.technical;
 import it.univaq.entity.Carta;
 import it.univaq.ui.Player;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 public class FaseModificatori extends Fase {
 
-	private Float valorePlayer1;
-	private Float valorePlayer2;
+    private Map<Integer, Float> punteggiPlayer = new HashMap<>();
 
 	/**
 	 * 
@@ -19,18 +23,17 @@ public class FaseModificatori extends Fase {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * 
-	 * @param punteggioP
-	 */
-	public void salvaPunteggio(int punteggioP) {
-		// TODO - implement FaseModificatori.salvaPunteggio
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Salva il punteggio modificato per un determinato giocatore.
+     * * @param punteggioP Il punteggio calcolato
+     * @param playerId L'ID del giocatore
+     */
+    public void salvaPunteggio(float punteggioP, Integer playerId) {
+        punteggiPlayer.put(playerId, punteggioP);
+    }
 
-	public void ottieniPunteggi() {
-		// TODO - implement FaseModificatori.ottieniPunteggi
-		throw new UnsupportedOperationException();
-	}
+	public Float ottieniPunteggi(Integer playerId) {
+        return punteggiPlayer.getOrDefault(playerId, 0f);
+    }
 
 }

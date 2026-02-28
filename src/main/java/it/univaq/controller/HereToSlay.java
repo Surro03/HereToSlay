@@ -6,10 +6,13 @@ import it.univaq.entity.Dado;
 import it.univaq.entity.Tavolo;
 import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
+import it.univaq.technical.FaseModificatori;
 import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Random;
 
 public class HereToSlay {
 
@@ -40,15 +43,31 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void rispostaUtente(String scelta) {
-		// TODO - implement HereToSlay.rispostaUtente
+	public String rispostaUtente(@NotNull String scelta) {
         switch (scelta) {
             case "Si":
-                HereToSlay.utilizzaEffetto(cartaAttiva);
-                turnoAttuale.aggiungiFase(new FaseEffetto());
+                this.turnoAttuale.aggiungiFase(new FaseEffetto());
+                Fase faseAttualeEffetto = this.getFaseAttuale();
+                if (faseAttualeEffetto instanceof FaseEffetto faseEffetto) {
+                    faseEffetto.salvaCarta(cartaAttiva);
+                }
+                Integer valoreDadi = this.tiraDadi();
+                this.turnoAttuale.aggiungiFase(new FaseModificatori());
+                Fase faseAttualeModificatori = this.getFaseAttuale();
+                if (faseAttualeModificatori instanceof FaseModificatori faseModificatori) {
+                faseModificatori.salvaPunteggio(valoreDadi, giocatoreAttivo.getId());
+                }
+                return "Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori";
+                break;
+            case "No":
+                return "Fine Punto Azione";
+
         }
-		throw new UnsupportedOperationException();
 	}
+
+    public Fase getFaseAttuale() {
+        return this.turnoAttuale.getFaseCorrente();
+    }
 
 	/**
 	 * 
@@ -63,7 +82,7 @@ public class HereToSlay {
 	 * 
 	 * @param carta
 	 */
-	public static void utilizzaEffetto(Carta carta) {
+	public void utilizzaEffetto(Carta carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
 		throw new UnsupportedOperationException();
 	}
@@ -78,9 +97,15 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void tiraDadi() {
-		// TODO - implement HereToSlay.tiraDadi
-		throw new UnsupportedOperationException();
+	public Integer tiraDadi() {
+        Random random = new Random();
+        int n = 0;
+        Integer valoreDadi = 0;
+        while (n < 2) {
+            valoreDadi = 1 + random.nextInt(6);
+            n++;
+        }
+        return valoreDadi;
 	}
 
 }
