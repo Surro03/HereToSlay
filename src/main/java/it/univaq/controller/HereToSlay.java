@@ -1,11 +1,13 @@
 package it.univaq.controller;
 
 import it.univaq.entity.CartaModificatore;
-import it.univaq.technical.FaseEffetto;
+import it.univaq.technical.*;
 import it.univaq.entity.Carta;
 import it.univaq.entity.Dado;
 import it.univaq.entity.Tavolo;
+import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.ui.Player;
+import it.univaq.technical.Turno.Risultato;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class HereToSlay {
 	private FaseEffetto.Turno TurnoAttuale;
 	private Dado Dado;
 	private Carta CartaAttiva;
+	private Turno turnoCorrente;
+	private GeneratoreDiEventi generatoreDiEventi;
+	private Fase FaseCorrente;
 
 	/**
 	 * 
@@ -48,8 +53,51 @@ public class HereToSlay {
 	 * @param mossaSelezionata
 	 */
 	public void richiestaMossa(int mossaSelezionata) {
-		// TODO - implement HereToSlay.richiestaMossa
-		throw new UnsupportedOperationException();
+		Risultato risultato = this.turnoCorrente.verificaPA(mossaSelezionata);
+		if (!risultato.successo()) { // [successo == False]
+			// 1.2: messaggioErrorePa() chiamato su GeneratoreDiEventi
+			generatoreDiEventi.messaggioErrorePA();
+			// 1.3: messaggioMossaSelezionata (ritorno al chiamante)
+			System.out.println("Errore: PA insufficienti.");
+		} else {
+			// 1.4: iniziaFase(faseMossaGiocata) chiamato su Turno
+			if (mossaSelezionata == 1) {
+				FaseGiocaCarta Fasegiocacarta = new FaseGiocaCarta();
+				turnoCorrente.iniziaFase(Fasegiocacarta);
+			}
+		switch (mossaSelezionata) {
+			case 1:
+				System.out.println("Gioca Carta Eroe");
+				break;
+			case 2:
+				System.out.println("Gioca Carta Oggetto");
+				break;
+			case 3:
+				System.out.println("Gioca Carta Magia");
+				break;
+			case 4:
+				System.out.println("Attacca Un Mostro");
+				break;
+			case 5:
+				System.out.println("Pesca Carta dal Mazzo");
+				break;
+			case 6:
+				System.out.println("Scarta Mano");
+				break;
+			case 7:
+				System.out.println("Utilizza effetto Eroe");
+				break;
+			default:
+				System.out.println("Mossa non valida");
+				break;
+		}
+		// 1.6 e 1.7: checkPaRimasti() -> ritorna paRimanenti
+		int paRimasti = turnoCorrente.checkPaRimasti();
+		//se non ci sono più PA, il turno finisce (1.8)
+		if (paRimasti <= 0) {
+			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
+			}
+		}
 	}
 
 	/**
@@ -67,8 +115,16 @@ public class HereToSlay {
 	 * @param Target
 	 */
 	public void giocaCarta(CartaModificatore carta, Player Target) {
-		// TODO - implement HereToSlay.giocaCarta
-		throw new UnsupportedOperationException();
+		FaseCorrente= turnoCorrente.getFaseCorrente();
+		FaseSfida Fasesfida = new FaseSfida();
+		TurnoAttuale.iniziaFase(Fasesfida);
+
+
+
+
+
+
+
 	}
 
 	public void tiraDadi() {

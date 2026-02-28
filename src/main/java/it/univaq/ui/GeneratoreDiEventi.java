@@ -12,8 +12,7 @@ public class GeneratoreDiEventi {
 	}
 
 	public void messaggioErrorePA() {
-		// TODO - implement GeneratoreDiEventi.messaggioErrorePA
-		throw new UnsupportedOperationException();
+		System.out.println("GeneratoreDiEventi: Errore, Punti Azione insufficienti per questa mossa!");
 	}
 
 	/**

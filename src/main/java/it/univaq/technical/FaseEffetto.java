@@ -69,7 +69,7 @@ public class FaseEffetto extends Fase {
          *
          * @param fase
          */
-        public void iniziaFase(int fase) {
+        public void iniziaFase(FaseSfida fase) {
             // TODO - implement Turno.iniziaFase
             throw new UnsupportedOperationException();
         }
