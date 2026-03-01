@@ -12,11 +12,13 @@ public class Main {
     public static void main(String[] args) {
         // 1. INIZIALIZZAZIONE SISTEMA
         Scanner scanner = new Scanner(System.in);
-        HereToSlay controller = new HereToSlay();
         
         // Creazione Giocatori
         Player p1 = new Player(1, "Sfidante Oscuro");
         Player p2 = new Player(2, "Eroe della Luce");
+        List<Player> players = new ArrayList<>();
+        players.add(p1);
+        players.add(p2);
         
         // Configurazione Tavolo e Party (come da SD Gioca Carta Eroe [cite: 51, 82])
         Tavolo tavolo = new Tavolo();
@@ -26,6 +28,7 @@ public class Main {
         List<Fase> pilaFasi = new ArrayList<>();
         pilaFasi.add(new FaseGiocaCarta()); // Fase iniziale
         Turno turnoAttuale = new Turno(pilaFasi, p1);
+        HereToSlay controller = new HereToSlay(2, 1,4, players, pilaFasi);
         // (Simuliamo l'iniezione delle dipendenze nel controller tramite riflessione o setter se necessario)
         
         System.out.println("=== BENVENUTO IN HERE TO SLAY ===");

@@ -20,6 +20,7 @@ public class Turno {
         this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.faseAttuale = pilaFasi.getFirst();
+        this.paRimanenti = 3;
     }
 
     public Risultato verificaPA(int mossaSelezionata) {

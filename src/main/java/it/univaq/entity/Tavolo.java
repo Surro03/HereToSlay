@@ -8,7 +8,12 @@ import java.util.Map;
 public class Tavolo {
 
     private PilaScarti pilaScarti;
-    Map<Player, Party> Party =new HashMap<>();
+    Map<Player, Party> Party = new HashMap<>();
+
+	public Tavolo(Map<Player, Party> party) {
+		Party = party;
+	}
+
 	/**
 	 * 
 	 * @param carta

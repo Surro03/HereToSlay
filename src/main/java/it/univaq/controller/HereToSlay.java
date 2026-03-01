@@ -3,20 +3,15 @@ import it.univaq.entity.*;
 import it.univaq.technical.Fase;
 import it.univaq.technical.*;
 import it.univaq.technical.FaseModificatori;
-import it.univaq.entity.*;
-import it.univaq.technical.Fase;
 import it.univaq.technical.FaseEffetto;
-import it.univaq.technical.FaseModificatori;
 import it.univaq.ui.FinestraTemporale;
 import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.technical.Turno;
-import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.ui.Player;
 
 import it.univaq.technical.Turno.Risultato;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class HereToSlay {
@@ -26,16 +21,25 @@ public class HereToSlay {
 	private Integer opzioni;
 	private List<Player> elencoGiocatori;
 	private Player giocatoreAttivo;
-	private Tavolo tavolo;
+	private final Tavolo tavolo;
 	private Turno turnoAttuale;
-	private Dado dado;
+	private final Dado dado;
 	private Carta cartaAttiva;
-    private FaseModificatori faseModificatori;
     private GeneratoreDiEventi generatoreDiEventi;
     private FinestraTemporale  finestraTemporale;
-	private Turno turnoCorrente;
 	private Fase FaseCorrente;
-	Scanner tastiera =new Scanner(System.in);
+	Scanner tastiera = new Scanner(System.in);
+
+	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori, List<Fase> pilaFasi) {
+		this.maxGiocatori = maxGiocatori;
+		this.idPartita = idPartita;
+		this.opzioni = opzioni;
+		this.elencoGiocatori = elencoGiocatori;
+		this.giocatoreAttivo = elencoGiocatori.getFirst();
+		this.tavolo = new Tavolo();
+		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
+		this.dado = new Dado(6);
+	}
 
 	/**
 	 * 
@@ -62,22 +66,23 @@ public class HereToSlay {
                 break;
 
             case CartaSfida cartaSfida:
+				FaseModificatori faseModificatori = new FaseModificatori();
                 turnoAttuale.iniziaFase(faseModificatori);
                 generatoreDiEventi.startTimerL(faseModificatori);
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
-            case CartaModificatore cartaModificatore:  {
-                while (finestraTemporale.isAncoraValida()){
-                    generatoreDiEventi.resetTimerL(faseModificatori);
-                    turnoAttuale.getFaseCorrente();
-                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
-                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-                }
-                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-                turnoAttuale.fineFaseAttuale();
-            }
-            break;
+//            case CartaModificatore cartaModificatore:  {
+//                while (finestraTemporale.isAncoraValida()){
+//                    generatoreDiEventi.resetTimerL(faseModificatori);
+//                    turnoAttuale.getFaseCorrente();
+//                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
+//                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+//                }
+//                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+//                turnoAttuale.fineFaseAttuale();
+//            }
+//            break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + carta);
@@ -91,7 +96,7 @@ public class HereToSlay {
 	}
 
 	public void giocoCarta(Carta Carta){
-		FaseCorrente= turnoCorrente.getFaseCorrente();
+		FaseCorrente= turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
 			faseGiocaCarta.salvaCartaGiocata(Carta);
 			System.out.println("Carta salvata correttamente nella fase.");
@@ -112,7 +117,7 @@ public class HereToSlay {
 		System.out.println("HereToSlay: Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
 
 		// 2.1: fineFaseAttuale() -> Chiude la FaseSfida
-		turnoCorrente.fineFaseAttuale();
+		turnoAttuale.fineFaseAttuale();
 
 		System.out.println("HereToSlay: La carta Eroe entra in gioco senza ostacoli.");
 		// ... Qui proseguirà il diagramma (es. richiestaUtilizzoEffetto) ...
@@ -163,7 +168,7 @@ public class HereToSlay {
 	 * @param mossaSelezionata
 	 */
 	public void richiestaMossa(int mossaSelezionata) {
-		Risultato risultato = this.turnoCorrente.verificaPA(mossaSelezionata);
+		Risultato risultato = this.turnoAttuale.verificaPA(mossaSelezionata);
 		if (!risultato.successo()) { // [successo == False]
 			// 1.2: messaggioErrorePa() chiamato su GeneratoreDiEventi
 			generatoreDiEventi.messaggioErrorePA();
@@ -173,7 +178,7 @@ public class HereToSlay {
 			// 1.4: iniziaFase(faseMossaGiocata) chiamato su Turno
 			if (mossaSelezionata == 1) {
 				FaseGiocaCarta Fasegiocacarta = new FaseGiocaCarta();
-				turnoCorrente.iniziaFase(Fasegiocacarta);
+				turnoAttuale.iniziaFase(Fasegiocacarta);
 			}
 		switch (mossaSelezionata) {
 			case 1:
@@ -203,7 +208,7 @@ public class HereToSlay {
 				break;
 		}
 		// 1.6 e 1.7: checkPaRimasti() -> ritorna paRimanenti
-		int paRimasti = turnoCorrente.checkPaRimasti();
+		int paRimasti = turnoAttuale.checkPaRimasti();
 		//se non ci sono più PA, il turno finisce (1.8)
 		if (paRimasti <= 0) {
 			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
@@ -221,14 +226,13 @@ public class HereToSlay {
 	}
 
 	public Integer tiraDadi() {
-        Random random = new Random();
         int n = 0;
-        Integer valoreDadi = 0;
-        while (n < 2) {
-            valoreDadi = 1 + random.nextInt(12);
-            n++;
-        }
-        return valoreDadi;
+		int risultato = 0;
+		while (n<2){
+			risultato = risultato + this.dado.tiraDado();
+			n = n + 1;
+		}
+		return risultato;
 	}
 
 
