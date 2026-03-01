@@ -4,9 +4,7 @@ import it.univaq.entity.Carta;
 import it.univaq.entity.CartaModificatore;
 import it.univaq.ui.Player;
 
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 public class FaseModificatori extends Fase {

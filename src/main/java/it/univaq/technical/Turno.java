@@ -26,9 +26,9 @@ public class Turno {
 		throw new UnsupportedOperationException();
 	}
 
-	public void getFaseCorrente() {
-		pilaFasi.getFirst();
-	}
+	public Fase getFaseCorrente() {
+        return pilaFasi.getFirst();
+    }
 
 	public void timeout() {
 		// TODO - implement Turno.timeout

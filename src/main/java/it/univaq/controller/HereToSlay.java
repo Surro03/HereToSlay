@@ -59,7 +59,7 @@ public class HereToSlay {
             case CartaSfida cartaSfida:
                 turnoAttuale.iniziaFase(faseModificatori);
                 generatoreDiEventi.startTimer(faseModificatori);
-                faseModificatori.salvaPunteggio(2.0F,giocatoreAttivo.getId());
+                faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
             case CartaModificatore cartaModificatore:  {
@@ -113,12 +113,10 @@ public class HereToSlay {
         }
     }
 
-    public Fase getFaseAttuale() {
-        return this.turnoAttuale.getFaseCorrente();
-    }
+
 
     public String checkAttivazioneEffetto(int punteggioDefinitivo) {
-        Fase faseEffetto = this.getFaseAttuale();
+        Fase faseEffetto = this.turnoAttuale.getFaseCorrente();
         if (faseEffetto instanceof FaseEffetto faseEffetto1) {
             Boolean attivazione = faseEffetto1.checkAttivazioneEffetto(punteggioDefinitivo);
             if (attivazione){
