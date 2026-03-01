@@ -73,6 +73,7 @@ public class Turno {
 	public void verificaPA(int mossaSelezionata) {
 		// TODO - implement Turno.verificaPA
 		throw new UnsupportedOperationException();
+
 	}
 
 	/**
