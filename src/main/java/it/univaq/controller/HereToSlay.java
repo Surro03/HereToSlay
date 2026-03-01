@@ -36,7 +36,7 @@ public class HereToSlay {
 		this.opzioni = opzioni;
 		this.elencoGiocatori = elencoGiocatori;
 		this.giocatoreAttivo = elencoGiocatori.getFirst();
-		this.tavolo = new Tavolo();
+		this.tavolo = new Tavolo(elencoGiocatori);
 		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
 		this.dado = new Dado(6);
 	}
@@ -208,7 +208,7 @@ public class HereToSlay {
 				break;
 		}
 		// 1.6 e 1.7: checkPaRimasti() -> ritorna paRimanenti
-		int paRimasti = turnoAttuale.checkPaRimasti();
+		int paRimasti = turnoAttuale.getPaRimasti();
 		//se non ci sono più PA, il turno finisce (1.8)
 		if (paRimasti <= 0) {
 			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
@@ -223,6 +223,14 @@ public class HereToSlay {
 	public void utilizzaEffetto(Carta carta) {
 		// TODO - implement HereToSlay.utilizzaEffetto
 		throw new UnsupportedOperationException();
+	}
+
+	public Integer getPaRimasti() {
+		return this.turnoAttuale.getPaRimasti();
+	}
+
+	public Boolean checkVittoria(Player player){
+		return tavolo.checkVittoria(player);
 	}
 
 	public Integer tiraDadi() {

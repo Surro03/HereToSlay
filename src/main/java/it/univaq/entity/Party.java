@@ -2,9 +2,8 @@ package it.univaq.entity;
 
 import it.univaq.technical.FaseGiocaCarta;
 import it.univaq.entity.CartaMostro;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 import java.util.List;
 
 public class Party {
@@ -13,12 +12,16 @@ public class Party {
 	private List<Carta> party;
 	private Set<ClasseEroe> classiPresenti = new HashSet<>();
 
+	public Party() {
+		this.party = new ArrayList<>();
+	}
+
 	/**
-	 * 
+	 *
 	 * @param
 	 *
 	 */
-	public void checkVittoria() {
+	public Boolean checkVittoria() {
 		for(Carta Carta: party){
 			if (Carta instanceof CartaEroe cartaEroe){
 				classiPresenti.add(cartaEroe.getClasseEroe());
@@ -26,10 +29,10 @@ public class Party {
 				System.out.println("Errore di flusso: La carta non è una CartaEroe!");
 			}
 		}
-		System.out.println("Classi uniche presenti nel Party: " + classiPresenti.size());
-		if (classiPresenti.size() >= 6) { //
-			System.out.println("VITTORIA! Il giocatore " + player + " ha radunato 6 classi diverse!");
-		}
+		System.out.println("Classi uniche presenti nel party: " + classiPresenti.size());
+        //
+        //System.out.println("VITTORIA! Il giocatore " + player + " ha radunato 6 classi diverse!");
+        return classiPresenti.size() >= 6;
 	}
 
 	/**
@@ -37,7 +40,7 @@ public class Party {
 	 * @param player
 	 */
 	public void ottieniNumClassi(int player) {
-		// TODO - implement Party.ottieniNumClassi
+		// TODO - implement party.ottieniNumClassi
 		throw new UnsupportedOperationException();
 	}
 

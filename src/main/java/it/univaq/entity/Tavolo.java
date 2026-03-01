@@ -3,15 +3,21 @@ package it.univaq.entity;
 import it.univaq.ui.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Tavolo {
 
     private PilaScarti pilaScarti;
-    Map<Player, Party> Party = new HashMap<>();
+	private Map<Integer, Party> partyMap;
 
-	public Tavolo(Map<Player, Party> party) {
-		Party = party;
+	public Tavolo(List<Player> players) {
+		this.partyMap = new HashMap<>();
+
+		for (Player p : players) {
+			// Estraiamo l'ID e lo associamo a un nuovo Party
+			this.partyMap.put(p.getId(), new Party());
+		}
 	}
 
 	/**
@@ -23,11 +29,11 @@ public class Tavolo {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param player
 	 */
-	public void checkVittoria(Player player) {
-		Party.get(player).checkVittoria();
+	public Boolean checkVittoria(Player player) {
+		return partyMap.get(player.getId()).checkVittoria();
 	}
 
 	/**
@@ -45,7 +51,7 @@ public class Tavolo {
 	}
 
 	public void aggiungiCartaParty (Carta carta, Player player){
-			Party.get(player).inserisciCarta(carta);
+			partyMap.get(player.getId()).inserisciCarta(carta);
 
 	}
 

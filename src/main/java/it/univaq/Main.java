@@ -19,20 +19,17 @@ public class Main {
         List<Player> players = new ArrayList<>();
         players.add(p1);
         players.add(p2);
-        
-        // Configurazione Tavolo e Party (come da SD Gioca Carta Eroe [cite: 51, 82])
-        Tavolo tavolo = new Tavolo();
-        // Nota: Nel codice reale questi verrebbero inizializzati nel costruttore di Tavolo o Party
+
         
         // Inizializzazione Turno con 3 Punti Azione (PA) [cite: 3, 12]
         List<Fase> pilaFasi = new ArrayList<>();
         pilaFasi.add(new FaseGiocaCarta()); // Fase iniziale
-        Turno turnoAttuale = new Turno(pilaFasi, p1);
+        //Turno turnoAttuale = new Turno(pilaFasi, p1); viene fatto dentro HereToSlay
         HereToSlay controller = new HereToSlay(2, 1,4, players, pilaFasi);
         // (Simuliamo l'iniezione delle dipendenze nel controller tramite riflessione o setter se necessario)
         
         System.out.println("=== BENVENUTO IN HERE TO SLAY ===");
-        System.out.println("Turno di: " + p1.getNome() + " | PA disponibili: " + turnoAttuale.checkPaRimasti());
+        System.out.println("Turno di: " + p1.getNome() + " | PA disponibili: " + controller.getPaRimasti());
 
         // 2. ESECUZIONE AZIONE: Gioca Carta Eroe (Mossa 1) [cite: 9, 21]
         System.out.println("\n--- Fase 1: Richiesta Mossa ---");
@@ -70,9 +67,9 @@ public class Main {
 
         // 7. VERIFICA CONDIZIONI DI VITTORIA [cite: 78, 84]
         System.out.println("\n--- Fase Finale: Verifica Vittoria ---");
-        tavolo.checkVittoria(p1); // Conta le classi uniche nel Party [cite: 84, 85]
+        controller.checkVittoria(p1); // Conta le classi uniche nel Party [cite: 84, 85]
 
-        System.out.println("\nPA rimanenti per " + p1.getNome() + ": " + turnoAttuale.checkPaRimasti());
+        System.out.println("\nPA rimanenti per " + p1.getNome() + ": " + controller.getPaRimasti());
         System.out.println("=================================");
     }
 }

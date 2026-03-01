@@ -1,7 +1,6 @@
 package it.univaq.technical;
 
 import it.univaq.ui.Player;
-import it.univaq.entity.Carta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +68,7 @@ public class Turno {
         return pilaFasi.getFirst();
     }
 
-    public int checkPaRimasti() {
+    public int getPaRimasti() {
         // 1.7: paRimanenti (ritorno)
         return paRimanenti;
     }
@@ -95,10 +94,5 @@ public class Turno {
         throw new UnsupportedOperationException();
     }
 
-
-	public void getPaRimasti() {
-		// TODO - implement Turno.checkPARimasti
-		throw new UnsupportedOperationException();
-	}
 
 }
