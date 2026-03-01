@@ -63,13 +63,13 @@ public class HereToSlay {
 
             case CartaSfida cartaSfida:
                 turnoAttuale.iniziaFase(faseModificatori);
-                generatoreDiEventi.startTimer(faseModificatori);
+                generatoreDiEventi.startTimerL(faseModificatori);
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
             case CartaModificatore cartaModificatore:  {
                 while (finestraTemporale.isAncoraValida()){
-                    generatoreDiEventi.resetTimer(faseModificatori);
+                    generatoreDiEventi.resetTimerL(faseModificatori);
                     turnoAttuale.getFaseCorrente();
                     faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
                     faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
@@ -100,10 +100,10 @@ public class HereToSlay {
 		}
 		//FaseSfida Fasesfida = new FaseSfida();
 		//turnoCorrente.iniziaFase(Fasesfida);
-		Tavolo.aggiungiCartaParty(Carta, GiocatoreAttivo);
+		tavolo.aggiungiCartaParty(Carta, giocatoreAttivo);
 		//System.out.println("Vuoi attivare l'effetto?");
 		//boolean valore= tastiera.nextBoolean();
-		Tavolo.checkVittoria(GiocatoreAttivo);
+		tavolo.checkVittoria(giocatoreAttivo);
 	}
 
 	public void timeout() {

@@ -13,6 +13,7 @@ import java.util.TimerTask;
 public class GeneratoreDiEventi {
 	private Timer timer;
 	private HereToSlay controller;
+    private final int SECONDI_DURATA = 1000;
 
 	public GeneratoreDiEventi(HereToSlay controller) {
 		this.controller = controller;
@@ -46,6 +47,7 @@ public class GeneratoreDiEventi {
 	 * @param fase
 	 */
 	public synchronized void startTimerL(Fase fase) {
+
         Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
         this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
         this.finestraTemporaleGenerata.getSecondiRimanenti();

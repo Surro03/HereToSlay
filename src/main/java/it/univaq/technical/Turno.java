@@ -13,9 +13,11 @@ public class Turno {
     private List<Fase> pilaFasi = new ArrayList<Fase>();
     private Player giocatoreDiTurno;
     private Fase faseAttuale;
-    private record  Risultato (boolean successo, int PA){}
 
-    public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno ) {
+    public record Risultato(boolean successo, int PA) {
+    }
+
+    public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno) {
         this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.faseAttuale = pilaFasi.getFirst();
@@ -27,7 +29,7 @@ public class Turno {
     }
 
     private void eseguiMossa(int mossaSelezionata) {
-        if (mossaSelezionata == 1 || mossaSelezionata ==2 || mossaSelezionata==3 || mossaSelezionata==4 || mossaSelezionata==5 ) {
+        if (mossaSelezionata == 1 || mossaSelezionata == 2 || mossaSelezionata == 3 || mossaSelezionata == 4 || mossaSelezionata == 5) {
             // Gioca una carta eroe, oggetto, magia o pesca o attivo un effetto(costo 1)
             if (paRimanenti >= 1) {
                 paRimanenti--;
@@ -53,9 +55,10 @@ public class Turno {
             }
         }
     }
+
     public Boolean iniziaFase(Fase faseMossaGiocata) {
-    this.aggiungiFase(faseMossaGiocata);
-    return true;
+        this.aggiungiFase(faseMossaGiocata);
+        return true;
     }
 
     public void aggiungiFase(Fase faseMossaGiocata) {
