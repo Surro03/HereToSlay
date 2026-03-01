@@ -4,15 +4,15 @@ import it.univaq.entity.Carta;
 
 public class FaseGiocaCarta extends Fase {
 
-	private Carta CartaGiocata;
+	private Carta cartaGiocata;
 
 	/**
 	 * 
 	 * @param carta
 	 */
-	public void salvaCartaGiocata(Carta carta) {
-		// TODO - implement FaseGiocaCarta.salvaCartaGiocata
-		throw new UnsupportedOperationException();
+
+	public void salvaCartaGiocata(Carta carta){
+		this.cartaGiocata= carta;
 	}
 
 }

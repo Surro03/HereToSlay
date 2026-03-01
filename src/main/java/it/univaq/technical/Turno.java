@@ -2,14 +2,18 @@ package it.univaq.technical;
 
 import it.univaq.ui.Player;
 import org.jetbrains.annotations.NotNull;
+import it.univaq.entity.Carta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Turno {
-
-	private List<Fase> pilaFasi;
-	private Player giocatoreDiTurno;
-	private Fase faseAttuale;
+    private int paRimanenti;
+    private boolean Successo;
+    private List<Fase> pilaFasi = new ArrayList<Fase>();
+    private Player giocatoreDiTurno;
+    private Fase faseAttuale;
+    private record  Risultato (boolean successo, int PA){}
 
     public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno ) {
         this.pilaFasi = pilaFasi;
@@ -17,75 +21,79 @@ public class Turno {
         this.faseAttuale = pilaFasi.getFirst();
     }
 
-    /**
-	 * 
-	 * @param fase
-	 */
-	public void resetTimer(Fase fase) {
-		// TODO - implement Turno.resetTimer
-		throw new UnsupportedOperationException();
-	}
+    public Risultato verificaPA(int mossaSelezionata) {
+        this.eseguiMossa(mossaSelezionata);
+        return new Risultato(Successo, paRimanenti);
+    }
 
-	public Fase getFaseCorrente() {
+    private void eseguiMossa(int mossaSelezionata) {
+        if (mossaSelezionata == 1 || mossaSelezionata ==2 || mossaSelezionata==3 || mossaSelezionata==4 || mossaSelezionata==5 ) {
+            // Gioca una carta eroe, oggetto, magia o pesca o attivo un effetto(costo 1)
+            if (paRimanenti >= 1) {
+                paRimanenti--;
+                Successo = true;
+            } else {
+                Successo = false;
+            }
+        } else if (mossaSelezionata == 6) {
+            // Attacca un mostro (costo 2)
+            if (paRimanenti >= 2) {
+                paRimanenti = paRimanenti - 2;
+                Successo = true;
+            } else {
+                Successo = false;
+            }
+        } else if (mossaSelezionata == 7) {
+            // Pesca 5 carte (costo 3)
+            if (paRimanenti >= 3) {
+                paRimanenti = paRimanenti - 3;
+                Successo = true;
+            } else {
+                Successo = false;
+            }
+        }
+    }
+    public Boolean iniziaFase(Fase faseMossaGiocata) {
+    this.aggiungiFase(faseMossaGiocata);
+    return true;
+    }
+
+    public void aggiungiFase(Fase faseMossaGiocata) {
+        pilaFasi.add(faseMossaGiocata);
+    }
+
+    public Fase getFaseCorrente () {
         return pilaFasi.getFirst();
     }
 
-	public void timeout() {
-		// TODO - implement Turno.timeout
-		throw new UnsupportedOperationException();
-	}
+    public int checkPaRimasti() {
+        // 1.7: paRimanenti (ritorno)
+        return paRimanenti;
+    }
 
-	public void terminaFaseAttuale() {
-		// TODO - implement Turno.terminaFaseAttuale
-		throw new UnsupportedOperationException();
-	}
+    public void fineFaseAttuale() {
+        if (!pilaFasi.isEmpty()) {
+            Fase faseDaChiudere = pilaFasi.removeFirst();
+            System.out.println("Turno: terminaFaseAttuale(). Chiusa la fase: " + faseDaChiudere.getClass().getSimpleName());
+        }
+    }
 
-	public void cartaGiocata() {
-		// TODO - implement Turno.cartaGiocata
-		throw new UnsupportedOperationException();
-	}
+    public void timeout() {
+        // TODO - implement Turno.timeout
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * 
-	 * @param fase
-	 */
-	public Boolean iniziaFase(Fase fase) {
-        this.aggiungiFase(fase);
-        return true;
-	}
+    /**
+     *
+     * @param fase
+     */
+    public void resetTimer(Fase fase) {
+        // TODO - implement Turno.resetTimer
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 *
-	 * @param fase
-	 */
-	public void aggiungiFase(Fase fase) {
-        pilaFasi.add(fase);
-	}
 
-	public void fineFaseAttuale() {
-        this.pilaFasi.removeFirst();
-	}
-
-	/**
-	 * 
-	 * @param mossaSelezionata
-	 */
-	public void verificaPA(int mossaSelezionata) {
-		// TODO - implement Turno.verificaPA
-		throw new UnsupportedOperationException();
-
-	}
-
-	/**
-	 * 
-	 * @param mossaSelezionata
-	 */
-	public void eseguiMossa(int mossaSelezionata) {
-		// TODO - implement Turno.eseguiMossa
-		throw new UnsupportedOperationException();
-	}
-
-	public void checkPARimasti() {
+	public void getPaRimasti() {
 		// TODO - implement Turno.checkPARimasti
 		throw new UnsupportedOperationException();
 	}

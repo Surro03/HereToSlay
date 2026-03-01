@@ -7,7 +7,17 @@ import it.univaq.technical.FaseEffetto;
 
 import java.time.Instant;
 
+import it.univaq.controller.HereToSlay;
+import java.util.Timer;
+import java.util.TimerTask;
 public class GeneratoreDiEventi {
+	private Timer timer;
+	private HereToSlay controller;
+
+	public GeneratoreDiEventi(HereToSlay controller) {
+		this.controller = controller;
+	}
+
 
 	/**
 	 * 
@@ -19,8 +29,7 @@ public class GeneratoreDiEventi {
 	}
 
 	public void messaggioErrorePA() {
-		// TODO - implement GeneratoreDiEventi.messaggioErrorePA
-		throw new UnsupportedOperationException();
+		System.out.println("GeneratoreDiEventi: Errore, Punti Azione insufficienti per questa mossa!");
 	}
 
 	/**
@@ -36,7 +45,7 @@ public class GeneratoreDiEventi {
 	 * 
 	 * @param fase
 	 */
-	public synchronized void startTimer(Fase fase) {
+	public synchronized void startTimerL(Fase fase) {
         Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
         this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
         this.finestraTemporaleGenerata.getSecondiRimanenti();
@@ -44,7 +53,7 @@ public class GeneratoreDiEventi {
         System.out.println("Timer fase: " + fase + "avviato. Scade alle: " + scadenza);
 	}
 
-	public synchronized void resetTimer(Fase fase) {
+	public synchronized void resetTimerL(Fase fase) {
         if (this.finestraTemporaleGenerata != null) {
             Instant nuovaScadenza = Instant.now().plusSeconds(SECONDI_DURATA);
             this.finestraTemporaleGenerata.setFine(nuovaScadenza);
@@ -56,9 +65,31 @@ public class GeneratoreDiEventi {
 		throw new UnsupportedOperationException();
 	}
 
-	public void resetTimer() {
-		// TODO - implement GeneratoreDiEventi.resetTimer
-		throw new UnsupportedOperationException();
+    /**
+     *
+     * @param Fase
+     */
+    public void startTimerG(int Fase) {
+        resetTimerG();
+        timer = new Timer();
+        System.out.println("GeneratoreDiEventi: Timer avviato per " + Fase + " secondi. Avversari, potete lanciare una Sfida!");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("\nTempo scaduto per la sfida!");
+                // Chiama il controller per avvisarlo
+                controller.timeout();
+            }
+        }, Fase * 1000L);
+
+    }
+
+	public void resetTimerG() {
+		if (timer != null) {
+			timer.cancel();
+			timer.purge();
+			System.out.println("GeneratoreDiEventi: Timer disattivato.");
+		}
 	}
 
 	private FinestraTemporale finestraTemporaleGenerata;

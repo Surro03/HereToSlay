@@ -1,9 +1,14 @@
 package it.univaq.entity;
 
+import it.univaq.ui.Player;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Tavolo {
 
     private PilaScarti pilaScarti;
-
+    Map<Player, Party> Party =new HashMap<>();
 	/**
 	 * 
 	 * @param carta
@@ -16,9 +21,8 @@ public class Tavolo {
 	 * 
 	 * @param player
 	 */
-	public void checkVittoria(int player) {
-		// TODO - implement Tavolo.checkVittoria
-		throw new UnsupportedOperationException();
+	public void checkVittoria(Player player) {
+		Party.get(player).checkVittoria();
 	}
 
 	/**
@@ -33,6 +37,11 @@ public class Tavolo {
 	public void operation() {
 		// TODO - implement Tavolo.operation
 		throw new UnsupportedOperationException();
+	}
+
+	public void aggiungiCartaParty (Carta carta, Player player){
+			Party.get(player).inserisciCarta(carta);
+
 	}
 
 }
