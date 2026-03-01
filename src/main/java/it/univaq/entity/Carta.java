@@ -13,5 +13,5 @@ public abstract class Carta {
 
     }
 
-    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) { return false;}
+    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) { throw new UnsupportedOperationException();}
 }
