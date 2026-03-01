@@ -44,15 +44,15 @@ public class HereToSlay {
         switch (scelta) {
             case "Si":
                 // 1.Gestione Fase Effetto
-                FaseEffetto nuovaFaseEffetto = new FaseEffetto();
-                nuovaFaseEffetto.salvaCarta(cartaAttiva);
-                this.turnoAttuale.aggiungiFase(nuovaFaseEffetto);
+                FaseEffetto faseEffetto = new FaseEffetto();
+                faseEffetto.salvaCarta(cartaAttiva);
+                this.turnoAttuale.aggiungiFase(faseEffetto);
                 // 2.Tiro dadi
                 Integer valoreDadi = this.tiraDadi();
                 // 3.Gestione Fase Modificatori
-                FaseModificatori nuovaFaseModificatori = new FaseModificatori();
-                nuovaFaseModificatori.salvaPunteggio(valoreDadi, giocatoreAttivo.getId());
-                this.turnoAttuale.aggiungiFase(nuovaFaseModificatori);
+                FaseModificatori faseModificatori = new FaseModificatori();
+                faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), valoreDadi);
+                this.turnoAttuale.aggiungiFase(faseModificatori);
                 return "Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori";
 
             case "No":
@@ -115,7 +115,7 @@ public class HereToSlay {
         int n = 0;
         Integer valoreDadi = 0;
         while (n < 2) {
-            valoreDadi = 1 + random.nextInt(6);
+            valoreDadi = 1 + random.nextInt(12);
             n++;
         }
         return valoreDadi;

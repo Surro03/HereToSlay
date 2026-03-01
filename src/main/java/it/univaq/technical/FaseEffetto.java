@@ -20,8 +20,7 @@ public class FaseEffetto extends Fase {
 	 * @param punteggioDefinitivo
 	 */
 	public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) {
-		// TODO - implement FaseEffetto.checkAttivazioneEffetto
-		throw new UnsupportedOperationException();
+		return carta.checkAttivazioneEffetto(punteggioDefinitivo);
 	}
 
 	public void ottieniEffetto() {

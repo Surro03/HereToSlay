@@ -28,7 +28,7 @@ public class FaseModificatori extends Fase {
      * * @param punteggioP Il punteggio calcolato
      * @param playerId L'ID del giocatore
      */
-    public void salvaPunteggio(float punteggioP, Integer playerId) {
+    public void salvaPunteggio(Integer playerId, float punteggioP) {
         punteggiPlayer.put(playerId, punteggioP);
     }
 

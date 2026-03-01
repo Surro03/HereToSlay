@@ -71,4 +71,9 @@ public class CartaEroe extends Carta {
     public void setClasseEroe(ClasseEroe classeEroe) {
         this.classeEroe = classeEroe;
     }
+
+    @Override
+    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) {
+        return punteggioDefinitivo > requisito;
+    }
 }

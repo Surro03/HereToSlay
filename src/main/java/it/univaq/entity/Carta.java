@@ -12,4 +12,6 @@ public abstract class Carta {
     public void eseguiEffetto(){
 
     }
+
+    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) { return false;}
 }
