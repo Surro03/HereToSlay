@@ -8,6 +8,7 @@ public class CartaModificatore extends Carta {
 	private String effetto;
 
     public CartaModificatore(Integer valore, Float valore1, Float valore2, String effetto) {
+        super("ciao");
         this.valore = valore;
         this.valore1 = valore1;
         this.valore2 = valore2;
