@@ -61,5 +61,11 @@ public class Turno {
     public Fase getFaseCorrente () {
         return pilaFasi.getLast();
     }
+    public void fineFaseAttuale() {
+        if (!pilaFasi.isEmpty()) {
+            Fase faseDaChiudere = pilaFasi.removeLast();
+            System.out.println("Turno: terminaFaseAttuale(). Chiusa la fase: " + faseDaChiudere.getClass().getSimpleName());
+        }
+    }
 
 }

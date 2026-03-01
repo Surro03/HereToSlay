@@ -1,5 +1,4 @@
 package it.univaq.controller;
-
 import it.univaq.entity.CartaModificatore;
 import it.univaq.technical.*;
 import it.univaq.entity.Carta;
@@ -10,6 +9,7 @@ import it.univaq.ui.Player;
 import it.univaq.technical.Turno.Risultato;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class HereToSlay {
 
@@ -25,6 +25,7 @@ public class HereToSlay {
 	private Turno turnoCorrente;
 	private GeneratoreDiEventi generatoreDiEventi;
 	private Fase FaseCorrente;
+	Scanner tastiera =new Scanner(System.in);
 
 	/**
 	 * 
@@ -46,13 +47,24 @@ public class HereToSlay {
 		} else {
 			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
 		}
-		FaseSfida Fasesfida = new FaseSfida();
-		turnoCorrente.iniziaFase(Fasesfida);
+		//FaseSfida Fasesfida = new FaseSfida();
+		//turnoCorrente.iniziaFase(Fasesfida);
+		Tavolo.aggiungiCartaParty(Carta, GiocatoreAttivo);
+		//System.out.println("Vuoi attivare l'effetto?");
+		//boolean valore= tastiera.nextBoolean();
+		Tavolo.checkVittoria(GiocatoreAttivo);
 	}
 
 	public void timeout() {
-		// TODO - implement HereToSlay.timeout
-		throw new UnsupportedOperationException();
+
+
+		System.out.println("HereToSlay: Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
+
+		// 2.1: fineFaseAttuale() -> Chiude la FaseSfida
+		turnoCorrente.fineFaseAttuale();
+
+		System.out.println("HereToSlay: La carta Eroe entra in gioco senza ostacoli.");
+		// ... Qui proseguirà il diagramma (es. richiestaUtilizzoEffetto) ...
 	}
 
 	public void rispostaUtente() {
@@ -136,5 +148,6 @@ public class HereToSlay {
 		// TODO - implement HereToSlay.tiraDadi
 		throw new UnsupportedOperationException();
 	}
+
 
 }

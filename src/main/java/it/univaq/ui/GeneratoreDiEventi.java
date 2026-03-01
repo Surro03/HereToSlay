@@ -1,6 +1,15 @@
 package it.univaq.ui;
-
+import it.univaq.controller.HereToSlay;
+import java.util.Timer;
+import java.util.TimerTask;
 public class GeneratoreDiEventi {
+	private Timer timer;
+	private HereToSlay controller;
+
+	public GeneratoreDiEventi(HereToSlay controller) {
+		this.controller = controller;
+	}
+
 
 	/**
 	 * 
@@ -29,13 +38,26 @@ public class GeneratoreDiEventi {
 	 * @param Fase
 	 */
 	public void startTimer(int Fase) {
-		// TODO - implement GeneratoreDiEventi.startTimer
-		throw new UnsupportedOperationException();
+		resetTimer();
+		timer = new Timer();
+		System.out.println("GeneratoreDiEventi: Timer avviato per " + Fase + " secondi. Avversari, potete lanciare una Sfida!");
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				System.out.println("\nTempo scaduto per la sfida!");
+				// Chiama il controller per avvisarlo
+				controller.timeout();
+			}
+		}, Fase * 1000L);
+
 	}
 
 	public void resetTimer() {
-		// TODO - implement GeneratoreDiEventi.resetTimer
-		throw new UnsupportedOperationException();
+		if (timer != null) {
+			timer.cancel();
+			timer.purge();
+			System.out.println("GeneratoreDiEventi: Timer disattivato.");
+		}
 	}
 
 	private FinestraTemporale finestraTemporaleGenerata;
