@@ -9,23 +9,25 @@ public class Turno {
 
 	private List<Fase> pilaFasi;
 	private Player giocatoreDiTurno;
+	private Fase faseAttuale;
 
     public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno ) {
         this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
+        this.faseAttuale = pilaFasi.getFirst();
     }
 
     /**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void resetTimer(int Fase) {
+	public void resetTimer(Fase fase) {
 		// TODO - implement Turno.resetTimer
 		throw new UnsupportedOperationException();
 	}
 
-	public Fase getFaseCorrente() {
-		return pilaFasi.getFirst();
+	public void getFaseCorrente() {
+		pilaFasi.getFirst();
 	}
 
 	public void timeout() {
@@ -61,8 +63,7 @@ public class Turno {
 	}
 
 	public void fineFaseAttuale() {
-		// TODO - implement Turno.fineFaseAttuale
-		throw new UnsupportedOperationException();
+        this.pilaFasi.removeFirst();
 	}
 
 	/**

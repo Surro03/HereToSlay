@@ -2,6 +2,11 @@ package it.univaq.ui;
 
 import it.univaq.technical.Fase;
 
+import it.univaq.technical.Fase;
+import it.univaq.technical.FaseEffetto;
+
+import java.time.Instant;
+
 public class GeneratoreDiEventi {
 
 	/**
@@ -29,10 +34,25 @@ public class GeneratoreDiEventi {
 
 	/**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void startTimer(int Fase) {
-		// TODO - implement GeneratoreDiEventi.startTimer
+	public synchronized void startTimer(Fase fase) {
+        Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
+        this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
+        this.finestraTemporaleGenerata.getSecondiRimanenti();
+
+        System.out.println("Timer fase: " + fase + "avviato. Scade alle: " + scadenza);
+	}
+
+	public synchronized void resetTimer(Fase fase) {
+        if (this.finestraTemporaleGenerata != null) {
+            Instant nuovaScadenza = Instant.now().plusSeconds(SECONDI_DURATA);
+            this.finestraTemporaleGenerata.setFine(nuovaScadenza);
+            this.finestraTemporaleGenerata.getSecondiRimanenti();
+
+            System.out.println("Timer resettato per: " + fase + ". Nuova scadenza: " + nuovaScadenza);
+        }
+
 		throw new UnsupportedOperationException();
 	}
 
