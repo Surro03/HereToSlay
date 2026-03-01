@@ -62,15 +62,18 @@ public class HereToSlay {
             case CartaSfida cartaSfida:
                 turnoAttuale.iniziaFase(faseModificatori);
                 generatoreDiEventi.startTimer(faseModificatori);
-                faseModificatori.salvaPunteggio(2.0F,5.0F);
+                faseModificatori.salvaPunteggio(2.0F,giocatoreAttivo.getId());
                 break;
 
             case CartaModificatore cartaModificatore:  {
                 while (finestraTemporale.isAncoraValida()){
                     generatoreDiEventi.resetTimer(faseModificatori);
                     turnoAttuale.getFaseCorrente();
+                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
+                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
                 }
-
+                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+                turnoAttuale.fineFaseAttuale();
             }
             break;
 

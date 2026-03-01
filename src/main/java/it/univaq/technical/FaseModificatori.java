@@ -23,12 +23,13 @@ public class FaseModificatori extends Fase {
 		if (carta instanceof CartaModificatore) {
             CartaModificatore c = (CartaModificatore) carta;
             c.getValore1();
-            if (puntiModificatorePlayer2 != null) {
-                puntiModificatorePlayer2 = puntiModificatorePlayer2 +  c.getValore1();
-            } else  {
-                puntiModificatorePlayer2 = c.getValore1();
+            if (punteggiPlayer.get(target.getId()) == null ) {
+                punteggiPlayer.put(target.getId(), c.getValore1());
+            } else {
+                punteggiPlayer.put(target.getId(), punteggiPlayer.get(target.getId()) + c.getValore1());
             }
         }
+        return punteggiPlayer.get(target.getId());
 	}
 
     /**

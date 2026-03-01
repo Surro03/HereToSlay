@@ -1,14 +1,17 @@
 package it.univaq.entity;
 
+import java.util.List;
+
 public class PilaScarti extends Mazzo {
+
+    private List<Carta> pilaScarti;
 
 	/**
 	 * 
 	 * @param carta
 	 */
 	public void aggiungiCarta(Carta carta) {
-		// TODO - implement PilaScarti.aggiungiCarta
-		throw new UnsupportedOperationException();
+		pilaScarti.add(carta);
 	}
 
 }

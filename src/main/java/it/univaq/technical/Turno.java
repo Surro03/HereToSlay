@@ -19,9 +19,9 @@ public class Turno {
 
     /**
 	 * 
-	 * @param Fase
+	 * @param fase
 	 */
-	public void resetTimer(int Fase) {
+	public void resetTimer(Fase fase) {
 		// TODO - implement Turno.resetTimer
 		throw new UnsupportedOperationException();
 	}

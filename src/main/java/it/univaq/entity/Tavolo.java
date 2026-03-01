@@ -2,13 +2,14 @@ package it.univaq.entity;
 
 public class Tavolo {
 
+    private PilaScarti pilaScarti;
+
 	/**
 	 * 
 	 * @param carta
 	 */
 	public void scartaCarta(Carta carta) {
-		// TODO - implement Tavolo.scartaCarta
-		throw new UnsupportedOperationException();
+        pilaScarti.aggiungiCarta(carta);
 	}
 
 	/**
