@@ -63,8 +63,7 @@ public class Turno {
 	}
 
 	public void fineFaseAttuale() {
-		// TODO - implement Turno.fineFaseAttuale
-		throw new UnsupportedOperationException();
+        this.pilaFasi.removeFirst();
 	}
 
 	/**
