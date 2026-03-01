@@ -1,7 +1,6 @@
 package it.univaq.technical;
 
 import it.univaq.ui.Player;
-import org.jetbrains.annotations.NotNull;
 import it.univaq.entity.Carta;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class Turno {
     public record Risultato(boolean successo, int PA) {
     }
 
-    public Turno(@NotNull List<Fase> pilaFasi, Player giocatoreDiTurno) {
+    public Turno( List<Fase> pilaFasi, Player giocatoreDiTurno) {
         this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.faseAttuale = pilaFasi.getFirst();

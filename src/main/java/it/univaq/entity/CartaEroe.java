@@ -16,6 +16,7 @@ public class CartaEroe extends Carta {
 	}
 
     public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, Integer costo, ClasseEroe classeEroe) {
+        super("ciao");
         this.numOggetti = numOggetti;
         this.requisito = requisito;
         this.nome = nome;

@@ -12,7 +12,7 @@ import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.technical.Turno;
 import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.ui.Player;
-import org.jetbrains.annotations.NotNull;
+
 import it.univaq.technical.Turno.Risultato;
 
 import java.util.List;
@@ -118,7 +118,7 @@ public class HereToSlay {
 		// ... Qui proseguirà il diagramma (es. richiestaUtilizzoEffetto) ...
 	}
 
-    public String rispostaUtente(@NotNull String scelta) {
+    public String rispostaUtente(String scelta) {
         switch (scelta) {
             case "Si":
                 // 1.Gestione Fase Effetto
