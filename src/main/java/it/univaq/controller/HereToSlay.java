@@ -11,6 +11,7 @@ import it.univaq.ui.Player;
 
 import it.univaq.technical.Turno.Risultato;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,10 +31,12 @@ public class HereToSlay {
 	private Fase FaseCorrente;
 	Scanner tastiera = new Scanner(System.in);
 
-	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori, List<Fase> pilaFasi) {
+	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori) {
 		this.maxGiocatori = maxGiocatori;
 		this.idPartita = idPartita;
 		this.opzioni = opzioni;
+		List<Fase> pilaFasi = new ArrayList<>();
+		pilaFasi.add(new FaseScelta());
 		this.elencoGiocatori = elencoGiocatori;
 		this.giocatoreAttivo = elencoGiocatori.getFirst();
 		this.tavolo = new Tavolo(elencoGiocatori);
@@ -72,17 +75,17 @@ public class HereToSlay {
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
-//            case CartaModificatore cartaModificatore:  {
-//                while (finestraTemporale.isAncoraValida()){
-//                    generatoreDiEventi.resetTimerL(faseModificatori);
-//                    turnoAttuale.getFaseCorrente();
-//                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
-//                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-//                }
-//                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-//                turnoAttuale.fineFaseAttuale();
-//            }
-//            break;
+            case CartaModificatore cartaModificatore:  {
+                while (finestraTemporale.isAncoraValida()){
+                    generatoreDiEventi.resetTimerL(faseModificatori);
+                    turnoAttuale.getFaseCorrente();
+                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
+                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+                }
+                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+                turnoAttuale.fineFaseAttuale();
+            }
+            break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + carta);
@@ -96,7 +99,7 @@ public class HereToSlay {
 	}
 
 	public void giocoCarta(Carta Carta){
-		FaseCorrente= turnoAttuale.getFaseCorrente();
+		FaseCorrente = turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
 			faseGiocaCarta.salvaCartaGiocata(Carta);
 			System.out.println("Carta salvata correttamente nella fase.");
@@ -176,13 +179,11 @@ public class HereToSlay {
 			System.out.println("Errore: PA insufficienti.");
 		} else {
 			// 1.4: iniziaFase(faseMossaGiocata) chiamato su Turno
-			if (mossaSelezionata == 1) {
-				FaseGiocaCarta Fasegiocacarta = new FaseGiocaCarta();
-				turnoAttuale.iniziaFase(Fasegiocacarta);
-			}
 		switch (mossaSelezionata) {
 			case 1:
 				System.out.println("Gioca Carta Eroe");
+				FaseGiocaCarta faseGiocaCarta = new FaseGiocaCarta();
+				turnoAttuale.iniziaFase(faseGiocaCarta);
 				break;
 			case 2:
 				System.out.println("Gioca Carta Oggetto");
@@ -209,7 +210,7 @@ public class HereToSlay {
 		}
 		// 1.6 e 1.7: checkPaRimasti() -> ritorna paRimanenti
 		int paRimasti = turnoAttuale.getPaRimasti();
-		//se non ci sono più PA, il turno finisce (1.8)
+		//se non ci sono più PA, il turno finisce
 		if (paRimasti <= 0) {
 			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
 			}

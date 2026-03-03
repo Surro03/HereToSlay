@@ -14,19 +14,15 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         
         // Creazione Giocatori
-        Player p1 = new Player(1, "Sfidante Oscuro");
-        Player p2 = new Player(2, "Eroe della Luce");
+        Player p1 = new Player(1, "Luca Avenia");
+        Player p2 = new Player(2, "Alessandro Salvitti");
         List<Player> players = new ArrayList<>();
         players.add(p1);
         players.add(p2);
 
         
         // Inizializzazione Turno con 3 Punti Azione (PA) [cite: 3, 12]
-        List<Fase> pilaFasi = new ArrayList<>();
-        pilaFasi.add(new FaseGiocaCarta()); // Fase iniziale
-        //Turno turnoAttuale = new Turno(pilaFasi, p1); viene fatto dentro HereToSlay
-        HereToSlay controller = new HereToSlay(2, 1,4, players, pilaFasi);
-        // (Simuliamo l'iniezione delle dipendenze nel controller tramite riflessione o setter se necessario)
+        HereToSlay controller = new HereToSlay(2, 1,4, players);
         
         System.out.println("=== BENVENUTO IN HERE TO SLAY ===");
         System.out.println("Turno di: " + p1.getNome() + " | PA disponibili: " + controller.getPaRimasti());
