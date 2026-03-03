@@ -3,6 +3,7 @@ package it.univaq.entity;
 public class CartaEroe extends Carta {
 
 	private Integer numOggetti;
+    private CartaOggetto cartaOggetto;
 	private Integer requisito;
 	private String nome;
 	private String effetto;

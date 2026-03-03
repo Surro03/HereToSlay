@@ -2,41 +2,38 @@ package it.univaq.entity;
 
 public class CartaModificatore extends Carta {
 
-	private Integer valore;
-	private Float valore1;
-	private Float valore2;
+	private Float valorePositivo;
+	private Float valoreNegativo;
 	private String effetto;
 
-    public CartaModificatore(Integer valore, Float valore1, Float valore2, String effetto) {
+    public CartaModificatore(Float valorePositivo, Float valoreNegativo, String effetto) {
         super("ciao");
-        this.valore = valore;
-        this.valore1 = valore1;
-        this.valore2 = valore2;
+        this.valorePositivo = valorePositivo;
+        this.valoreNegativo = valoreNegativo;
         this.effetto = effetto;
     }
 
-    public Integer getValore() {
-        return valore;
+    public CartaModificatore(Integer valore, Float valorePositivo, String effetto) {
+        super("ciao");
+        this.valorePositivo = valorePositivo;
+        this.valoreNegativo = null;
+        this.effetto = effetto;
     }
 
-    public void setValore(Integer valore) {
-        this.valore = valore;
+    public Float getValorePositivo() {
+        return valorePositivo;
     }
 
-    public Float getValore1() {
-        return valore1;
+    public void setValorePositivo(Float valorePositivo) {
+        this.valorePositivo = valorePositivo;
     }
 
-    public void setValore1(Float valore1) {
-        this.valore1 = valore1;
+    public Float getValoreNegativo() {
+        return valoreNegativo;
     }
 
-    public Float getValore2() {
-        return valore2;
-    }
-
-    public void setValore2(Float valore2) {
-        this.valore2 = valore2;
+    public void setValoreNegativo(Float valoreNegativo) {
+        this.valoreNegativo = valoreNegativo;
     }
 
     public String getEffetto() {

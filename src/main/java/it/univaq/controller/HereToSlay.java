@@ -75,17 +75,17 @@ public class HereToSlay {
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
-            case CartaModificatore cartaModificatore:  {
-                while (finestraTemporale.isAncoraValida()){
-                    generatoreDiEventi.resetTimerL(faseModificatori);
-                    turnoAttuale.getFaseCorrente();
-                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
-                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-                }
-                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-                turnoAttuale.fineFaseAttuale();
-            }
-            break;
+//            case CartaModificatore cartaModificatore:  {
+//                while (finestraTemporale.isAncoraValida()){
+//                    generatoreDiEventi.resetTimerL(faseModificatori);
+//                    turnoAttuale.getFaseCorrente();
+//                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
+//                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+//                }
+//                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+//                turnoAttuale.fineFaseAttuale();
+//            }
+//            break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + carta);
@@ -98,7 +98,7 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void giocoCarta(Carta Carta){
+	public void giocoCartaEroe(CartaEroe Carta){
 		FaseCorrente = turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
 			faseGiocaCarta.salvaCartaGiocata(Carta);
