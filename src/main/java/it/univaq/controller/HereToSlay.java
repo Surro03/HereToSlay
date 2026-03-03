@@ -1,12 +1,8 @@
 package it.univaq.controller;
 import it.univaq.entity.*;
-import it.univaq.technical.Fase;
 import it.univaq.technical.*;
-import it.univaq.technical.FaseModificatori;
-import it.univaq.technical.FaseEffetto;
 import it.univaq.ui.FinestraTemporale;
 import it.univaq.ui.GeneratoreDiEventi;
-import it.univaq.technical.Turno;
 import it.univaq.ui.Player;
 
 import it.univaq.technical.Turno.Risultato;
@@ -72,17 +68,17 @@ public class HereToSlay {
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), 2.0F);
                 break;
 
-//            case CartaModificatore cartaModificatore:  {
-//                while (finestraTemporale.isAncoraValida()){
-//                    generatoreDiEventi.resetTimerL(faseModificatori);
-//                    turnoAttuale.getFaseCorrente();
-//                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
-//                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-//                }
-//                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
-//                turnoAttuale.fineFaseAttuale();
-//            }
-//            break;
+            case CartaModificatore cartaModificatore:  {
+                while (finestraTemporale.isAncoraValida()){
+                    generatoreDiEventi.resetTimerL(faseModificatori);
+                    turnoAttuale.getFaseCorrente();
+                    faseModificatori.calcoloPunteggio(carta, giocatoreAttivo, 0 );
+                    faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+                }
+                faseModificatori.ottieniPunteggi(giocatoreAttivo.getId());
+                turnoAttuale.fineFaseAttuale();
+            }
+            break;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + carta);
@@ -95,7 +91,7 @@ public class HereToSlay {
 		throw new UnsupportedOperationException();
 	}
 
-	public void giocoCarta(Carta Carta){
+	public void giocaCarta(Carta Carta){
 		FaseCorrente= turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
 			faseGiocaCarta.salvaCartaGiocata(Carta);
@@ -110,6 +106,38 @@ public class HereToSlay {
 		//boolean valore= tastiera.nextBoolean();
 		tavolo.checkVittoria(giocatoreAttivo);
 	}
+
+public void giocoCarta(Carta carta, Player target) {
+    // 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
+    FaseCorrente = turnoAttuale.getFaseCorrente();
+
+    if (FaseCorrente instanceof FaseModificatori faseModificatori) {
+        // 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva 
+        if (finestraTemporale.isAncoraValida()) {
+            
+            // 3. Reset del timer per permettere altre risposte
+            generatoreDiEventi.resetTimerL(faseModificatori);
+            
+            // 4. Calcolo e aggiornamento del punteggio sul target
+            float nuovoPunteggio = faseModificatori.calcoloPunteggio(carta, target);
+            
+            // 5. La carta viene rimossa dalla mano e messa negli scarti
+            tavolo.scartaCarta(carta);
+            
+            System.out.println("Modificatore applicato correttamente.");
+            System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
+            
+            // 6. Mostro i punteggi aggiornati
+            faseModificatori.ottieniPunteggi(target.getId());
+            
+        } else {
+            System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
+        }
+    } else {
+        System.out.println("Errore di flusso: Non puoi giocare un Modificatore in questa fase!");
+    }
+}
+
 
 	public void timeout() {
 
