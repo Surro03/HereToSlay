@@ -9,6 +9,11 @@ public class CartaSfida extends Carta {
         this.classe = classe;
     }
 
+    public CartaSfida() {
+        super("ciao");
+        this.classe = null;
+    }
+
     public Integer getClasse() {
         return classe;
     }

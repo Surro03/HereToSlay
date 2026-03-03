@@ -20,11 +20,11 @@ public class FaseModificatori extends Fase {
 	public float calcoloPunteggio(Carta carta, Player target) {
 		if (carta instanceof CartaModificatore) {
             CartaModificatore c = (CartaModificatore) carta;
-            c.getValore1();
+            c.getValorePositivo();
             if (punteggiPlayer.get(target.getId()) == null ) {
-                punteggiPlayer.put(target.getId(), c.getValore1());
+                punteggiPlayer.put(target.getId(), c.getValorePositivo());
             } else {
-                punteggiPlayer.put(target.getId(), punteggiPlayer.get(target.getId()) + c.getValore1());
+                punteggiPlayer.put(target.getId(), punteggiPlayer.get(target.getId()) + c.getValorePositivo());
             }
         }
         return punteggiPlayer.get(target.getId());

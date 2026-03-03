@@ -7,6 +7,7 @@ import it.univaq.ui.Player;
 
 import it.univaq.technical.Turno.Risultato;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,17 +27,19 @@ public class HereToSlay {
 	private Fase FaseCorrente;
 	Scanner tastiera = new Scanner(System.in);
 
-	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori, List<Fase> pilaFasi) {
+	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori) {
 		this.maxGiocatori = maxGiocatori;
 		this.idPartita = idPartita;
 		this.opzioni = opzioni;
+		List<Fase> pilaFasi = new ArrayList<>();
+		pilaFasi.add(new FaseScelta());
 		this.elencoGiocatori = elencoGiocatori;
 		this.giocatoreAttivo = elencoGiocatori.getFirst();
 		this.tavolo = new Tavolo(elencoGiocatori);
 		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
 		this.dado = new Dado(6);
 	}
-
+/*
 	/**
 	 * 
 	 * @param carta
@@ -44,7 +47,7 @@ public class HereToSlay {
 	 * @param target
 	 * @param opzione
 	 */
-	public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
+	/*public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
         switch (carta) {
             case CartaEroe cartaEroe: System.out.println("da fare");
                 break;
@@ -89,47 +92,60 @@ public class HereToSlay {
 
         }
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
-	public void giocaCarta(Carta Carta){
-		FaseCorrente= turnoAttuale.getFaseCorrente();
+
+	//Gioca carta Oggetto
+	public void giocaCarta (CartaOggetto cartaOggetto, CartaEroe cartaEroe){
+		System.out.println("da fare");
+	}
+    //Gioca carta Modificatore
+	public void giocaCarta ( CartaModificatore carta, Player player){
+		System.out.println("da fare");
+	}
+	//Gioca carta Eroe
+	public  void giocaCarta(CartaEroe cartaEroe){
+		FaseCorrente = turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
-			faseGiocaCarta.salvaCartaGiocata(Carta);
+			faseGiocaCarta.salvaCartaGiocata(cartaEroe);
 			System.out.println("Carta salvata correttamente nella fase.");
-		} else {
+			tavolo.aggiungiCartaParty(cartaEroe, giocatoreAttivo);
+			tavolo.checkVittoria(giocatoreAttivo);
+		}else {
 			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
 		}
-		//FaseSfida Fasesfida = new FaseSfida();
-		//turnoCorrente.iniziaFase(Fasesfida);
-		tavolo.aggiungiCartaParty(Carta, giocatoreAttivo);
-		//System.out.println("Vuoi attivare l'effetto?");
-		//boolean valore= tastiera.nextBoolean();
-		tavolo.checkVittoria(giocatoreAttivo);
 	}
 
-public void giocoCarta(Carta carta, Player target) {
+    //Gioca carta Sfida
+	public void giocaCarta(CartaSfida cartaSfida){
+			System.out.println("da fare");
+			// TODO
+
+	}
+
+public void giocoCarta(CartaModificatore carta, Player target) {
     // 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
     FaseCorrente = turnoAttuale.getFaseCorrente();
 
     if (FaseCorrente instanceof FaseModificatori faseModificatori) {
-        // 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva 
+        // 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva
         if (finestraTemporale.isAncoraValida()) {
-            
+
             // 3. Reset del timer per permettere altre risposte
             generatoreDiEventi.resetTimerL(faseModificatori);
-            
+
             // 4. Calcolo e aggiornamento del punteggio sul target
             float nuovoPunteggio = faseModificatori.calcoloPunteggio(carta, target);
-            
+
             // 5. La carta viene rimossa dalla mano e messa negli scarti
             tavolo.scartaCarta(carta);
-            
+
             System.out.println("Modificatore applicato correttamente.");
             System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
-            
+
             // 6. Mostro i punteggi aggiornati
             faseModificatori.ottieniPunteggi(target.getId());
-            
+
         } else {
             System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
         }
@@ -140,8 +156,6 @@ public void giocoCarta(Carta carta, Player target) {
 
 
 	public void timeout() {
-
-
 		System.out.println("HereToSlay: Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
 
 		// 2.1: fineFaseAttuale() -> Chiude la FaseSfida
@@ -204,13 +218,11 @@ public void giocoCarta(Carta carta, Player target) {
 			System.out.println("Errore: PA insufficienti.");
 		} else {
 			// 1.4: iniziaFase(faseMossaGiocata) chiamato su Turno
-			if (mossaSelezionata == 1) {
-				FaseGiocaCarta Fasegiocacarta = new FaseGiocaCarta();
-				turnoAttuale.iniziaFase(Fasegiocacarta);
-			}
 		switch (mossaSelezionata) {
 			case 1:
 				System.out.println("Gioca Carta Eroe");
+				FaseGiocaCarta faseGiocaCarta = new FaseGiocaCarta();
+				turnoAttuale.iniziaFase(faseGiocaCarta);
 				break;
 			case 2:
 				System.out.println("Gioca Carta Oggetto");
@@ -237,7 +249,7 @@ public void giocoCarta(Carta carta, Player target) {
 		}
 		// 1.6 e 1.7: checkPaRimasti() -> ritorna paRimanenti
 		int paRimasti = turnoAttuale.getPaRimasti();
-		//se non ci sono più PA, il turno finisce (1.8)
+		//se non ci sono più PA, il turno finisce
 		if (paRimasti <= 0) {
 			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
 			}

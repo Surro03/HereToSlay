@@ -9,7 +9,7 @@ import java.util.List;
 public class Party {
 
 	private Integer player;
-	private List<Carta> party;
+	private List<CartaEroe> party;
 	private Set<ClasseEroe> classiPresenti = new HashSet<>();
 
 	public Party() {
@@ -22,16 +22,10 @@ public class Party {
 	 *
 	 */
 	public Boolean checkVittoria() {
-		for(Carta Carta: party){
-			if (Carta instanceof CartaEroe cartaEroe){
+		for(CartaEroe cartaEroe: party){
 				classiPresenti.add(cartaEroe.getClasseEroe());
-			}else {
-				System.out.println("Errore di flusso: La carta non è una CartaEroe!");
-			}
 		}
 		System.out.println("Classi uniche presenti nel party: " + classiPresenti.size());
-        //
-        //System.out.println("VITTORIA! Il giocatore " + player + " ha radunato 6 classi diverse!");
         return classiPresenti.size() >= 6;
 	}
 
@@ -46,10 +40,10 @@ public class Party {
 
 	/**
 	 * 
-	 * @param Carta
+	 * @param cartaEroe
 	 */
-	public void inserisciCarta(Carta Carta) {
-		party.add(Carta);
+	public void inserisciCarta(CartaEroe cartaEroe) {
+		party.add(cartaEroe);
 		System.out.println("lista carte aggiornato");
 	}
 
