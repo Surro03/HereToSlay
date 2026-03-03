@@ -17,7 +17,7 @@ public class FaseModificatori extends Fase {
 	 * @param target
 	 * @param opzione
 	 */
-	public float calcoloPunteggio(Carta carta, Player target, int opzione) {
+	public float calcoloPunteggio(Carta carta, Player target) {
 		if (carta instanceof CartaModificatore) {
             CartaModificatore c = (CartaModificatore) carta;
             c.getValore1();

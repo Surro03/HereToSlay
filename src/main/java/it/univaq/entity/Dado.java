@@ -1,12 +1,14 @@
 package it.univaq.entity;
 
+import java.util.Random;
+
 public class Dado {
 
 	private Integer valore;
 
-	public void tiraDado() {
-		// TODO - implement Dado.tiraDado
-		throw new UnsupportedOperationException();
+	public int tiraDado() {
+        Random random = new Random();
+        return 1 + random.nextInt(valore);
 	}
 
     public Dado(Integer valore) {
