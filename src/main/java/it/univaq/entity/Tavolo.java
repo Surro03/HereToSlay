@@ -50,7 +50,7 @@ public class Tavolo {
 		throw new UnsupportedOperationException();
 	}
 
-	public void aggiungiCartaParty (Carta carta, Player player){
+	public void aggiungiCartaParty (CartaEroe carta, Player player){
 			partyMap.get(player.getId()).inserisciCarta(carta);
 
 	}

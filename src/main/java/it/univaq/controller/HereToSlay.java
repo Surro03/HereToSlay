@@ -43,7 +43,7 @@ public class HereToSlay {
 		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
 		this.dado = new Dado(6);
 	}
-
+/*
 	/**
 	 * 
 	 * @param carta
@@ -51,7 +51,7 @@ public class HereToSlay {
 	 * @param target
 	 * @param opzione
 	 */
-	public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
+	/*public void giocaCarta(Carta carta, Integer tipo, Player target, Integer opzione) {
         switch (carta) {
             case CartaEroe cartaEroe: System.out.println("da fare");
                 break;
@@ -96,27 +96,38 @@ public class HereToSlay {
 
         }
 		throw new UnsupportedOperationException();
-	}
+	}*/
 
-	public void giocoCarta(Carta Carta){
+
+	//Gioca carta Oggetto
+	public void giocaCarta (CartaOggetto cartaOggetto, CartaEroe cartaEroe){
+		System.out.println("da fare");
+	}
+    //Gioca carta Modificatore
+	public void giocaCarta ( CartaModificatore carta, Player player){
+		System.out.println("da fare");
+	}
+	//Gioca carta Eroe
+	public  void giocaCarta(CartaEroe cartaEroe){
 		FaseCorrente = turnoAttuale.getFaseCorrente();
 		if (FaseCorrente instanceof FaseGiocaCarta faseGiocaCarta) {
-			faseGiocaCarta.salvaCartaGiocata(Carta);
+			faseGiocaCarta.salvaCartaGiocata(cartaEroe);
 			System.out.println("Carta salvata correttamente nella fase.");
-		} else {
+			tavolo.aggiungiCartaParty(cartaEroe, giocatoreAttivo);
+			tavolo.checkVittoria(giocatoreAttivo);
+		}else {
 			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
 		}
-		//FaseSfida Fasesfida = new FaseSfida();
-		//turnoCorrente.iniziaFase(Fasesfida);
-		tavolo.aggiungiCartaParty(Carta, giocatoreAttivo);
-		//System.out.println("Vuoi attivare l'effetto?");
-		//boolean valore= tastiera.nextBoolean();
-		tavolo.checkVittoria(giocatoreAttivo);
+	}
+
+    //Gioca carta Sfida
+	public void giocaCarta(CartaSfida cartaSfida){
+			System.out.println("da fare");
+			// TODO
+
 	}
 
 	public void timeout() {
-
-
 		System.out.println("HereToSlay: Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
 
 		// 2.1: fineFaseAttuale() -> Chiude la FaseSfida

@@ -35,7 +35,7 @@ public class Main {
         // 3. SELEZIONE E GIOCATA CARTA [cite: 54]
         CartaEroe bardo = new CartaEroe(0, 7, "Bardo Canterino", "Pesca una carta", 1, ClasseEroe.BARDO);
         System.out.println("[AZIONE] " + p1.getNome() + " gioca la carta: " + bardo.getNome());
-        controller.giocoCarta(bardo); // La carta viene salvata nella FaseGiocaCarta [cite: 53, 54]
+        controller.giocaCarta(bardo); // La carta viene salvata nella FaseGiocaCarta [cite: 53, 54]
 
         // 4. FINESTRA DI SFIDA (Simulazione Timeout) [cite: 59, 65]
         System.out.println("\n--- Fase 2: Finestra di Sfida ---");
@@ -46,7 +46,8 @@ public class Main {
         // 5. ATTIVAZIONE EFFETTO EROE [cite: 80, 114]
         System.out.println("\n--- Fase 3: Utilizzo Effetto ---");
         System.out.println("Vuoi provare ad attivare l'effetto di " + bardo.getNome() + "? (Si/No)");
-        String scelta = scanner.nextLine(); 
+        String scelta = scanner.nextLine();
+        
 
         if (scelta.equalsIgnoreCase("Si")) {
             // rispostaUtente("Si") crea la FaseEffetto e tira i dadi [cite: 132, 136]
