@@ -65,7 +65,7 @@ public class Turno {
     }
 
     public Fase getFaseCorrente () {
-        return pilaFasi.getFirst();
+        return pilaFasi.get(pilaFasi.size()-1);
     }
 
     public int getPaRimasti() {
@@ -75,7 +75,7 @@ public class Turno {
 
     public void fineFaseAttuale() {
         if (!pilaFasi.isEmpty()) {
-            Fase faseDaChiudere = pilaFasi.removeFirst();
+            Fase faseDaChiudere = pilaFasi.removeLast();
             System.out.println("Turno: terminaFaseAttuale(). Chiusa la fase: " + faseDaChiudere.getClass().getSimpleName());
         }
     }

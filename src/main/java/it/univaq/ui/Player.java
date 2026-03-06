@@ -1,5 +1,7 @@
 package it.univaq.ui;
 
+
+
 public class Player {
 
 	/**
@@ -7,10 +9,12 @@ public class Player {
 	 */
 	private Integer id;
 	private String nome;
+    private Mano mano;
 
-    public Player(Integer id, String nome) {
+    public Player(Integer id, String nome, Mano mano) {
         this.id = id;
         this.nome = nome;
+        this.mano = mano;
     }
 
     public Integer getId() {
@@ -25,7 +29,22 @@ public class Player {
         return nome;
     }
 
+    public Mano getMano() {
+        return mano;
+    }
+
+    public void setMano(Mano mano) {
+        this.mano = mano;
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "nome='" + nome + '\'' +
+                '}';
     }
 }

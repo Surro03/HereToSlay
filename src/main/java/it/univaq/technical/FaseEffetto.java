@@ -1,6 +1,7 @@
 package it.univaq.technical;
 
 import it.univaq.entity.Carta;
+import it.univaq.entity.CartaEroe;
 import it.univaq.ui.Player;
 
 public class FaseEffetto extends Fase {
@@ -19,12 +20,13 @@ public class FaseEffetto extends Fase {
 	 * 
 	 * @param punteggioDefinitivo
 	 */
-	public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) {
+	public Boolean checkAttivazioneEffetto(float punteggioDefinitivo) {
 		return carta.checkAttivazioneEffetto(punteggioDefinitivo);
 	}
 
-	public void ottieniEffetto() {
-		// TODO - implement FaseEffetto.ottieniEffetto
-		throw new UnsupportedOperationException();
+	public String ottieniEffetto() {
+		if (carta instanceof CartaEroe cartaEroe) {
+            return cartaEroe.getEffetto();
+        } else throw new IllegalArgumentException("Carta non valida");
 	}
 }

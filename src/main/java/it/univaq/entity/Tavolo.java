@@ -12,7 +12,8 @@ public class Tavolo {
 	private Map<Integer, Party> partyMap;
 
 	public Tavolo(List<Player> players) {
-		this.partyMap = new HashMap<>();
+        this.pilaScarti = new PilaScarti();
+        this.partyMap = new HashMap<>();
 
 		for (Player p : players) {
 			// Estraiamo l'ID e lo associamo a un nuovo Party
@@ -25,6 +26,7 @@ public class Tavolo {
 	 * @param carta
 	 */
 	public void scartaCarta(Carta carta) {
+
         pilaScarti.aggiungiCarta(carta);
 	}
 

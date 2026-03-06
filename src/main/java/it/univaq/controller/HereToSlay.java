@@ -21,7 +21,6 @@ public class HereToSlay {
 	private final Tavolo tavolo;
 	private Turno turnoAttuale;
 	private final Dado dado;
-	private Carta cartaAttiva;
     private GeneratoreDiEventi generatoreDiEventi;
     private FinestraTemporale  finestraTemporale;
 	private Fase FaseCorrente;
@@ -39,6 +38,10 @@ public class HereToSlay {
 		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
 		this.dado = new Dado(6);
 	}
+
+    public void setGeneratoreDiEventi(GeneratoreDiEventi generatore) {
+        this.generatoreDiEventi = generatore;
+    }
 /*
 	/**
 	 * 
@@ -113,6 +116,7 @@ public class HereToSlay {
 			tavolo.checkVittoria(giocatoreAttivo);
 		}else {
 			System.out.println("Errore di flusso: La fase corrente non è una FaseGiocaCarta!");
+            System.out.println(turnoAttuale.getFaseCorrente());
 		}
 	}
 
@@ -123,36 +127,39 @@ public class HereToSlay {
 
 	}
 
-public void giocoCarta(CartaModificatore carta, Player target) {
-    // 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
-    FaseCorrente = turnoAttuale.getFaseCorrente();
+    public float giocoCarta(CartaModificatore carta, Player target, float valoreCarta) {
+        // 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
+        FaseCorrente = turnoAttuale.getFaseCorrente();
 
-    if (FaseCorrente instanceof FaseModificatori faseModificatori) {
-        // 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva
-        if (finestraTemporale.isAncoraValida()) {
+        if (FaseCorrente instanceof FaseModificatori faseModificatori) {
+            // 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva
+            if (generatoreDiEventi.isTempoValido()) {
 
-            // 3. Reset del timer per permettere altre risposte
-            generatoreDiEventi.resetTimerL(faseModificatori);
+                // 3. Reset del timer per permettere altre risposte
+                generatoreDiEventi.resetTimerL(faseModificatori);
 
-            // 4. Calcolo e aggiornamento del punteggio sul target
-            float nuovoPunteggio = faseModificatori.calcoloPunteggio(carta, target);
+                // 4. Calcolo e aggiornamento del punteggio sul target
+                float nuovoPunteggio = faseModificatori.calcoloPunteggio(valoreCarta, target);
 
-            // 5. La carta viene rimossa dalla mano e messa negli scarti
-            tavolo.scartaCarta(carta);
+                // 5. La carta viene rimossa dalla mano e messa negli scarti
+                tavolo.scartaCarta(carta);
 
-            System.out.println("Modificatore applicato correttamente.");
-            System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
+                System.out.println("Modificatore applicato correttamente.");
+                System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
 
-            // 6. Mostro i punteggi aggiornati
-            faseModificatori.ottieniPunteggi(target.getId());
+                // 6. Mostro i punteggi aggiornati
+                faseModificatori.ottieniPunteggi(target.getId());
 
+                return nuovoPunteggio;
+            } else {
+                System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
+                return 0;
+            }
         } else {
-            System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
+            System.out.println("Errore di flusso: Non puoi giocare un Modificatore in questa fase!");
+            return 0;
         }
-    } else {
-        System.out.println("Errore di flusso: Non puoi giocare un Modificatore in questa fase!");
     }
-}
 
 
 	public void timeout() {
@@ -165,7 +172,7 @@ public void giocoCarta(CartaModificatore carta, Player target) {
 		// ... Qui proseguirà il diagramma (es. richiestaUtilizzoEffetto) ...
 	}
 
-    public String rispostaUtente(String scelta) {
+    public String rispostaUtente(String scelta, Carta cartaAttiva) {
         switch (scelta) {
             case "Si":
                 // 1.Gestione Fase Effetto
@@ -178,7 +185,9 @@ public void giocoCarta(CartaModificatore carta, Player target) {
                 FaseModificatori faseModificatori = new FaseModificatori();
                 faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), valoreDadi);
                 this.turnoAttuale.aggiungiFase(faseModificatori);
-                return "Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori";
+                System.out.println("Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori");
+                generatoreDiEventi.startTimerL(turnoAttuale.getFaseCorrente());
+                return String.valueOf(valoreDadi);
 
             case "No":
                 return "Fine Punto Azione";
@@ -190,13 +199,15 @@ public void giocoCarta(CartaModificatore carta, Player target) {
 
 
 
-    public String checkAttivazioneEffetto(int punteggioDefinitivo) {
+    public String checkAttivazioneEffetto(float punteggioDefinitivo) {
+        turnoAttuale.fineFaseAttuale();
         Fase faseEffetto = this.turnoAttuale.getFaseCorrente();
+        System.out.println("La fase è " + faseEffetto);
         if (faseEffetto instanceof FaseEffetto faseEffetto1) {
             Boolean attivazione = faseEffetto1.checkAttivazioneEffetto(punteggioDefinitivo);
             if (attivazione){
                 faseEffetto1.ottieniEffetto();
-                return "Fine Punto Azione";
+                return "Fine Punto Azione, l'effetto della carta è: " + faseEffetto1.ottieniEffetto();
             }
             else{
                 return "Non puoi attivare l'effetto";
@@ -283,5 +294,13 @@ public void giocoCarta(CartaModificatore carta, Player target) {
 		return risultato;
 	}
 
+    public void resetTimer() {
+        FaseCorrente = turnoAttuale.getFaseCorrente();
+
+        if (FaseCorrente instanceof FaseModificatori faseModificatori) {
+            generatoreDiEventi.resetTimerL(faseModificatori);
+        }
+
+    }
 
 }

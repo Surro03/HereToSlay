@@ -18,5 +18,10 @@ public abstract class Carta {
 
     }
 
-    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) { throw new UnsupportedOperationException();}
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
+    public Boolean checkAttivazioneEffetto(float punteggioDefinitivo) { throw new UnsupportedOperationException();}
 }

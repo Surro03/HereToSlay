@@ -75,7 +75,8 @@ public class CartaEroe extends Carta {
     }
 
     @Override
-    public Boolean checkAttivazioneEffetto(int punteggioDefinitivo) {
-        return punteggioDefinitivo > requisito;
+    public Boolean checkAttivazioneEffetto(float punteggioDefinitivo) {
+        return punteggioDefinitivo >= requisito;
     }
+
 }
