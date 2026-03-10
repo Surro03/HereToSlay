@@ -23,9 +23,10 @@ public class GeneratoreDiEventi {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> countdownTask; // Riferimento per fermare il countdown
     private FinestraTemporale finestraTemporaleGenerata;
-    private static final int SECONDI_DURATA = 30;
+    private final int SECONDI_DURATA;
 
-	public GeneratoreDiEventi() {
+	public GeneratoreDiEventi(int SECONDI_DURATA) {
+        this.SECONDI_DURATA = SECONDI_DURATA;
 	}
 
 
@@ -119,24 +120,7 @@ public class GeneratoreDiEventi {
         }
 	}
 
-    /**
-     *
-     * @param Fase
-     */
-    public void startTimerG(int Fase) {
-        resetTimerG();
-        timer = new Timer();
-        System.out.println("GeneratoreDiEventi: Timer avviato per " + Fase + " secondi. Avversari, potete lanciare una Sfida!");
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("\nTempo scaduto per la sfida!");
-                // Chiama il controller per avvisarlo
-                controller.timeout();
-            }
-        }, Fase * 1000L);
 
-    }
 
 	public void resetTimerG() {
 		if (timer != null) {
