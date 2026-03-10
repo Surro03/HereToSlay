@@ -6,6 +6,12 @@ public class FaseGiocaCarta extends Fase {
 
 	private Carta cartaGiocata;
 
+	public FaseGiocaCarta(Carta cartaScelta) {
+		super();
+		this.cartaGiocata = cartaScelta;
+		System.out.println("Carta salvata correttamente nella fase.");
+	}
+
 	/**
 	 * 
 	 * @param carta
@@ -14,5 +20,9 @@ public class FaseGiocaCarta extends Fase {
 	public void salvaCartaGiocata(Carta carta){
 		this.cartaGiocata= carta;
 	}
+
+	public Carta getCartaGiocata() {return this.cartaGiocata;}
+
+
 
 }

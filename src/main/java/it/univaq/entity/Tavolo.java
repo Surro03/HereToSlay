@@ -32,10 +32,10 @@ public class Tavolo {
 
 	/**
 	 *
-	 * @param player
+	 * @param playerId
 	 */
-	public Boolean checkVittoria(Player player) {
-		return partyMap.get(player.getId()).checkVittoria();
+	public Boolean checkVittoria(Integer playerId) {
+		return partyMap.get(playerId).checkVittoria();
 	}
 
 	/**
@@ -52,8 +52,8 @@ public class Tavolo {
 		throw new UnsupportedOperationException();
 	}
 
-	public void aggiungiCartaParty (CartaEroe carta, Player player){
-			partyMap.get(player.getId()).inserisciCarta(carta);
+	public void aggiungiCartaParty (CartaEroe carta,int playerId){
+			partyMap.get(playerId).inserisciCarta(carta);
 
 	}
 

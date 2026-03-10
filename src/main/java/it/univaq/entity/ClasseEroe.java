@@ -6,5 +6,5 @@ public enum ClasseEroe {
     LADRO, 
     PALADINO, 
     RANGER, 
-    BARDO; // Queste sono le costanti utilizzabili come ClasseEroe.BARDO
+    BARDO;
 }

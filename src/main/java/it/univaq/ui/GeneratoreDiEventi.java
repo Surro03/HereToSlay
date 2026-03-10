@@ -26,7 +26,6 @@ public class GeneratoreDiEventi {
     private static final int SECONDI_DURATA = 30;
 
 	public GeneratoreDiEventi() {
-
 	}
 
 

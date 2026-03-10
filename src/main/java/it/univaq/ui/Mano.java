@@ -29,4 +29,27 @@ public class Mano {
     public void setNumeroCarte(Integer numeroCarte) {
         this.numeroCarte = numeroCarte;
     }
+
+    @Override
+    public String toString() {
+        if (carteMano == null || carteMano.isEmpty()) {
+            return "La mano è vuota.";
+        }
+
+        StringBuilder sb = new StringBuilder("--- TUA MANO ---\n");
+        for (int i = 0; i < carteMano.size(); i++) {
+            // [1] Nome Carta
+            // [2] Nome Carta ...
+            if(carteMano.get(i).getNome() != null) {
+                sb.append("[").append(i + 1).append("] ")
+                        .append(carteMano.get(i).getNome())
+                        .append("\n");
+            }
+            else
+                sb.append("[").append(i + 1).append("] ")
+                        .append(carteMano.get(i))
+                        .append("\n");
+        }
+        return sb.toString();
+    }
 }

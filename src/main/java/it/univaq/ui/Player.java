@@ -26,11 +26,11 @@ public class Player {
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
     public Mano getMano() {
-        return mano;
+        return this.mano;
     }
 
     public void setMano(Mano mano) {

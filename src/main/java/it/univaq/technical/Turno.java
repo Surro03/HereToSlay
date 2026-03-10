@@ -8,14 +8,14 @@ import java.util.List;
 public class Turno {
     private int paRimanenti;
     private boolean Successo;
-    private List<Fase> pilaFasi = new ArrayList<Fase>();
+    private List<Fase> pilaFasi;
     private Player giocatoreDiTurno;
     private Fase faseAttuale;
 
     public record Risultato(boolean successo, int PA) {
     }
 
-    public Turno( List<Fase> pilaFasi, Player giocatoreDiTurno) {
+    public Turno(List<Fase> pilaFasi, Player giocatoreDiTurno) {
         this.pilaFasi = pilaFasi;
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.faseAttuale = pilaFasi.getFirst();

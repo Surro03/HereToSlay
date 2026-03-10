@@ -5,7 +5,7 @@ public class FaseSfida extends Fase {
 	private Integer idSfidante;
 	private Integer idPlayer;
 	private Float valorePlayer;
-	private Float valoreSfidatne;
+	private Float valoreSfidante;
 
 	/**
 	 * 

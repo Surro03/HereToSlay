@@ -15,14 +15,9 @@ public class FaseModificatori extends Fase {
 	 * 
 	 * @param valoreCarta
 	 * @param target
-	 * @param opzione
 	 */
 	public float calcoloPunteggio(float valoreCarta, Player target) {
-        if (punteggiPlayer.get(target.getId()) == null ) {
-            punteggiPlayer.put(target.getId(), valoreCarta);
-        } else {
-            punteggiPlayer.put(target.getId(), punteggiPlayer.get(target.getId()) + valoreCarta);
-        }
+        punteggiPlayer.merge(target.getId(), valoreCarta, Float::sum);
         return punteggiPlayer.get(target.getId());
 	}
 
