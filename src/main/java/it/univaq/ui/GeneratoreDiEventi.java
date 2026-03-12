@@ -2,34 +2,52 @@ package it.univaq.ui;
 
 import it.univaq.technical.Fase;
 
-import it.univaq.technical.Fase;
-import it.univaq.technical.FaseEffetto;
-
-import java.time.Duration;
 import java.time.Instant;
 
-import it.univaq.controller.HereToSlay;
-import java.util.Timer;
-import java.util.TimerTask;
+import it.univaq.technical.FinestraTemporaleObserver;
+
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GeneratoreDiEventi {
-	private Timer timer;
-	private HereToSlay controller;
+	private List<FinestraTemporaleObserver> finestraTemporaleObservers;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> countdownTask; // Riferimento per fermare il countdown
     private FinestraTemporale finestraTemporaleGenerata;
     private final int SECONDI_DURATA;
 
-	public GeneratoreDiEventi(int SECONDI_DURATA) {
+	public GeneratoreDiEventi(int SECONDI_DURATA, List<FinestraTemporaleObserver> finestraTemporaleObservers) {
         this.SECONDI_DURATA = SECONDI_DURATA;
+        this.finestraTemporaleObservers = finestraTemporaleObservers;
 	}
 
+    public void notifyStartTimer(int durata){
+        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
+            finestraTemporaleObserver.timerStarted(durata);
+        }
+    }
 
+    public void notifyRestartTimer(int durata){
+        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
+            finestraTemporaleObserver.timerRestarting(durata);
+        }
+    }
+
+    public void notifyStopTimer(){
+        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
+            finestraTemporaleObserver.timerStopped();
+        }
+    }
+
+    public void notifyInterruptionTimer(){
+        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
+            finestraTemporaleObserver.timerInterrupted();
+        }
+    }
 	/**
 	 * 
 	 * @param fase
@@ -40,32 +58,8 @@ public class GeneratoreDiEventi {
 	}
 
 	public void messaggioErrorePA() {
-		System.out.println("GeneratoreDiEventi: Errore, Punti Azione insufficienti per questa mossa!");
+		System.out.println("--- Punti Azione insufficienti per questa mossa! ---");
 	}
-
-	/**
-	 * 
-	 * @param fase
-	 */
-	public void aggiungiFase(Fase fase) {
-		// TODO - implement GeneratoreDiEventi.aggiungiFase
-		throw new UnsupportedOperationException();
-	}
-
-/*
-	/**
-	 * 
-	 * @param fase
-	 */
-	/*public synchronized void startTimerL(Fase fase) {
-
-        Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
-        this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
-        this.finestraTemporaleGenerata.getSecondiRimanenti();
-
-        System.out.println("Timer fase: " + fase + "avviato. Scade alle: " + scadenza);
-	}*/
-
 
 
     public synchronized void startTimerL(Fase fase) {
@@ -75,25 +69,25 @@ public class GeneratoreDiEventi {
         }
 
         // 2. Messaggio iniziale (appare una volta sola)
-        System.out.println("\n>>> [SISTEMA] Hai " + SECONDI_DURATA + " secondi per giocare una carta...");
+        this.notifyStartTimer(SECONDI_DURATA);
+
 
         // 3. Impostiamo la scadenza tecnica (per i controlli isAncoraValida())
         Instant scadenza = Instant.now().plusSeconds(SECONDI_DURATA);
         this.finestraTemporaleGenerata = new FinestraTemporale(scadenza);
 
         // 4. Programmiamo il messaggio di "Tempo Scaduto" tra X secondi
-        countdownTask = scheduler.schedule(() -> {
-            // Questo messaggio apparirà solo quando il tempo è effettivamente finito
-            System.out.println("\n[!] TEMPO SCADUTO per la fase " + fase.getClass().getSimpleName() + "!");
-            System.out.print("> "); // Ristampa il prompt per non lasciare la riga vuota
-        }, SECONDI_DURATA, TimeUnit.SECONDS);
+        // Questo messaggio apparirà solo quando il tempo è effettivamente finito
+
+        countdownTask = scheduler.schedule(this::notifyStopTimer, SECONDI_DURATA, TimeUnit.SECONDS);
     }
 
     // AGGIUNGI QUESTO METODO: Fondamentale per fermare il timer se il giocatore è veloce!
     public synchronized void stopTimer() {
         if (countdownTask != null) {
             countdownTask.cancel(false);
-            // System.out.println("[DEBUG] Timer interrotto.");
+            this.notifyInterruptionTimer();
+
         }
     }
 
@@ -109,25 +103,11 @@ public class GeneratoreDiEventi {
             this.finestraTemporaleGenerata.setFine(nuovaScadenza);
 
             // 3. AVVISA l'utente del reset
-            System.out.println("\n[!] Timer RESETTATO! Altri " + SECONDI_DURATA + " secondi per rispondere...");
-            System.out.print("> "); // Ripristina il cursore per l'input
+            this.notifyRestartTimer(SECONDI_DURATA);
 
             // 4. RIPROGRAMMA il messaggio di timeout per la nuova scadenza
-            countdownTask = scheduler.schedule(() -> {
-                System.out.println("\n[!] TEMPO SCADUTO per la fase " + fase.getClass().getSimpleName() + "!");
-                System.out.print("> ");
-            }, SECONDI_DURATA, TimeUnit.SECONDS);
+            countdownTask = scheduler.schedule(this::notifyStopTimer, SECONDI_DURATA, TimeUnit.SECONDS);
         }
-	}
-
-
-
-	public void resetTimerG() {
-		if (timer != null) {
-			timer.cancel();
-			timer.purge();
-			System.out.println("GeneratoreDiEventi: Timer disattivato.");
-		}
 	}
 
     public boolean isTempoValido() {

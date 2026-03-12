@@ -1,7 +1,7 @@
 package it.univaq.controller;
 
 import it.univaq.entity.*;
-import it.univaq.technical.FaseScelta;
+import it.univaq.technical.FinestraTemporaleObserver;
 import it.univaq.ui.GeneratoreDiEventi;
 import it.univaq.ui.Mano;
 import it.univaq.ui.Player;
@@ -26,7 +26,9 @@ public class HereToSlaySetup {
         //List<Carta> mazzoMischiato = this.mischiaMazzo();
         List<Player> playerList = this.setupPlayers(2, null);
         this.controller = new HereToSlay(2, 1, 4, playerList);
-        GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(30);
+        List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
+        finestraTemporaleObservers.add(this.controller);
+        GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(30, finestraTemporaleObservers);
         this.controller.setGeneratoreDiEventi(generatoreDiEventi);
         return this.controller;
     }

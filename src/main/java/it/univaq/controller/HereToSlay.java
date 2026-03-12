@@ -9,7 +9,7 @@ import it.univaq.technical.Turno.Risultato;
 
 import java.util.*;
 
-public class HereToSlay {
+public class HereToSlay implements FinestraTemporaleObserver {
 
 
 	private Integer maxGiocatori;
@@ -41,13 +41,15 @@ public class HereToSlay {
 		return this.giocatoreAttivo;
 	}
 
-	public Fase getFaseAttuale() { return this.turnoAttuale.getFaseCorrente();}
+	public Fase getFaseAttuale() {
+		return this.turnoAttuale.getFaseCorrente();
+	}
 
 	public void setGeneratoreDiEventi(GeneratoreDiEventi generatore) {
 		this.generatoreDiEventi = generatore;
 	}
 
-	public void iniziaPartita(){
+	public void iniziaPartita() {
 		while (this.checkPaRimasti()) {
 			this.iniziaTurno();
 			int mossa = this.richiestaMossa();
@@ -56,10 +58,10 @@ public class HereToSlay {
 		}
 	}
 
-	public void iniziaTurno(){
+	public void iniziaTurno() {
 		System.out.println("Turno di: " + this.getGiocatoreAttivo().getNome() + " | PA disponibili: " + this.getPaRimasti());
 		System.out.println(this.getGiocatoreAttivo().getMano());
-		if(this.getFaseAttuale() instanceof FaseScelta){
+		if (this.getFaseAttuale() instanceof FaseScelta) {
 			System.out.println("\n--- Fase 1: Richiesta Mossa ---");
 		}
 		System.out.println("\n--- SCEGLI LA TUA MOSSA ---");
@@ -71,7 +73,7 @@ public class HereToSlay {
 				.toList();
 		if (eroiInMano.isEmpty()) {
 			System.out.println("   Non hai Eroi da giocare nella tua mano   ");
-		}else{
+		} else {
 			System.out.println(" 1  | Gioca Carta Eroe               | 1 PA");
 		}
 		System.out.println(" 2  | Gioca Carta Oggetto            | 1 PA");
@@ -93,13 +95,11 @@ public class HereToSlay {
 			System.out.print("Digita il numero della mossa: ");
 			sceltaMossa = scanner.nextInt();
 			scanner.nextLine();
-			if (sceltaMossa ==1 && eroiInMano.isEmpty()){
+			if (sceltaMossa == 1 && eroiInMano.isEmpty()) {
 				System.out.println("Non hai Eroi da giocare nella tua mano.");
-			}
-			else if (sceltaMossa > 0 && sceltaMossa < 7 ) {
+			} else if (sceltaMossa > 0 && sceltaMossa < 7) {
 				break;
-			}
-			else{
+			} else {
 				System.out.print("Devi scegliere uno tra i numeri elencati.\n");
 			}
 		}
@@ -159,13 +159,13 @@ public class HereToSlay {
 	private void sceltaEroe() {
 		CartaEroe cartaScelta;
 
-        System.out.println("\n");
-        System.out.println("SCEGLI L'EROE DA GIOCARE");
-        System.out.println("-".repeat(40));
-        List<CartaEroe> eroiInMano = this.giocatoreAttivo.getMano().getCarteMano().stream()
-                .filter(c -> c instanceof CartaEroe)
-                .map(c -> (CartaEroe) c)
-                .toList();
+		System.out.println("\n");
+		System.out.println("SCEGLI L'EROE DA GIOCARE");
+		System.out.println("-".repeat(40));
+		List<CartaEroe> eroiInMano = this.giocatoreAttivo.getMano().getCarteMano().stream()
+				.filter(c -> c instanceof CartaEroe)
+				.map(c -> (CartaEroe) c)
+				.toList();
 		System.out.printf("%-4s | %-18s | %-10s | %-5s%n", "NUMERO", "NOME", "CLASSE", "REQ.");
 		System.out.println("-".repeat(40));
 
@@ -176,7 +176,7 @@ public class HereToSlay {
 					e.getNome(),
 					e.getClasseEroe(),
 					e.getRequisito());
-            }
+		}
 		System.out.println("-".repeat(40));
 		while (true) {
 			System.out.print("Scegli il numero dell'eroe da giocare (1-" + eroiInMano.size() + "): ");
@@ -192,15 +192,16 @@ public class HereToSlay {
 				break;
 			}
 		}
-        //In teoria qui andrebbe la fase modificatori
-        System.out.println("\n--- Fase 2: Finestra di Sfida ---");
-        System.out.println("In attesa di reazioni dagli avversari...");
-        // Simuliamo che nessuno giochi una CartaSfida, quindi scatta il timeout
+		//In teoria qui andrebbe la fase modificatori
+		System.out.println("\n--- Fase 2: Finestra di Sfida ---");
+		System.out.println("In attesa di reazioni dagli avversari...");
+		// Simuliamo che nessuno giochi una CartaSfida, quindi scatta il timeout
 		System.out.println("Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
 		System.out.println("La carta Eroe entra in gioco senza ostacoli.");
 		this.giocaCarta(cartaScelta); //Aggiunge la carta al party e verifica la condizione di vittoria della partita
-        this.richiestaSceltaEffetto(cartaScelta); //Richiesta di attivazione dell'effetto della carta
-    }
+		this.richiestaSceltaEffetto(cartaScelta); //Richiesta di attivazione dell'effetto della carta
+	}
+
 	//Gioca carta Oggetto
 	public void giocaCarta(CartaOggetto cartaOggetto, CartaEroe cartaEroe) {
 		System.out.println("da fare");
@@ -351,7 +352,7 @@ public class HereToSlay {
 
 	public void checkVittoria(Player player) {
 		Boolean vittoria = this.tavolo.checkVittoria(player.getId());
-		if (vittoria){
+		if (vittoria) {
 			System.out.println("Vittoria di: " + player.getNome());
 			System.exit(0);
 		}
@@ -508,10 +509,32 @@ public class HereToSlay {
 			Collections.rotate(elencoGiocatori, -1);
 		}
 		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Modificatori
-		System.out.printf("Valore finale del tiro di "+ playerAttivo.getNome()+ ": "+ "%+.0f", valoreTiroFinale);
+		System.out.printf("Valore finale del tiro di " + playerAttivo.getNome() + ": " + "%+.0f", valoreTiroFinale);
 		System.out.println("\n--- Fase 4: Verifica Requisiti ---");
 		String esitoEffetto = this.checkAttivazioneEffetto(valoreTiroFinale); // Chiude la fase Effetto
 		System.out.println("[ESITO] " + esitoEffetto);
 		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Gioco Carta
+	}
+
+	@Override
+	public void timerStarted(int durata) {
+		System.out.println("\n--- Hai " + durata + " secondi per giocare una carta--- ");
+	}
+
+	@Override
+	public void timerRestarting(int durata) {
+		System.out.println("\n--- Timer RESETTATO! Hai " + durata + " secondi per rispondere---");
+		System.out.print("> ");
+	}
+
+	@Override
+	public void timerStopped() {
+		System.out.println("\n---TEMPO SCADUTO per la fase " + this.getFaseAttuale().getClass().getSimpleName() + "! ---");
+		System.out.print("> "); // Ristampa il prompt per non lasciare la riga vuota
+	}
+
+	@Override
+	public void timerInterrupted() {
+		System.out.println("\n--- Timer interrotto dai giocatori ---");
 	}
 }
