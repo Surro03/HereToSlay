@@ -260,33 +260,54 @@ public class HereToSlay {
 		while (true) {
 			System.out.println("Vuoi provare ad attivare l'effetto di " + cartaScelta.getNome() + "? (Si/No)");
 			scelta = this.scanner.nextLine().trim();
+
 			if (scelta.equalsIgnoreCase("Si")) {
-				// Gestione Fase Effetto
+				// 1. Fase Effetto
 				FaseEffetto faseEffetto = new FaseEffetto();
 				faseEffetto.salvaCarta(cartaScelta);
 				this.turnoAttuale.aggiungiFase(faseEffetto);
-				// Tiro dadi
+
+				// 2. Tiro dadi
 				Integer valoreDadi = this.tiraDadi();
-				// Gestione Fase Modificatori
+				System.out.println("Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori");
+
+				// 3. Fase Modificatori
 				FaseModificatori faseModificatori = new FaseModificatori();
 				faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), valoreDadi);
 				this.turnoAttuale.aggiungiFase(faseModificatori);
-				System.out.println("Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori");
+
 				generatoreDiEventi.startTimerL(turnoAttuale.getFaseCorrente());
-				// Entriamo in fase modificatori
-				this.flussoModificatori();
+
+				// ---> INIEZIONE DELLE DIPENDENZE: Passiamo gli oggetti, la Fase fa il resto <---
+				Float valoreTiroFinale = faseModificatori.eseguiFase(
+						this.elencoGiocatori,
+						this.tavolo,
+						this.generatoreDiEventi,
+						this.scanner
+				);
+
+				// 4. Conclusione
+				this.turnoAttuale.fineFaseAttuale(); // Fine Fase Modificatori
+
+				// (Nota: Ho anche corretto qui il bug del printf che avevamo visto prima!)
+				System.out.printf("Valore finale del tiro di %s: %+.0f%n", giocatoreAttivo.getNome(), valoreTiroFinale);
+
+				System.out.println("\n--- Fase 4: Verifica Requisiti ---");
+				String esitoEffetto = this.checkAttivazioneEffetto(valoreTiroFinale);
+				System.out.println("[ESITO] " + esitoEffetto);
+
+				this.turnoAttuale.fineFaseAttuale(); // Fine Fase Gioco Carta
 				break;
 			}
+
 			if (scelta.equalsIgnoreCase("No")) {
-				// Se dice No, usciamo e basta senza fare altro
 				System.out.println("Effetto non attivato, fine utilizzo PA");
-				this.turnoAttuale.fineFaseAttuale(); //Fine Fase GiocoCarta
+				this.turnoAttuale.fineFaseAttuale();
 				break;
 			}
 
 			System.out.println("Se c'è scritto si o no magari significa che devi mette quelli eh?");
 		}
-
 	}
 
 	public String checkAttivazioneEffetto(float punteggioDefinitivo) {
