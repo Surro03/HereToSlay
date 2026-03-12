@@ -1,17 +1,18 @@
 package it.univaq.controller;
 import it.univaq.entity.*;
 import it.univaq.technical.*;
-import it.univaq.ui.FinestraTemporale;
-import it.univaq.ui.GeneratoreDiEventi;
-import it.univaq.ui.Player;
+import it.univaq.technical.FinestraTemporale;
+import it.univaq.technical.GeneratoreDiEventi;
+import it.univaq.entity.Player;
 
 import it.univaq.technical.Turno.Risultato;
+import it.univaq.ui.InterfacciaUtente;
 
 import java.util.*;
 
-public class HereToSlay implements FinestraTemporaleObserver {
+public class HereToSlay{
 
-
+	private InterfacciaUtente gui;
 	private Integer maxGiocatori;
 	private Integer idPartita;
 	private Integer opzioni;
@@ -24,7 +25,7 @@ public class HereToSlay implements FinestraTemporaleObserver {
 	private FinestraTemporale finestraTemporale;
 	Scanner scanner = new Scanner(System.in);
 
-	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori) {
+	public HereToSlay(Integer maxGiocatori, Integer idPartita, Integer opzioni, List<Player> elencoGiocatori, InterfacciaUtente interfacciaUtente) {
 		this.maxGiocatori = maxGiocatori;
 		this.idPartita = idPartita;
 		this.opzioni = opzioni;
@@ -35,6 +36,7 @@ public class HereToSlay implements FinestraTemporaleObserver {
 		this.tavolo = new Tavolo(elencoGiocatori);
 		this.turnoAttuale = new Turno(pilaFasi, this.giocatoreAttivo);
 		this.dado = new Dado(6);
+		this.gui = interfacciaUtente;
 	}
 
 	public Player getGiocatoreAttivo() {
@@ -54,35 +56,16 @@ public class HereToSlay implements FinestraTemporaleObserver {
 			this.iniziaTurno();
 			int mossa = this.richiestaMossa();
 			this.sceltaMossa(mossa);
-			this.checkVittoria(this.getGiocatoreAttivo());
+			this.checkVittoriaPerClassi(this.getGiocatoreAttivo());
 		}
 	}
 
 	public void iniziaTurno() {
-		System.out.println("Turno di: " + this.getGiocatoreAttivo().getNome() + " | PA disponibili: " + this.getPaRimasti());
-		System.out.println(this.getGiocatoreAttivo().getMano());
-		if (this.getFaseAttuale() instanceof FaseScelta) {
-			System.out.println("\n--- Fase 1: Richiesta Mossa ---");
-		}
-		System.out.println("\n--- SCEGLI LA TUA MOSSA ---");
-		System.out.printf("%-3s | %-30s | %-10s%n", "ID", "AZIONE", "COSTO PA");
-		System.out.println("-".repeat(50));
 		List<CartaEroe> eroiInMano = this.giocatoreAttivo.getMano().getCarteMano().stream()
 				.filter(c -> c instanceof CartaEroe)
 				.map(c -> (CartaEroe) c)
 				.toList();
-		if (eroiInMano.isEmpty()) {
-			System.out.println("   Non hai Eroi da giocare nella tua mano   ");
-		} else {
-			System.out.println(" 1  | Gioca Carta Eroe               | 1 PA");
-		}
-		System.out.println(" 2  | Gioca Carta Oggetto            | 1 PA");
-		System.out.println(" 3  | Gioca Carta Magia              | 1 PA");
-		System.out.println(" 4  | Pesca Carta dal Mazzo          | 1 PA");
-		System.out.println(" 5  | Utilizza Effetto Eroe          | 1 PA");
-		System.out.println(" 6  | Attacca un Mostro              | 2 PA");
-		System.out.println(" 7  | Scarta Mano e Pesca 5          | 3 PA");
-		System.out.println("-".repeat(50));
+		gui.mostraMenuInizioTurno(this.turnoAttuale.getFaseCorrente(), this.giocatoreAttivo, eroiInMano.isEmpty(), this.turnoAttuale.getPaRimasti());
 	}
 
 	public int richiestaMossa() {
@@ -92,15 +75,13 @@ public class HereToSlay implements FinestraTemporaleObserver {
 				.map(c -> (CartaEroe) c)
 				.toList();
 		while (true) {
-			System.out.print("Digita il numero della mossa: ");
-			sceltaMossa = scanner.nextInt();
-			scanner.nextLine();
+			sceltaMossa = gui.chiediSelezioneMossa(false);
 			if (sceltaMossa == 1 && eroiInMano.isEmpty()) {
-				System.out.println("Non hai Eroi da giocare nella tua mano.");
+				gui.chiediSelezioneMossa(true);
 			} else if (sceltaMossa > 0 && sceltaMossa < 7) {
 				break;
 			} else {
-				System.out.print("Devi scegliere uno tra i numeri elencati.\n");
+				gui.chiediSelezioneMossa(true);
 			}
 		}
 		return sceltaMossa;
@@ -114,90 +95,47 @@ public class HereToSlay implements FinestraTemporaleObserver {
 		Risultato risultato = this.turnoAttuale.verificaPA(mossaSelezionata);
 		if (!risultato.successo()) { // [successo == False]
 			// 1.2: messaggioErrorePa() chiamato su GeneratoreDiEventi
-			this.generatoreDiEventi.messaggioErrorePA();
+			gui.messaggioMossaSelezionata(risultato.PA(), false, "Mossa");
 			// 1.3: messaggioMossaSelezionata (ritorno al chiamante)
 		} else {
 			// 1.4: iniziaFase(faseMossaGiocata) chiamato su Turno
 			switch (mossaSelezionata) {
 				case 1:
-					List<CartaEroe> eroiInMano = this.giocatoreAttivo.getMano().getCarteMano().stream()
-							.filter(c -> c instanceof CartaEroe)
-							.map(c -> (CartaEroe) c)
-							.toList();
-					if (eroiInMano.isEmpty()) {
-						System.out.println("Non hai Eroi da giocare nella tua mano.");
-						break;
-					}
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Gioca Carta Eroe");
 					this.sceltaEroe();
 					break;
 				case 2:
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Gioca Carta Oggetto");
 					System.out.println("Gioca Carta Oggetto");
 					break;
 				case 3:
-					System.out.println("Gioca Carta Magia");
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Gioca Carta Magia");
 					break;
 				case 4:
-					System.out.println("Pesca Carta dal Mazzo");
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Pesca Carta dal Mazzo");
 					break;
 				case 5:
-					System.out.println("Utilizza effetto Eroe");
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Utilizza effetto Eroe");
 					break;
 				case 6:
-					System.out.println("Attacca Un Mostro");
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Attacca Un Mostro");
 					break;
 				case 7:
-					System.out.println("Scarta Mano e Pesca 5");
+					gui.messaggioMossaSelezionata(risultato.PA(), true, "Scarta Mano e Pesca 5");
 					break;
-				default:
-					System.out.println("Mossa non valida");
-
 			}
 		}
 
 	}
 
 	private void sceltaEroe() {
-		CartaEroe cartaScelta;
-
-		System.out.println("\n");
-		System.out.println("SCEGLI L'EROE DA GIOCARE");
-		System.out.println("-".repeat(40));
 		List<CartaEroe> eroiInMano = this.giocatoreAttivo.getMano().getCarteMano().stream()
 				.filter(c -> c instanceof CartaEroe)
 				.map(c -> (CartaEroe) c)
 				.toList();
-		System.out.printf("%-4s | %-18s | %-10s | %-5s%n", "NUMERO", "NOME", "CLASSE", "REQ.");
-		System.out.println("-".repeat(40));
-
-		for (int i = 0; i < eroiInMano.size(); i++) {
-			CartaEroe e = eroiInMano.get(i);
-			System.out.printf("[%d]    | %-18s | %-10s | %d+%n",
-					(i + 1),
-					e.getNome(),
-					e.getClasseEroe(),
-					e.getRequisito());
-		}
-		System.out.println("-".repeat(40));
-		while (true) {
-			System.out.print("Scegli il numero dell'eroe da giocare (1-" + eroiInMano.size() + "): ");
-			int sceltaCarta = scanner.nextInt();
-			scanner.nextLine();
-			if (sceltaCarta < 1 || sceltaCarta > eroiInMano.size()) {
-				System.out.println("Devi digitare un numero valido compreso tra 1 e " + eroiInMano.size() + ".");
-			} else {
-				cartaScelta = eroiInMano.get(sceltaCarta - 1);
-				System.out.println(giocatoreAttivo.getNome() + " gioca la carta: " + cartaScelta.getNome());
-				FaseGiocaCarta faseGiocaCarta = new FaseGiocaCarta(cartaScelta);
-				turnoAttuale.iniziaFase(faseGiocaCarta);
-				break;
-			}
-		}
-		//In teoria qui andrebbe la fase modificatori
-		System.out.println("\n--- Fase 2: Finestra di Sfida ---");
-		System.out.println("In attesa di reazioni dagli avversari...");
-		// Simuliamo che nessuno giochi una CartaSfida, quindi scatta il timeout
-		System.out.println("Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
-		System.out.println("La carta Eroe entra in gioco senza ostacoli.");
+		CartaEroe cartaScelta = gui.scegliCartaDaGiocare(CartaEroe.class.getSimpleName(), eroiInMano, this.giocatoreAttivo.getNome());
+		FaseGiocaCarta faseGiocaCarta = new FaseGiocaCarta(cartaScelta);
+		this.turnoAttuale.aggiungiFase(faseGiocaCarta);
 		this.giocaCarta(cartaScelta); //Aggiunge la carta al party e verifica la condizione di vittoria della partita
 		this.richiestaSceltaEffetto(cartaScelta); //Richiesta di attivazione dell'effetto della carta
 	}
@@ -209,9 +147,11 @@ public class HereToSlay implements FinestraTemporaleObserver {
 
 	//Gioca carta Eroe
 	public void giocaCarta(CartaEroe cartaEroe) {
+		//In teoria qui andrebbe la fase sfida
+		this.gui.richiestaSfida();
 		this.tavolo.aggiungiCartaParty(cartaEroe, this.giocatoreAttivo.getId());
 		this.giocatoreAttivo.getMano().getCarteMano().remove(cartaEroe);
-		this.checkVittoria(this.giocatoreAttivo);
+		this.checkVittoriaPerClassi(this.giocatoreAttivo);
 	}
 
 	//Gioca carta Sfida
@@ -221,109 +161,61 @@ public class HereToSlay implements FinestraTemporaleObserver {
 
 	}
 
-	//Gioca Carta Modificatore
-	public float giocoCarta(CartaModificatore carta, Player target, float valoreCarta) {
-		// 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
-		Fase faseCorrente = turnoAttuale.getFaseCorrente();
 
-		if (faseCorrente instanceof FaseModificatori faseModificatori) {
-			// 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva
-			if (generatoreDiEventi.isTempoValido()) {
-
-				// 3. Reset del timer per permettere altre risposte
-				generatoreDiEventi.resetTimerL(faseModificatori);
-
-				// 4. Calcolo e aggiornamento del punteggio sul target
-				float nuovoPunteggio = faseModificatori.calcoloPunteggio(valoreCarta, target);
-
-				// 5. La carta viene rimossa dalla mano e messa negli scarti
-				this.giocatoreAttivo.getMano().getCarteMano().remove(carta);
-				this.tavolo.scartaCarta(carta);
-
-				System.out.println("Modificatore applicato correttamente.");
-				System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
-
-				// 6. Mostro i punteggi aggiornati
-				faseModificatori.ottieniPunteggi(target.getId());
-				return nuovoPunteggio;
-			} else {
-				System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
-				return 0;
-			}
-		} else {
-			System.out.println("Errore di flusso: Non puoi giocare un Modificatore in questa fase!");
-			return 0;
-		}
-	}
 
 	public void richiestaSceltaEffetto(CartaEroe cartaScelta) {
-		String scelta;
-		while (true) {
-			System.out.println("Vuoi provare ad attivare l'effetto di " + cartaScelta.getNome() + "? (Si/No)");
-			scelta = this.scanner.nextLine().trim();
+		Boolean scelta = gui.richiestaUtilizzoEffetto(cartaScelta.getNome());
+		if (scelta) {
+			// 1. Fase Effetto
+			this.gui.rispostaUtilizzoEffetto(true);
+			FaseEffetto faseEffetto = new FaseEffetto();
+			faseEffetto.salvaCarta(cartaScelta);
+			this.turnoAttuale.aggiungiFase(faseEffetto);
+			// 2. Tiro dadi
+			Integer valoreDadi = this.tiraDadi();
+			this.gui.risultatoTiroDadi(valoreDadi);
+			// 3. Fase Modificatori
+			FaseModificatori faseModificatori = new FaseModificatori();
+			faseModificatori.salvaPunteggio(this.giocatoreAttivo.getId(), valoreDadi);
+			this.turnoAttuale.aggiungiFase(faseModificatori);
+			generatoreDiEventi.startTimerL(this.turnoAttuale.getFaseCorrente());
 
-			if (scelta.equalsIgnoreCase("Si")) {
-				// 1. Fase Effetto
-				FaseEffetto faseEffetto = new FaseEffetto();
-				faseEffetto.salvaCarta(cartaScelta);
-				this.turnoAttuale.aggiungiFase(faseEffetto);
+			// ---> INIEZIONE DELLE DIPENDENZE: Passiamo gli oggetti, la Fase fa il resto <---
+			Float valoreTiroFinale = faseModificatori.eseguiFase(
+					this.elencoGiocatori,
+					this.tavolo,
+					this.generatoreDiEventi,
+					this.gui,
+					this.turnoAttuale.getFaseCorrente()
+			);
+			// 4. Conclusione
+			this.gui.punteggiDefinitivi(valoreTiroFinale, giocatoreAttivo.getNome());
+			this.turnoAttuale.fineFaseAttuale(); // Fine Fase Modificatori
+			Boolean esitoRequisito = this.checkAttivazioneEffetto(valoreTiroFinale);
+			this.gui.esitoRequisito(esitoRequisito, "descrizioneEffetto");
 
-				// 2. Tiro dadi
-				Integer valoreDadi = this.tiraDadi();
-				System.out.println("Il valore attuale del tiro è: " + valoreDadi + ", inizio fase modificatori");
 
-				// 3. Fase Modificatori
-				FaseModificatori faseModificatori = new FaseModificatori();
-				faseModificatori.salvaPunteggio(giocatoreAttivo.getId(), valoreDadi);
-				this.turnoAttuale.aggiungiFase(faseModificatori);
-
-				generatoreDiEventi.startTimerL(turnoAttuale.getFaseCorrente());
-
-				// ---> INIEZIONE DELLE DIPENDENZE: Passiamo gli oggetti, la Fase fa il resto <---
-				Float valoreTiroFinale = faseModificatori.eseguiFase(
-						this.elencoGiocatori,
-						this.tavolo,
-						this.generatoreDiEventi,
-						this.scanner
-				);
-
-				// 4. Conclusione
-				this.turnoAttuale.fineFaseAttuale(); // Fine Fase Modificatori
-
-				// (Nota: Ho anche corretto qui il bug del printf che avevamo visto prima!)
-				System.out.printf("Valore finale del tiro di %s: %+.0f%n", giocatoreAttivo.getNome(), valoreTiroFinale);
-
-				System.out.println("\n--- Fase 4: Verifica Requisiti ---");
-				String esitoEffetto = this.checkAttivazioneEffetto(valoreTiroFinale);
-				System.out.println("[ESITO] " + esitoEffetto);
-
-				this.turnoAttuale.fineFaseAttuale(); // Fine Fase Gioco Carta
-				break;
-			}
-
-			if (scelta.equalsIgnoreCase("No")) {
-				System.out.println("Effetto non attivato, fine utilizzo PA");
-				this.turnoAttuale.fineFaseAttuale();
-				break;
-			}
-
-			System.out.println("Se c'è scritto si o no magari significa che devi mette quelli eh?");
+			this.turnoAttuale.fineFaseAttuale(); //Fine Fase Gioco Carta
+		}
+		else{
+			this.gui.rispostaUtilizzoEffetto(false);
+			this.turnoAttuale.fineFaseAttuale(); //Fine Fase Gioco Carta
 		}
 	}
 
-	public String checkAttivazioneEffetto(float punteggioDefinitivo) {
+	public Boolean checkAttivazioneEffetto(float punteggioDefinitivo) {
 		turnoAttuale.fineFaseAttuale();
 		Fase faseEffetto = this.turnoAttuale.getFaseCorrente();
 		if (faseEffetto instanceof FaseEffetto faseEffetto1) {
 			Boolean attivazione = faseEffetto1.checkAttivazioneEffetto(punteggioDefinitivo);
 			if (attivazione) {
 				faseEffetto1.ottieniEffetto();
-				return "Fine Punto Azione, l'effetto della carta è: " + faseEffetto1.ottieniEffetto();
+				return true;
 			} else {
-				return "Non puoi attivare l'effetto";
+				return false;
 			}
 		}
-		return "Non puoi attivare l'effetto";
+		return false;
 	}
 
 	public Boolean checkPaRimasti() {
@@ -331,7 +223,7 @@ public class HereToSlay implements FinestraTemporaleObserver {
 		int paRimasti = turnoAttuale.getPaRimasti();
 		//se non ci sono più PA, il turno finisce
 		if (paRimasti <= 0) {
-			System.out.println("MessaggioFineTurno - Il tuo turno è terminato.");
+			this.gui.messaggioFineTurno(this.giocatoreAttivo.getNome());
 			return false;
 		} else
 			return true;
@@ -350,12 +242,14 @@ public class HereToSlay implements FinestraTemporaleObserver {
 		return this.turnoAttuale.getPaRimasti();
 	}
 
-	public void checkVittoria(Player player) {
-		Boolean vittoria = this.tavolo.checkVittoria(player.getId());
+	public void checkVittoriaPerClassi(Player player) {
+		Boolean vittoria = this.tavolo.checkVittoria(player.getId()).vittoria();
+		int numClassiDiverse = this.tavolo.checkVittoria(player.getId()).numClassiDiverse();
 		if (vittoria) {
-			System.out.println("Vittoria di: " + player.getNome());
+			this.gui.messaggioVittoria(player.getNome(), "numero di classi diverse di eroi");
 			System.exit(0);
-		}
+		}else
+			this.gui.numClassiDiverse(numClassiDiverse);
 	}
 
 	public Integer tiraDadi() {
@@ -382,159 +276,4 @@ public class HereToSlay implements FinestraTemporaleObserver {
 		//this.giocatoreAttivo = elencoGiocatori.get(i);
 	}
 
-	public void flussoModificatori() {
-		FaseModificatori faseModificatori = (FaseModificatori) this.turnoAttuale.getFaseCorrente();
-		//float dadiBase = Float.parseFloat(risultatoLancio);
-		Player playerAttivo = this.elencoGiocatori.getFirst();
-		Float valoreTiroFinale = 0F;
-		int noConsecutivi = 0;
-		int numeroGiocatori = this.elencoGiocatori.size();
-		float valoreModif = 0;
-		String scelta;
-
-		while (this.generatoreDiEventi.isTempoValido()) {
-
-			while (true) {
-				System.out.println(this.elencoGiocatori.getFirst().getNome() + ", Vuoi giocare un modificatore? (Si/No)");
-				scelta = scanner.nextLine();
-
-				if (scelta.equalsIgnoreCase("Si") || scelta.equalsIgnoreCase("No")) {
-					break; // L'input è valido, usciamo dal ciclo
-				}
-
-				System.out.println("Se è scritto si o no magari significa che devi mette quelli eh?");
-			}
-
-
-			if (!generatoreDiEventi.isTempoValido()) {
-				System.out.println("\n[!] Peccato! Hai premuto Invio, ma il tempo è SCADUTO proprio ora.");
-				break; // Esce immediatamente dal ciclo while
-			}
-
-			if (scelta.equalsIgnoreCase("Si")) {
-				List<CartaModificatore> modificatoriDisponibili = this.elencoGiocatori.getFirst().getMano().getCarteMano().stream()
-						.filter(carta -> carta instanceof CartaModificatore)
-						.map(c -> (CartaModificatore) c)
-						.toList();
-				//No modificatori
-				if (modificatoriDisponibili.isEmpty()) {
-					System.out.println("Non hai carte Modificatore in mano!");
-				} else {
-					// Filtriamo solo i modificatori e li stampiamo numerati
-					System.out.println("\n--- SCEGLI UN MODIFICATORE DA GIOCARE ---");
-					// Intestazione della tabella
-					System.out.printf("%-8s | %-18s | %-10s | %-10s%n", "NUMERO", "TIPO", "VALORE +", "VALORE -");
-					System.out.println("-".repeat(55));
-
-					for (int i = 0; i < modificatoriDisponibili.size(); i++) {
-						CartaModificatore mod = modificatoriDisponibili.get(i);
-
-						// Gestione estetica dei valori: se null mettiamo" / ", altrimenti formattiamo il numero
-						String vPos = (mod.getValorePositivo() != null) ? String.format("%+.0f", mod.getValorePositivo()) : " / ";
-						String vNeg = (mod.getValoreNegativo() != null) ? String.format("%.0f", mod.getValoreNegativo()) : " / ";
-
-						// Stampa della riga
-						System.out.printf("[%d]      | %-18s | %-10s | %-10s%n",
-								(i + 1),
-								"Modificatore",
-								vPos,
-								vNeg);
-					}
-
-					System.out.println("-".repeat(55));
-					System.out.print("Digita il numero del modificatore: ");
-
-					int sceltaCartaModif = scanner.nextInt();
-					scanner.nextLine();
-
-					CartaModificatore modifScleto = modificatoriDisponibili.get(sceltaCartaModif - 1);
-
-					if (modifScleto.getValorePositivo() != null && modifScleto.getValoreNegativo() != null) {
-						System.out.println("Scegli il valore della carta modificatore");
-						System.out.println("1 Applica: " + modifScleto.getValorePositivo());
-						System.out.println("2 Applica: " + modifScleto.getValoreNegativo());
-
-						int sceltaSegno = scanner.nextInt();
-						scanner.nextLine();
-
-						if (!generatoreDiEventi.isTempoValido()) {
-							System.out.println("Tempo scaduto durante la scelta del valore!");
-							break;
-						}
-
-						if (sceltaSegno == 1) {
-							valoreModif = modifScleto.getValorePositivo();
-						} else if (sceltaSegno == 2) {
-							valoreModif = modifScleto.getValoreNegativo();
-						} else {
-							System.out.println("Bastardo scegli tra 1 e due");
-						}
-					} else if (modifScleto.getValorePositivo() != null && modifScleto.getValoreNegativo() == null) {
-						valoreModif = modifScleto.getValorePositivo();
-					} else if (modifScleto.getValoreNegativo() != null && modifScleto.getValorePositivo() == null) {
-						valoreModif = modifScleto.getValoreNegativo();
-					}
-					valoreTiroFinale = this.giocoCarta(modifScleto, playerAttivo, valoreModif);
-					noConsecutivi = 0;
-				}
-			} else {
-				noConsecutivi++;
-				this.resetTimer();
-			}
-
-			if (noConsecutivi >= numeroGiocatori) {
-				String confermaTermina;
-
-				while (true) {
-					System.out.println("\n[?] Entrambi avete passato. Volete terminare la fase ora senza attendere il timer? (Si/No)");
-					confermaTermina = scanner.nextLine();
-
-					if (confermaTermina.equalsIgnoreCase("Si") || confermaTermina.equalsIgnoreCase("No")) {
-						break; // L'input è valido, usciamo dal ciclo
-					}
-
-					System.out.println("Se è scritto si o no magari significa che devi mette quelli eh?");
-				}
-
-				if (confermaTermina.equalsIgnoreCase("Si")) {
-					valoreTiroFinale = faseModificatori.ottieniPunteggi(playerAttivo.getId());
-					generatoreDiEventi.stopTimer(); // Ferma il task del messaggio "Tempo Scaduto"
-					break; // Esci dal ciclo e vai al calcolo finale
-				} else {
-					// Se dicono No, resettiamo uno dei counter per dare un'altra chance
-					// o lasciamo che il timer scorra normalmente.
-					noConsecutivi = 0;
-				}
-			}
-			Collections.rotate(elencoGiocatori, -1);
-		}
-		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Modificatori
-		System.out.printf("Valore finale del tiro di " + playerAttivo.getNome() + ": " + "%+.0f", valoreTiroFinale);
-		System.out.println("\n--- Fase 4: Verifica Requisiti ---");
-		String esitoEffetto = this.checkAttivazioneEffetto(valoreTiroFinale); // Chiude la fase Effetto
-		System.out.println("[ESITO] " + esitoEffetto);
-		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Gioco Carta
-	}
-
-	@Override
-	public void timerStarted(int durata) {
-		System.out.println("\n--- Hai " + durata + " secondi per giocare una carta--- ");
-	}
-
-	@Override
-	public void timerRestarting(int durata) {
-		System.out.println("\n--- Timer RESETTATO! Hai " + durata + " secondi per rispondere---");
-		System.out.print("> ");
-	}
-
-	@Override
-	public void timerStopped() {
-		System.out.println("\n---TEMPO SCADUTO per la fase " + this.getFaseAttuale().getClass().getSimpleName() + "! ---");
-		System.out.print("> "); // Ristampa il prompt per non lasciare la riga vuota
-	}
-
-	@Override
-	public void timerInterrupted() {
-		System.out.println("\n--- Timer interrotto dai giocatori ---");
-	}
 }

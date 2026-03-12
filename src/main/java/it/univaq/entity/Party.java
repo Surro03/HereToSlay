@@ -12,6 +12,8 @@ public class Party {
 	private List<CartaEroe> party;
 	private Set<ClasseEroe> classiPresenti = new HashSet<>();
 
+
+
 	public Party() {
 		this.party = new ArrayList<>();
 	}
@@ -25,8 +27,14 @@ public class Party {
 		for(CartaEroe cartaEroe: party){
 				classiPresenti.add(cartaEroe.getClasseEroe());
 		}
-		System.out.println("Classi uniche presenti nel party: " + classiPresenti.size());
         return classiPresenti.size() >= 6;
+	}
+
+	public int numClassiDiverse() {
+		for(CartaEroe cartaEroe: party){
+			classiPresenti.add(cartaEroe.getClasseEroe());
+		}
+		return classiPresenti.size();
 	}
 
 	/**
@@ -44,7 +52,6 @@ public class Party {
 	 */
 	public void inserisciCarta(CartaEroe cartaEroe) {
 		party.add(cartaEroe);
-		System.out.println("lista carte aggiornato");
 	}
 
 }

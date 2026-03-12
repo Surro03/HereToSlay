@@ -1,10 +1,6 @@
-package it.univaq.ui;
-
-import it.univaq.technical.Fase;
+package it.univaq.technical;
 
 import java.time.Instant;
-
-import it.univaq.technical.FinestraTemporaleObserver;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -25,9 +21,9 @@ public class GeneratoreDiEventi {
         this.finestraTemporaleObservers = finestraTemporaleObservers;
 	}
 
-    public void notifyStartTimer(int durata){
+    public void notifyStartTimer(int durata, Fase fase) {
         for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerStarted(durata);
+            finestraTemporaleObserver.timerStarted(durata, fase);
         }
     }
 
@@ -37,15 +33,15 @@ public class GeneratoreDiEventi {
         }
     }
 
-    public void notifyStopTimer(){
+    public void notifyStopTimer(Fase fase) {
         for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerStopped();
+            finestraTemporaleObserver.timerStopped(fase);
         }
     }
 
-    public void notifyInterruptionTimer(){
+    public void notifyInterruptionTimer(Fase fase){
         for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerInterrupted();
+            finestraTemporaleObserver.timerInterrupted(fase);
         }
     }
 	/**
@@ -57,10 +53,6 @@ public class GeneratoreDiEventi {
 		throw new UnsupportedOperationException();
 	}
 
-	public void messaggioErrorePA() {
-		System.out.println("--- Punti Azione insufficienti per questa mossa! ---");
-	}
-
 
     public synchronized void startTimerL(Fase fase) {
         // 1. Se c'è un timer precedente ancora in attesa, lo annulliamo
@@ -69,7 +61,7 @@ public class GeneratoreDiEventi {
         }
 
         // 2. Messaggio iniziale (appare una volta sola)
-        this.notifyStartTimer(SECONDI_DURATA);
+        this.notifyStartTimer(SECONDI_DURATA, fase);
 
 
         // 3. Impostiamo la scadenza tecnica (per i controlli isAncoraValida())
@@ -79,14 +71,14 @@ public class GeneratoreDiEventi {
         // 4. Programmiamo il messaggio di "Tempo Scaduto" tra X secondi
         // Questo messaggio apparirà solo quando il tempo è effettivamente finito
 
-        countdownTask = scheduler.schedule(this::notifyStopTimer, SECONDI_DURATA, TimeUnit.SECONDS);
+        countdownTask = scheduler.schedule(() -> this.notifyStopTimer(fase), SECONDI_DURATA, TimeUnit.SECONDS);
     }
 
     // AGGIUNGI QUESTO METODO: Fondamentale per fermare il timer se il giocatore è veloce!
-    public synchronized void stopTimer() {
+    public synchronized void stopTimer(Fase fase) {
         if (countdownTask != null) {
             countdownTask.cancel(false);
-            this.notifyInterruptionTimer();
+            this.notifyInterruptionTimer(fase);
 
         }
     }
@@ -106,7 +98,7 @@ public class GeneratoreDiEventi {
             this.notifyRestartTimer(SECONDI_DURATA);
 
             // 4. RIPROGRAMMA il messaggio di timeout per la nuova scadenza
-            countdownTask = scheduler.schedule(this::notifyStopTimer, SECONDI_DURATA, TimeUnit.SECONDS);
+            countdownTask = scheduler.schedule(() -> this.notifyStopTimer(fase), SECONDI_DURATA, TimeUnit.SECONDS);
         }
 	}
 

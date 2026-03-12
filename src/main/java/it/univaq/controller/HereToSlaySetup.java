@@ -2,9 +2,10 @@ package it.univaq.controller;
 
 import it.univaq.entity.*;
 import it.univaq.technical.FinestraTemporaleObserver;
-import it.univaq.ui.GeneratoreDiEventi;
-import it.univaq.ui.Mano;
-import it.univaq.ui.Player;
+import it.univaq.technical.GeneratoreDiEventi;
+import it.univaq.entity.Mano;
+import it.univaq.entity.Player;
+import it.univaq.ui.UITerminale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ public class HereToSlaySetup {
 
     private final Scanner scanner = new Scanner(System.in);
     private HereToSlay controller;
+    private UITerminale uiTerminale;
 
     public HereToSlaySetup() {}
 
@@ -25,9 +27,10 @@ public class HereToSlaySetup {
         //TODO aggiungere la possibilità di inserire numero di giocatori, Nomi dei giocatori, eventuali opzioni (Numero di mostri necessari, numero di classi diverse, durata timer)
         //List<Carta> mazzoMischiato = this.mischiaMazzo();
         List<Player> playerList = this.setupPlayers(2, null);
-        this.controller = new HereToSlay(2, 1, 4, playerList);
+        this.uiTerminale = new UITerminale();
+        this.controller = new HereToSlay(2, 1, 4, playerList, uiTerminale);
         List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
-        finestraTemporaleObservers.add(this.controller);
+        finestraTemporaleObservers.add(this.uiTerminale);
         GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(30, finestraTemporaleObservers);
         this.controller.setGeneratoreDiEventi(generatoreDiEventi);
         return this.controller;

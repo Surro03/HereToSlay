@@ -2,11 +2,11 @@ package it.univaq.technical;
 
 public interface FinestraTemporaleObserver {
 
-    public void timerStarted(int durata);
+    void timerStarted(int durata, Fase fase);
 
-    public void timerRestarting(int durata);
+    void timerRestarting(int durata);
 
-    public void timerStopped();
+    void timerStopped(Fase fase);
 
-    public void timerInterrupted();
+    void timerInterrupted(Fase fase);
 }

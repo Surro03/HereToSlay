@@ -1,8 +1,5 @@
-package it.univaq.ui;
+package it.univaq.entity;
 
-import it.univaq.entity.Carta;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mano {

@@ -9,7 +9,6 @@ public class FaseGiocaCarta extends Fase {
 	public FaseGiocaCarta(Carta cartaScelta) {
 		super();
 		this.cartaGiocata = cartaScelta;
-		System.out.println("Carta salvata correttamente nella fase.");
 	}
 
 	/**

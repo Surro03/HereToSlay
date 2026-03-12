@@ -1,5 +1,4 @@
-package it.univaq.ui;
-
+package it.univaq.entity;
 
 
 public class Player {

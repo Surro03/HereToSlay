@@ -2,7 +2,6 @@ package it.univaq.technical;
 
 import it.univaq.entity.Carta;
 import it.univaq.entity.CartaEroe;
-import it.univaq.ui.Player;
 
 public class FaseEffetto extends Fase {
 

@@ -1,7 +1,5 @@
 package it.univaq.entity;
 
-import it.univaq.ui.Player;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +19,8 @@ public class Tavolo {
 		}
 	}
 
+	public record VittoriaPerClassi(Boolean vittoria, int numClassiDiverse) {}
+
 	/**
 	 * 
 	 * @param carta
@@ -34,8 +34,9 @@ public class Tavolo {
 	 *
 	 * @param playerId
 	 */
-	public Boolean checkVittoria(Integer playerId) {
-		return partyMap.get(playerId).checkVittoria();
+	public VittoriaPerClassi checkVittoria(Integer playerId) {
+		Party partyPlayer = partyMap.get(playerId);
+        return new VittoriaPerClassi(partyPlayer.checkVittoria(), partyPlayer.numClassiDiverse());
 	}
 
 	/**

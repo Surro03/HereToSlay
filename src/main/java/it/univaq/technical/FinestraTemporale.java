@@ -1,4 +1,4 @@
-package it.univaq.ui;
+package it.univaq.technical;
 
 import java.time.Instant;
 import java.time.Duration;

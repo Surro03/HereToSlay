@@ -1,8 +1,7 @@
 package it.univaq.technical;
 
-import it.univaq.ui.Player;
+import it.univaq.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Turno {

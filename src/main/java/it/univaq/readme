@@ -1,1 +1,169 @@
-daje
+
+	public void flussoModificatori() {
+		FaseModificatori faseModificatori = (FaseModificatori) this.turnoAttuale.getFaseCorrente();
+		//float dadiBase = Float.parseFloat(risultatoLancio);
+		Player playerAttivo = this.elencoGiocatori.getFirst();
+		Float valoreTiroFinale = 0F;
+		int noConsecutivi = 0;
+		int numeroGiocatori = this.elencoGiocatori.size();
+		float valoreModif = 0;
+		String scelta;
+
+		while (this.generatoreDiEventi.isTempoValido()) {
+
+			while (true) {
+				System.out.println(this.elencoGiocatori.getFirst().getNome() + ", Vuoi giocare un modificatore? (Si/No)");
+				scelta = scanner.nextLine();
+
+				if (scelta.equalsIgnoreCase("Si") || scelta.equalsIgnoreCase("No")) {
+					break; // L'input è valido, usciamo dal ciclo
+				}
+
+				System.out.println("Se è scritto si o no magari significa che devi mette quelli eh?");
+			}
+
+
+			if (!generatoreDiEventi.isTempoValido()) {
+				System.out.println("\n[!] Peccato! Hai premuto Invio, ma il tempo è SCADUTO proprio ora.");
+				break; // Esce immediatamente dal ciclo while
+			}
+
+			if (scelta.equalsIgnoreCase("Si")) {
+				List<CartaModificatore> modificatoriDisponibili = this.elencoGiocatori.getFirst().getMano().getCarteMano().stream()
+						.filter(carta -> carta instanceof CartaModificatore)
+						.map(c -> (CartaModificatore) c)
+						.toList();
+				//No modificatori
+				if (modificatoriDisponibili.isEmpty()) {
+					System.out.println("Non hai carte Modificatore in mano!");
+				} else {
+					// Filtriamo solo i modificatori e li stampiamo numerati
+					System.out.println("\n--- SCEGLI UN MODIFICATORE DA GIOCARE ---");
+					// Intestazione della tabella
+					System.out.printf("%-8s | %-18s | %-10s | %-10s%n", "NUMERO", "TIPO", "VALORE +", "VALORE -");
+					System.out.println("-".repeat(55));
+
+					for (int i = 0; i < modificatoriDisponibili.size(); i++) {
+						CartaModificatore mod = modificatoriDisponibili.get(i);
+
+						// Gestione estetica dei valori: se null mettiamo" / ", altrimenti formattiamo il numero
+						String vPos = (mod.getValorePositivo() != null) ? String.format("%+.0f", mod.getValorePositivo()) : " / ";
+						String vNeg = (mod.getValoreNegativo() != null) ? String.format("%.0f", mod.getValoreNegativo()) : " / ";
+
+						// Stampa della riga
+						System.out.printf("[%d]      | %-18s | %-10s | %-10s%n",
+								(i + 1),
+								"Modificatore",
+								vPos,
+								vNeg);
+					}
+
+					System.out.println("-".repeat(55));
+					System.out.print("Digita il numero del modificatore: ");
+
+					int sceltaCartaModif = scanner.nextInt();
+					scanner.nextLine();
+
+					CartaModificatore modifScleto = modificatoriDisponibili.get(sceltaCartaModif - 1);
+
+					if (modifScleto.getValorePositivo() != null && modifScleto.getValoreNegativo() != null) {
+						System.out.println("Scegli il valore della carta modificatore");
+						System.out.println("1 Applica: " + modifScleto.getValorePositivo());
+						System.out.println("2 Applica: " + modifScleto.getValoreNegativo());
+
+						int sceltaSegno = scanner.nextInt();
+						scanner.nextLine();
+
+						if (!generatoreDiEventi.isTempoValido()) {
+							System.out.println("Tempo scaduto durante la scelta del valore!");
+							break;
+						}
+
+						if (sceltaSegno == 1) {
+							valoreModif = modifScleto.getValorePositivo();
+						} else if (sceltaSegno == 2) {
+							valoreModif = modifScleto.getValoreNegativo();
+						} else {
+							System.out.println("Bastardo scegli tra 1 e due");
+						}
+					} else if (modifScleto.getValorePositivo() != null && modifScleto.getValoreNegativo() == null) {
+						valoreModif = modifScleto.getValorePositivo();
+					} else if (modifScleto.getValoreNegativo() != null && modifScleto.getValorePositivo() == null) {
+						valoreModif = modifScleto.getValoreNegativo();
+					}
+					valoreTiroFinale = this.giocoCarta(modifScleto, playerAttivo, valoreModif);
+					noConsecutivi = 0;
+				}
+			} else {
+				noConsecutivi++;
+				this.resetTimer();
+			}
+
+			if (noConsecutivi >= numeroGiocatori) {
+				String confermaTermina;
+
+				while (true) {
+					System.out.println("\n[?] Entrambi avete passato. Volete terminare la fase ora senza attendere il timer? (Si/No)");
+					confermaTermina = scanner.nextLine();
+
+					if (confermaTermina.equalsIgnoreCase("Si") || confermaTermina.equalsIgnoreCase("No")) {
+						break; // L'input è valido, usciamo dal ciclo
+					}
+
+					System.out.println("Se è scritto si o no magari significa che devi mette quelli eh?");
+				}
+
+				if (confermaTermina.equalsIgnoreCase("Si")) {
+					valoreTiroFinale = faseModificatori.ottieniPunteggi(playerAttivo.getId());
+					generatoreDiEventi.stopTimer(turnoAttuale.getFaseCorrente()); // Ferma il task del messaggio "Tempo Scaduto"
+					break; // Esci dal ciclo e vai al calcolo finale
+				} else {
+					// Se dicono No, resettiamo uno dei counter per dare un'altra chance
+					// o lasciamo che il timer scorra normalmente.
+					noConsecutivi = 0;
+				}
+			}
+			Collections.rotate(elencoGiocatori, -1);
+		}
+		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Modificatori
+		System.out.printf("Valore finale del tiro di " + playerAttivo.getNome() + ": " + "%+.0f", valoreTiroFinale);
+		System.out.println("\n--- Fase 4: Verifica Requisiti ---");
+		//String esitoEffetto = this.checkAttivazioneEffetto(valoreTiroFinale); // Chiude la fase Effetto
+		//System.out.println("[ESITO] " + esitoEffetto);
+		this.turnoAttuale.fineFaseAttuale(); //Fine Fase Gioco Carta
+	}
+
+	//Gioca Carta Modificatore
+    	public float giocoCarta(CartaModificatore carta, Player target, float valoreCarta) {
+    		// 1. Recupero la fase corrente dal turno (deve essere FaseModificatori)
+    		Fase faseCorrente = turnoAttuale.getFaseCorrente();
+
+    		if (faseCorrente instanceof FaseModificatori faseModificatori) {
+    			// 2. Controllo se la finestra temporale per giocare modificatori è ancora attiva
+    			if (generatoreDiEventi.isTempoValido()) {
+
+    				// 3. Reset del timer per permettere altre risposte
+    				generatoreDiEventi.resetTimerL(faseModificatori);
+
+    				// 4. Calcolo e aggiornamento del punteggio sul target
+    				float nuovoPunteggio = faseModificatori.calcoloPunteggio(valoreCarta, target);
+
+    				// 5. La carta viene rimossa dalla mano e messa negli scarti
+    				this.giocatoreAttivo.getMano().getCarteMano().remove(carta);
+    				this.tavolo.scartaCarta(carta);
+
+    				System.out.println("Modificatore applicato correttamente.");
+    				System.out.println("Nuovo punteggio provvisorio per " + target.getNome() + ": " + nuovoPunteggio);
+
+    				// 6. Mostro i punteggi aggiornati
+    				faseModificatori.ottieniPunteggi(target.getId());
+    				return nuovoPunteggio;
+    			} else {
+    				System.out.println("Errore: Tempo scaduto, non puoi più giocare carte Modificatore!");
+    				return 0;
+    			}
+    		} else {
+    			System.out.println("Errore di flusso: Non puoi giocare un Modificatore in questa fase!");
+    			return 0;
+    		}
+    	}
