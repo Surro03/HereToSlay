@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-import it.univaq.technical.FaseGiocaCarta;
+import it.univaq.technical.FaseGiocaCartaEroe;
 import it.univaq.entity.CartaMostro;
 
 import java.util.*;

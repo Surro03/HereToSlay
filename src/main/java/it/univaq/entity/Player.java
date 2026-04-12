@@ -1,5 +1,6 @@
 package it.univaq.entity;
 
+import java.util.List;
 
 public class Player {
 
@@ -38,6 +39,15 @@ public class Player {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    // --- GRASP: INFORMATION EXPERT ---
+    // Il Player sa cosa ha in mano, quindi è lui che filtra le carte Eroe!
+    public List<CartaEroe> getEroiInMano() {
+        return this.mano.getCarteMano().stream()
+                .filter(c -> c instanceof CartaEroe)
+                .map(c -> (CartaEroe) c)
+                .toList();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package it.univaq.technical;
 
-public class FaseSfida extends Fase {
+import it.univaq.ui.InterfacciaUtente;
+
+public class FaseSfida implements Fase {
 
 	private Integer idSfidante;
 	private Integer idPlayer;
@@ -21,5 +23,10 @@ public class FaseSfida extends Fase {
 		// TODO - implement FaseSfida.CalcolaVincitore
 		throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public boolean eseguiFase(Turno turno, InterfacciaUtente gui) {
+        return true;
+    }
 
 }

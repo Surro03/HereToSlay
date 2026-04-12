@@ -20,6 +20,15 @@ public class CartaModificatore extends Carta {
         this.effetto = effetto;
     }
 
+public Float getValoreScelto(boolean usaPositivo) {
+    if (usaPositivo) {
+        return this.valorePositivo;
+    } else {
+        return this.valoreNegativo;
+    }
+}
+
+
     public Float getValorePositivo() {
         return valorePositivo;
     }
@@ -43,4 +52,5 @@ public class CartaModificatore extends Carta {
     public void setEffetto(String effetto) {
         this.effetto = effetto;
     }
+
 }

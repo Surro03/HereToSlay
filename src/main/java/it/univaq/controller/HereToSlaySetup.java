@@ -1,49 +1,45 @@
 package it.univaq.controller;
 
 import it.univaq.entity.*;
-import it.univaq.technical.FinestraTemporaleObserver;
-import it.univaq.technical.GeneratoreDiEventi;
-import it.univaq.entity.Mano;
-import it.univaq.entity.Player;
 import it.univaq.ui.UITerminale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class HereToSlaySetup {
 
-    private final Scanner scanner = new Scanner(System.in);
-    private HereToSlay controller;
-    private UITerminale uiTerminale;
-
     public HereToSlaySetup() {}
 
-    public HereToSlay setupGioco(){
+    public HereToSlay setupGioco() {
         System.out.println("=== SETUP GIOCO ===");
-        //System.out.println("Inserisci le cose di questa partita");
 
-        //TODO aggiungere la possibilità di inserire numero di giocatori, Nomi dei giocatori, eventuali opzioni (Numero di mostri necessari, numero di classi diverse, durata timer)
-        //List<Carta> mazzoMischiato = this.mischiaMazzo();
+        // 1. Crea i giocatori con le loro mani pre-impostate per il test
         List<Player> playerList = this.setupPlayers(2, null);
-        this.uiTerminale = new UITerminale();
-        this.controller = new HereToSlay(2, 1, 4, playerList, uiTerminale);
-        List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
-        finestraTemporaleObservers.add(this.uiTerminale);
-        GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(30, finestraTemporaleObservers);
-        this.controller.setGeneratoreDiEventi(generatoreDiEventi);
-        return this.controller;
+        
+        // 2. Crea l'interfaccia grafica
+        UITerminale uiTerminale = new UITerminale();
+        
+        // 3. Crea il Controller usando il NUOVO costruttore
+        HereToSlay controller = new HereToSlay(playerList, uiTerminale);
+        
+        // ---> 4. IL COLLEGAMENTO MAGICO <---
+        // Diciamo alla UI qual è il controller a cui deve spedire i messaggi dei bottoni!
+        uiTerminale.setController(controller);
+
+        // N.B: Abbiamo rimosso GeneratoreDiEventi e FinestraTemporaleObserver!
+        // Ora il gioco non si bloccherà più con Thread strani, fa tutto la Pila.
+
+        return controller;
     }
 
     public List<Carta> mischiaMazzo(){
         //TODO prende le carte dalla memoria e le mischia, poi le carica sul tavolo
-        throw  new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public List<Player> setupPlayers(int numPlayers, List<Carta> mazzoMischiato){
-        //TODO aggiungere lo shuffle del mazzo e l'assegnazione delle mani casuali ai giocatori
-
+        
         List<Carta> manoGiocatore1 = new ArrayList<>(Arrays.asList(
                 // 1. Un Eroe dal costo 1, requisito 6
                 new CartaEroe(0, 6, "Ascia Sfascia", "Distruggi un eroe avversario", 1, ClasseEroe.GUERRIERO),
@@ -84,11 +80,11 @@ public class HereToSlaySetup {
         // Creazione Giocatori
         Player p1 = new Player(1, "Luca Avenia", manoP1);
         Player p2 = new Player(2, "Alessandro Salvitti", manoP2);
+        
         List<Player> players = new ArrayList<>();
         players.add(p1);
         players.add(p2);
+        
         return players;
     }
-
-
 }

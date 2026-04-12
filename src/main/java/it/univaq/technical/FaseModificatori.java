@@ -1,111 +1,68 @@
 package it.univaq.technical;
 
-import it.univaq.entity.CartaModificatore;
-import it.univaq.entity.Tavolo;
-import it.univaq.entity.Player;
 import it.univaq.ui.InterfacciaUtente;
+import it.univaq.entity.CartaModificatore;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+public class FaseModificatori implements Fase {
+    
+    private int step = 0;
+    
+    // CORREZIONE 1: Uso float al posto di int!
+    private float punteggioAttuale; 
 
-public class FaseModificatori extends Fase {
-
-    private Map<Integer, Float> punteggiPlayer = new HashMap<>();
-
-
-    public float calcoloPunteggio(float valoreCarta, Player target) {
-        punteggiPlayer.merge(target.getId(), valoreCarta, Float::sum);
-        return punteggiPlayer.get(target.getId());
+    // Riceve il punteggio dei dadi lanciati dalla FaseEffetto
+    public FaseModificatori(float punteggioDiPartenza) {
+        this.punteggioAttuale = punteggioDiPartenza;
     }
 
-    public void salvaPunteggio(Integer playerId, float punteggioP) {
-        punteggiPlayer.put(playerId, punteggioP);
-    }
-
-    public Float ottieniPunteggi(Integer playerId) {
-        return punteggiPlayer.getOrDefault(playerId, 0f);
-    }
-
-    public Float eseguiFase(List<Player> giocatoriOriginali, Tavolo tavolo, GeneratoreDiEventi generatore, InterfacciaUtente ui, Fase fase) {
-        Player playerAttivo = giocatoriOriginali.getFirst();
-        Float valoreTiroFinale = this.ottieniPunteggi(playerAttivo.getId());
-
-        int noConsecutivi = 0;
-        int numeroGiocatori = giocatoriOriginali.size();
-
-        List<Player> ordineTurno = new ArrayList<>(giocatoriOriginali);
-
-        while (generatore.isTempoValido()) {
-            Player giocatoreCorrente = ordineTurno.getFirst();
-
-            // 1. FILTRO
-            List<CartaModificatore> modificatoriDisponibili = giocatoreCorrente.getMano().getCarteMano().stream()
-                    .filter(carta -> carta instanceof CartaModificatore)
-                    .map(c -> (CartaModificatore) c)
-                    .toList();
-
-            boolean vuoleGiocare = false;
-
-            // 2. SCELTA GIOCATORE
-            if (modificatoriDisponibili.isEmpty()) {
-                ui.mostraMessaggio("\n[" + giocatoreCorrente.getNome() + "] non ha carte Modificatore. Passa il turno automaticamente.");
-            } else {
-                vuoleGiocare = ui.chiediSeGiocareModificatore(giocatoreCorrente, modificatoriDisponibili.size());
-            }
-
-            // 3. CONTROLLO TEMPO
-            if (!generatore.isTempoValido()) {
-                ui.mostraMessaggio("\n[!] Il tempo è già scaduto, avresti dovuto rispondere prima");
-                break;
-            }
-
-            // 4. APPLICAZIONE SCELTA
-            if (vuoleGiocare) {
-                CartaModificatore modifScelto = ui.scegliModificatoreDaGiocare(modificatoriDisponibili);
-                float valoreModif = 0;
-
-                if (modifScelto.getValorePositivo() != null && modifScelto.getValoreNegativo() != null) {
-                    valoreModif = ui.scegliSegnoModificatore(modifScelto);
-                } else if (modifScelto.getValorePositivo() != null) {
-                    valoreModif = modifScelto.getValorePositivo();
-                } else if (modifScelto.getValoreNegativo() != null) {
-                    valoreModif = modifScelto.getValoreNegativo();
-                }
-
-                if (!generatore.isTempoValido()) break;
-
-                generatore.resetTimerL(this);
-                valoreTiroFinale = this.calcoloPunteggio(valoreModif, playerAttivo);
-
-                giocatoreCorrente.getMano().getCarteMano().remove(modifScelto);
-                if (tavolo != null) {
-                    tavolo.scartaCarta(modifScelto);
-                }
-
-                ui.punteggioIntermedio(valoreTiroFinale);
-                noConsecutivi = 0;
-
-            } else {
-                noConsecutivi++;
-                generatore.resetTimerL(this);
-            }
-
-            // 5. CHIUSURA FASE (Delega conferma alla UI)
-            if (noConsecutivi >= numeroGiocatori) {
-                if (ui.chiediConfermaFineFase()) {
-                    generatore.stopTimer(fase);
-                    break;
-                } else {
-                    noConsecutivi = 0;
-                }
-            }
-
-            Collections.rotate(ordineTurno, -1);
+    @Override
+    public boolean eseguiFase(Turno turno, InterfacciaUtente gui) {
+        
+        // --- STEP 0: INIZIO TIMER E RICHIESTA ---
+        if (this.step == 0) {
+            System.out.println("LOG: FaseModificatori iniziata. Avvio timer sfide...");
+            
+            gui.richiediGiocataModificatori(punteggioAttuale);
+            
+            this.step = 1;
+            return false; // Mi addormento
         }
-        return valoreTiroFinale;
+        
+        // --- STEP 1: RICEZIONE EVENTI (Carte o Timeout) ---
+        else if (this.step == 1) {
+            
+            Object inputRicevuto = turno.popInput();
+            
+            // CASO A: Il timer è scaduto!
+            if (inputRicevuto instanceof String && inputRicevuto.equals("TIMEOUT")) {
+                System.out.println("LOG: Nessuno ha giocato modificatori. Tempo scaduto!");
+                gui.mostraMessaggio("Fase modificatori conclusa. Punteggio finale: " + punteggioAttuale);
+                
+                // ---> CORREZIONE 2 FONDAMENTALE <---
+                // Appoggio il punteggio aggiornato nel turno, così la FaseEffetto lo trova!
+                turno.salvaRisultatoSottoFase(this.punteggioAttuale);
+                
+                return true; // La fase è FINITA DEFINITIVAMENTE. Tolgo dalla pila.
+            }
+            
+            // CASO B: Qualcuno ha giocato una carta Modificatore!
+            else if (inputRicevuto instanceof GiocataModificatore) {
+                
+                GiocataModificatore giocata = (GiocataModificatore) inputRicevuto;
+                CartaModificatore mod = giocata.carta();
+                
+                float valoreDaAggiungere = mod.getValoreScelto(giocata.usaPositivo());
+                
+                this.punteggioAttuale += valoreDaAggiungere; 
+                
+                System.out.println("LOG: Giocato modificatore! Nuovo punteggio: " + this.punteggioAttuale);
+                
+                gui.aggiornaSchermataModificatori(this.punteggioAttuale);
+                
+                return false; 
+            }
+        }
+        
+        return true; // Sicurezza
     }
 }
