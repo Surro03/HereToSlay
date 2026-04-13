@@ -23,6 +23,13 @@ public class Mano {
         return carteMano.size();
     }
 
+    public Carta ottieniCarta(int numeroCarta) {
+        Carta carta = carteMano.get(numeroCarta);
+        carteMano.remove(numeroCarta);
+        return carta;
+
+    }
+
     public void setNumeroCarte(Integer numeroCarte) {
         this.numeroCarte = numeroCarte;
     }

@@ -1,22 +1,21 @@
 package it.univaq.controller;
 
+import it.univaq.entity.CartaEroe;
 import it.univaq.entity.Player;
 import it.univaq.ui.GameObserver;
 
 public interface ControllerSubject {
     void addObserver(GameObserver observer);
+
     void removeObserver(GameObserver observer);
 
     void iniziaPartita();
 
-    Player prossimoTurno();
+    void prossimoTurno();
 
-    void iniziaFlussoGiocaEroe();
+    void selezionaMossa(int mossa);
 
-    void giocaCartaDaMano(int indiceAssolutoCarta);
+    void scegliCartaEroe(int indiceRealeNellaMano);
 
-    void giocaEroeSpecifico(int indiceCartaSelezionata);
-
-
-    void rispostaUtilizzoEffetto(boolean vuoleUsare);
+    void annullaScelta();
 }

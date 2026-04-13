@@ -1,8 +1,7 @@
 package it.univaq.technical;
 
 import it.univaq.entity.Player;
-import it.univaq.ui.InterfacciaUtente;
-import it.univaq.controller.HereToSlay;
+import it.univaq.entity.Tavolo;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -11,7 +10,8 @@ public class Turno {
     private int paRimanenti;
     private final Player giocatoreDiTurno;
     private Object risultatoSottoFase;
-    // Usiamo Deque per una VERA struttura a Pila (Stack LIFO)
+    private TipoAttesa tipoAttesa;
+    // Usiamo Deque per una VERA struttura a Pila
     private Deque<Fase> pilaFasi;
     
     // Variabile "Posta in arrivo" per i dati che ci manda la UI
@@ -53,41 +53,45 @@ public class Turno {
         return temp;
     }
 
-    // Metodo che la UI chiamerà quando l'utente clicca un bottone
-    public void riceviInput(Object input, InterfacciaUtente gui, HereToSlay controller) {
+    // Metodo per comunicare con le fasi nel turno
+    public void riceviInput(Object input) {
         this.inputInSospeso = input;
 
         // Risveglio il motore!
-        this.avanzaMotoreFasi(gui, controller);
+        this.avanzaMotoreFasi();
     }
 
     // --- IL MOTORE A STATI ASINCRONO ---
-    public void avanzaMotoreFasi(InterfacciaUtente gui, HereToSlay controller) {
-        if (pilaFasi.isEmpty()) {
-            System.out.println("Turno di " + giocatoreDiTurno.getNome() + " terminato.");
-            controller.prossimoTurno();
-            return;
-        }
+    public void avanzaMotoreFasi() {
+        if (this.isTerminato()) return;
 
         // Guardo chi c'è in cima adesso
         Fase faseInCima = pilaFasi.peek();
-        boolean faseConclusa = faseInCima.eseguiFase(this, gui);
+        assert faseInCima != null;
+        boolean faseConclusa = faseInCima.eseguiFase(this);
 
         if (faseConclusa) {
             pilaFasi.pop(); 
-            avanzaMotoreFasi(gui, controller); 
+            this.avanzaMotoreFasi();
         }
-        
         // ---> LA PATCH DEL MOTORE <---
         else if (pilaFasi.peek() != faseInCima) {
             // La fase ha fatto return false, MA ha inserito una nuova sotto-fase!
             // Non mi addormento, ma processo subito la nuova arrivata!
-            avanzaMotoreFasi(gui, controller);
+            this.avanzaMotoreFasi();
         }
         
         // Se non entra in nessuno dei due if, il motore si addormenta serenamente.
     }
-    
+
+    public boolean isTerminato() {
+        if (pilaFasi.isEmpty()) {
+            System.out.println("Turno di " + giocatoreDiTurno.getNome() + " terminato.");
+            return true;
+        }
+        return false;
+    }
+
     public void salvaRisultatoSottoFase(Object risultato) {
         this.risultatoSottoFase = risultato;
     }
@@ -97,6 +101,11 @@ public class Turno {
         this.risultatoSottoFase = null;
         return temp;
     }
+
+    public void setAttesa(TipoAttesa tipoAttesa) {this.tipoAttesa = tipoAttesa;}
+
+    public TipoAttesa getAttesa() {return this.tipoAttesa;}
+
 }
 
 

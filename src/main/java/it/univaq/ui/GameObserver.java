@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GameObserver {
 
-    void inizioTurno(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti);
+    void menuSelezioneMossa(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti);
 
     void erroreSelezioneMossa(String errore);
 
@@ -45,8 +45,6 @@ public interface GameObserver {
     Float scegliSegnoModificatore(CartaModificatore carta);
 
     Boolean chiediConfermaFineFase();
-
-    void avviaPartita();
 }
 
 //package it.univaq.ui;

@@ -1,60 +1,57 @@
 package it.univaq.technical;
 
-import it.univaq.ui.InterfacciaUtente;
-
 public class FaseSceltaMossa implements Fase {
     
-    private int step = 0; 
+    private int step = 0;
 
+    // NESSUNA GUI NELLA FIRMA DEL METODO!
     @Override
-    public boolean eseguiFase(Turno turno, InterfacciaUtente gui) {
-        
+    public boolean eseguiFase(Turno turno) {
+
         if (step == 0) {
             System.out.println("LOG: FaseSceltaMossa iniziata. Calcolo i PA disponibili...");
-            
-            int pa = turno.getPaRimasti();
-            
-            // SE NON HO PIU' PA, IL TURNO DEVE FINIRE FORZATAMENTE!
-            if (pa == 0) {
-                gui.mostraMessaggio("Non hai più Punti Azione. Fine del turno!");
-                return true; // Autodistruzione: la pila si svuota e il turno finisce.
-            }
-            
-            boolean puoGiocareEroe = pa >= 1;
-            boolean puoAttaccare = pa >= 2;
-            boolean puoPescare = pa >= 3;
 
-            gui.richiediSelezioneMossa(puoGiocareEroe, puoAttaccare, puoPescare);
+            int pa = turno.getPaRimasti();
+
+            // SE NON HO PIU' PA, LA FASE FINISCE.
+            if (pa == 0) {
+                // Fine turno!
+                return true;
+            }
+
+            // La fase NON stampa nulla. Dice semplicemente al Turno di cosa ha bisogno.
+            turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE);
 
             step = 1;
-            return false; 
+            return false; // Restituisce false per fermare il while del Turno.
         }
-        
+
         else if (step == 1) {
             System.out.println("LOG: FaseSceltaMossa risvegliata! Leggo l'input...");
-            
+
+            // Il controller ci ha appena iniettato l'input
             Integer mossaScelta = (Integer) turno.popInput();
-            
+
             if (mossaScelta != null) {
                 switch (mossaScelta) {
                     case 1:
                         turno.aggiungiFaseInCima(new FaseGiocaCartaEroe());
-                        
-                        // ---> LA MAGIA DEL LOOP <---
-                        this.step = 0; // Mi resetto, pronto per la prossima mossa!
-                        return false;  // Ritorno false per rimanere vivo sotto la FaseGiocaEroe!
-                        
-                    case 99: // Ipotetico bottone "Passo il turno"
-                        return true;   // Mi autodistruggo e chiudo il turno in anticipo.
-                        
+                        // Quando FaseGiocaCartaEroe finirà,
+                        // il Turno tornerà qui e ripartirà dallo step 0 per un'altra mossa!
+                        this.step = 0;
+                        return false;
+
+                    case 99: // Bottone "Passo il turno"
+                        return true;   // Mi autodistruggo e chiudo il turno.
+
                     default:
-                        gui.mostraMessaggio("Scelta non valida.");
-                        this.step = 0; // Resetto e richiedo
+                        // Se per qualche motivo arriva un numero errato, resetto e richiedo.
+                        this.step = 0;
                         return false;
                 }
             }
-            return false; 
+            return false;
         }
-        return true; 
+        return true;
     }
 }

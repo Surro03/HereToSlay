@@ -155,80 +155,95 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     private int numeroMassimoScelte;
 
 
-    // Definiamo gli stati possibili della nostra interfaccia
-    private enum StatoUI {
-        MENU_PRINCIPALE,
-        SCELTA_EROE,
-        SCELTA_MAGIA,
-        SCELTA_OGGETTO,
-        SCELTA_EFFETTO,
-    }
-
     public UITerminale(ControllerSubject controller) {
         this.controller = controller;
     }
 
     public void avviaLoopInput() {
         while (giocoInEsecuzione) {
-            // Legge costantemente cosa digita l'utente
+
+            // 1. Legge costantemente cosa digita l'utente
             String input = scanner.nextLine().trim();
-            // In base allo stato o all'input, invia comandi al motore.
-            if (statoAttuale == StatoUI.MENU_PRINCIPALE) {
-                try {
-                    int scelta = Integer.parseInt(input);
-                    controller.verificaMossa(scelta);
-                    switch (scelta) {
-                        case 1:
-                            controller.iniziaFlussoGiocaEroe();
-                            break;
-                        case 2:
-                            controller.eseguiGiocaOggetto();
-                            break;
-                        case 3:
-                            controller.eseguiGiocaMagia();
-                            break;
-                        case 4:
-                            controller.eseguiPescaCarta();
-                            break;
-                        case 5:
-                            controller.eseguiUtilizzaEffettoEroe();
-                            break;
-                        case 6:
-                            controller.iniziaFlussoAttaccoMostro();
-                            break;
-                        case 7:
-                            controller.eseguiScartaManoEPesca();
-                            break;
-                        default:
-                            System.out.println("[!] Mossa non valida. Scegli un numero tra 1 e 7.");
-                            break;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Inserisci un numero valido.");
-                }
-            } else if (this.statoAttuale == StatoUI.SCELTA_EROE) {
-                int scelta = Integer.parseInt(input);
-                if (scelta < 1 || scelta > this.numeroMassimoScelte) {
-                    System.out.print("Digita un numero compreso tra 1 e " + this.numeroMassimoScelte + ": ");
-                } else {
-                    // Torna al menu principale
-                    this.statoAttuale = StatoUI.MENU_PRINCIPALE;
-                    // RECUPERA L'INDICE ASSOLUTO DALLA MAPPA!
-                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
-                    // Passa l'indice universale al motore di gioco
-                    controller.giocaCartaGenerale(indiceRealeNellaMano);
-                }
+
+            // 2. Switch sullo Stato della UI
+            switch (this.statoAttuale) {
+
+                case SCELTA_MOSSA:
+                    gestisciInputMenuPrincipale(input);
+                    break;
+
+                case SCELTA_EROE:
+                    gestisciInputSceltaEroe(input);
+                    break;
+
+                case SCELTA_MAGIA:
+                    gestisciInputSceltaMagia(input);
+                    break;
+
+                case SCELTA_OGGETTO:
+                    gestisciInputSceltaOggetto(input);
+                    break;
+
+                case CONFERMA_EFFETTO:
+                    gestisciInputConfermaEffetto(input);
+                    break;
+
+                default:
+                    System.out.println("[!] Errore critico: Stato UI sconosciuto.");
+                    break;
             }
         }
     }
 
-    @Override
-    public void avviaPartita() {
-        this.avviaLoopInput();
+    private void gestisciInputSceltaOggetto(String input) {
+    }
+
+    private void gestisciInputSceltaMagia(String input) {
+    }
+
+    private void gestisciInputMenuPrincipale(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+            controller.selezionaMossa(scelta);
+        } catch (NumberFormatException e) {
+            System.out.print("[!] Inserisci un numero valido: ");
+        }
+    }
+
+    private void gestisciInputSceltaEroe(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+
+            if (scelta < 1 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 1 e " + this.numeroMassimoScelte + ": ");
+            } else {
+
+                int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
+
+                // Richiama il metodo esplicito per le carte
+                controller.scegliCartaEroe(indiceRealeNellaMano);
+
+                this.statoAttuale = StatoUI.SCELTA_MOSSA;
+            }
+        } catch (NumberFormatException e) {
+            // Ora il gioco non crasha più se l'utente sbaglia a digitare!
+            System.out.print("[!] Devi inserire un NUMERO: ");
+        }
+    }
+
+    private void gestisciInputConfermaEffetto(String input) {
+        // Qui non serve convertire in numero, ci aspettiamo una stringa!
+        boolean vuoleAttivare = input.equalsIgnoreCase("Si");
+
+        // Ripristiniamo lo stato principale
+        this.statoAttuale = StatoUI.SCELTA_MOSSA;
+
+        // Inviamo il boolean sicuro al controller
+        controller.confermaAttivazioneEffetto(vuoleAttivare);
     }
 
     @Override
-    public void inizioTurno(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti) {
+    public void menuSelezioneMossa(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti) {
 
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Turno di: " + giocatoreAttivo.getNome() + " | PA disponibili: " + paRimasti);
@@ -251,6 +266,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         System.out.println(" 7  | Scarta Mano e Pesca 5          | 3 PA");
         System.out.println("-".repeat(50));
         System.out.print("> Digita il numero della mossa: ");
+        this.statoAttuale = StatoUI.SCELTA_MOSSA;
     }
 
     @Override

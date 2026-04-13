@@ -1,6 +1,6 @@
 package it.univaq.technical;
 
-import it.univaq.ui.InterfacciaUtente;
+i
 import it.univaq.entity.CartaModificatore;
 
 public class FaseModificatori implements Fase {

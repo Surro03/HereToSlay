@@ -4,87 +4,117 @@ import it.univaq.entity.*;
 import it.univaq.technical.*;
 import it.univaq.ui.GameObserver;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class HereToSlay implements ControllerSubject {
+
+public class HereToSlay implements ControllerSubject{
 
     private List<GameObserver> observers;
     private final List<Player> elencoGiocatori;
     private Player giocatoreAttivo;
     private final Tavolo tavolo;
-    
-    // Il nostro nuovo e fiammante motore a stati
-    private Turno turnoAttuale; 
+    private Turno turnoAttuale;
 
     public HereToSlay(List<Player> elencoGiocatori) {
         this.elencoGiocatori = elencoGiocatori;
         this.tavolo = new Tavolo(elencoGiocatori);
-        // Niente più inizializzazione di PilaFasi qui dentro!
+        // FIX: Inizializziamo la lista, altrimenti crasha!
+        this.observers = new ArrayList<>();
     }
 
+    // --- GESTIONE OBSERVER ---
     @Override
-    public void addObserver(GameObserver gameObserver) {
-        this.observers.add(gameObserver);
-    }
+    public void addObserver(GameObserver gameObserver) { this.observers.add(gameObserver); }
     @Override
-    public void removeObserver(GameObserver gameObserver) {
-        this.observers.remove(gameObserver);
+    public void removeObserver(GameObserver gameObserver) { this.observers.remove(gameObserver); }
+
+    private void notificaTutti(Consumer<GameObserver> action) {
+        for (GameObserver obs : observers) { action.accept(obs); }
     }
 
+    // --- IL BIG BANG ---
     @Override
     public void iniziaPartita() {
         this.giocatoreAttivo = elencoGiocatori.getFirst();
         this.iniziaTurno(this.giocatoreAttivo);
     }
 
-    // --- LA PRIMA SPINTA AL DOMINO ---
     private void iniziaTurno(Player giocatore) {
-        gui.mostraMessaggio("\n--- INIZIA IL TURNO DI: " + giocatore.getNome() + " ---");
-        
-        // 1. Creo il motore per questo turno
+        this.notificaTutti(obs -> obs.mostraMessaggio("\n--- INIZIA IL TURNO DI: " + giocatore.getNome() + " ---"));
+
         this.turnoAttuale = new Turno(giocatore);
-        
-        // 2. Inietto la fase iniziale
         this.turnoAttuale.aggiungiFaseInCima(new FaseSceltaMossa());
-        
-        // 3. Spingo il primo domino! (Passo la gui e me stesso come controller)
-        this.turnoAttuale.avanzaMotoreFasi(this.gui, this);
+
+        // Diamo la "prima spinta" a vuoto per far partire la prima fase
+        this.inoltraAlTurno(null);
     }
 
-    // --- IL MACRO-CICLO: Ritorno della spinta ---
-    // Questo metodo viene chiamato dal Turno quando la sua pila si svuota
     @Override
-    public Player prossimoTurno() {
-
-        // 1. Controlla se qualcuno ha vinto (Information Expert: lo sa il Tavolo)
+    public void prossimoTurno() {
+        // 1. Controlla Vittoria
         if (tavolo.checkVittoria(giocatoreAttivo.getId()).vittoria()) {
-            gui.mostraMessaggio("VITTORIA! " + giocatoreAttivo.getNome() + " ha vinto la partita!");
-            return; // IL GIOCO SI FERMA QUI. Niente più turni.
+            notificaTutti(obs -> obs.mostraMessaggio("VITTORIA! " + giocatoreAttivo.getNome() + " ha vinto!"));
+            // Non facciamo ripartire il turno. Il gioco finisce qui.
+            return;
         }
 
-        // 2. Calcola il prossimo giocatore (logica semplificata)
+        // 2. Calcola il prossimo e riparte
         int indiceAttuale = elencoGiocatori.indexOf(giocatoreAttivo);
         int prossimoIndice = (indiceAttuale + 1) % elencoGiocatori.size();
         this.giocatoreAttivo = elencoGiocatori.get(prossimoIndice);
 
-        // 3. Nuova spinta per il nuovo giocatore!
-        return this.giocatoreAttivo;
+        this.iniziaTurno(this.giocatoreAttivo);
     }
 
-//     --- IL CENTRALINO: Comunicazione con la UI ---
-//     Qualsiasi click faccia l'utente sulla UI, i ragazzi della grafica
-//     devono chiamare questo metodo passandoti il dato.
-    public void riceviInputDaUI(Object datoInput) {
+    // ==========================================================
+    // IL MOTORE CENTRALE: TRADUZIONE E NOTIFICA
+    // ==========================================================
+    private void inoltraAlTurno(Object dato) {
+        // 1. Spinge il dato. Il Turno fa i suoi giri e poi si addormenta.
+        this.turnoAttuale.riceviInput(dato);
 
-        System.out.println("LOG: HereToSlay riceve input dalla UI e lo passa al Turno.");
+        // 2. Controllo: Il turno è finito?
+        if (this.turnoAttuale.isTerminato()) {
+            this.prossimoTurno();
+            return;
+        }
 
-        // Il Controller non controlla l'input, fa solo da postino per il Turno!
-        if (this.turnoAttuale != null) {
-            this.turnoAttuale.riceviInput(datoInput, this.gui, this);
+        // 3. Controllo: La fase si è fermata. Cosa aspetta?
+        switch (this.turnoAttuale.getAttesa()) {
+            case SCELTA_MOSSA_PRINCIPALE:
+                notificaTutti(obs -> obs.menuSelezioneMossa(this.giocatoreAttivo,this.verificaCarteInMano(CartaEroe.class) ,turnoAttuale.getPaRimasti()));
+                break;
+            case SCELTA_CARTA_EROE:
+                notificaTutti(obs -> obs.richiediSceltaCarta(giocatoreAttivo.getMano().getEroiInMano()));
+                break;
+            case CONFERMA_EFFETTO:
+                notificaTutti(obs -> obs.richiediConfermaEffetto("Vuoi usare l'effetto?"));
+                break;
+            case RICHIESTA_TAVOLO:
+                this.inoltraAlTurno(this.tavolo);
+                break;
         }
     }
 
-    // (Getter necessari)
-    public Turno getTurnoAttuale() { return turnoAttuale; }
-    public Player getGiocatoreAttivo() { return giocatoreAttivo; }
+    public boolean verificaCarteInMano(Class<? extends Carta> classeCercata) {
+        return giocatoreAttivo.getMano().getCarteMano().stream()
+                .anyMatch(classeCercata::isInstance);
+    }
+
+    // ==========================================================
+    // CHIAMATE SPECIFICHE DALLA UI
+    // ==========================================================
+    @Override
+    public void selezionaMossa(int mossa) { this.inoltraAlTurno(mossa); }
+
+    @Override
+    public void scegliCartaEroe(int indiceRealeNellaMano) { this.inoltraAlTurno(indiceRealeNellaMano); }
+
+    @Override
+    public void annullaScelta() { this.inoltraAlTurno(null); }
+
+    @Override
+    public void confermaAttivazioneEffetto(boolean vuoleAttivare) { this.inoltraAlTurno(vuoleAttivare); }
 }

@@ -1,7 +1,6 @@
 package it.univaq.technical;
 
 import it.univaq.entity.CartaEroe;
-import it.univaq.ui.InterfacciaUtente;
 
 public class FaseEffetto implements Fase {
 
@@ -15,7 +14,7 @@ public class FaseEffetto implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno, InterfacciaUtente gui) {
+    public boolean eseguiFase(Turno turno) {
         
         // --- STEP 0: LANCIO I DADI E AVVIO MODIFICATORI ---
         if (this.step == 0) {
