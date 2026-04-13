@@ -1,6 +1,8 @@
 package it.univaq.controller;
 
 import it.univaq.entity.*;
+import it.univaq.technical.FinestraTemporaleObserver;
+import it.univaq.technical.GeneratoreDiEventi;
 import it.univaq.ui.UITerminale;
 
 import java.util.ArrayList;
@@ -14,11 +16,17 @@ public class HereToSlaySetup {
     public HereToSlay setupGioco() {
         System.out.println("=== SETUP GIOCO ===");
 
-        // 1. Crea i giocatori con le loro mani pre-impostate per il test
+        //TODO aggiungere la possibilità di inserire numero di giocatori, Nomi dei giocatori, eventuali opzioni (Numero di mostri necessari, numero di classi diverse, durata timer)
+        //1. Crea i giocatori con le loro mani pre-impostate per il test
+        //Mazzo mazzoMischiato = this.mischiaMazzo();
         List<Player> playerList = this.setupPlayers(2, null);
         
         // 2. Crea il Controller usando il NUOVO costruttore
         HereToSlay controller = new HereToSlay(playerList);
+
+//        List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
+//        finestraTemporaleObservers.add(this.uiTerminale);
+//        GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(30, finestraTemporaleObservers);
 
         return controller;
     }
