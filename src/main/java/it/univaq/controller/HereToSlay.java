@@ -71,18 +71,18 @@ public class HereToSlay implements ControllerSubject {
         return this.giocatoreAttivo;
     }
 
-    // --- IL CENTRALINO: Comunicazione con la UI ---
-    // Qualsiasi click faccia l'utente sulla UI, i ragazzi della grafica 
-    // devono chiamare questo metodo passandoti il dato.
-//    public void riceviInputDaUI(Object datoInput) {
-//
-//        System.out.println("LOG: HereToSlay riceve input dalla UI e lo passa al Turno.");
-//
-//        // Il Controller non controlla l'input, fa solo da postino per il Turno!
-//        if (this.turnoAttuale != null) {
-//            this.turnoAttuale.riceviInput(datoInput, this.gui, this);
-//        }
-//    }
+//     --- IL CENTRALINO: Comunicazione con la UI ---
+//     Qualsiasi click faccia l'utente sulla UI, i ragazzi della grafica
+//     devono chiamare questo metodo passandoti il dato.
+    public void riceviInputDaUI(Object datoInput) {
+
+        System.out.println("LOG: HereToSlay riceve input dalla UI e lo passa al Turno.");
+
+        // Il Controller non controlla l'input, fa solo da postino per il Turno!
+        if (this.turnoAttuale != null) {
+            this.turnoAttuale.riceviInput(datoInput, this.gui, this);
+        }
+    }
 
     // (Getter necessari)
     public Turno getTurnoAttuale() { return turnoAttuale; }
