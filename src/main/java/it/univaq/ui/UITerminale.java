@@ -8,7 +8,7 @@ import it.univaq.technical.GiocataModificatore;
 import java.util.List;
 import java.util.Scanner;
 
-public class UITerminale implements InterfacciaUtente {
+public class UITerminale implements GameObserver {
 
     private final Scanner scanner = new Scanner(System.in);
     
