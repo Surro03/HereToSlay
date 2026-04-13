@@ -4,13 +4,16 @@ import it.univaq.entity.Player;
 import it.univaq.entity.Tavolo;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 public class Turno {
     private int paRimanenti;
     private final Player giocatoreDiTurno;
     private Object risultatoSottoFase;
     private TipoAttesa tipoAttesa;
+    private List<String> messagesBuffer = new ArrayList<>();
     // Usiamo Deque per una VERA struttura a Pila
     private Deque<Fase> pilaFasi;
     
@@ -90,6 +93,18 @@ public class Turno {
             return true;
         }
         return false;
+    }
+
+    public List<String> getMessages() {
+       return this.messagesBuffer;
+    }
+
+    public String getFirstMessage() {
+        return this.messagesBuffer.removeFirst();
+    }
+
+    public void addMessage(String message) {
+        this.messagesBuffer.add(message);
     }
 
     public void salvaRisultatoSottoFase(Object risultato) {

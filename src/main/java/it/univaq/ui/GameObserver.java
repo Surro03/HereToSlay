@@ -18,7 +18,7 @@ public interface GameObserver {
 
     void richiestaSfida();
 
-    void richiediConfermaEffetto(String nomeCarta);
+    void richiediConfermaEffetto();
 
     void rispostaUtilizzoEffetto(Boolean risposta);
 

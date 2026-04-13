@@ -43,9 +43,8 @@ public class FaseGiocaCartaEroe implements Fase {
             Tavolo tavolo = (Tavolo) turno.popInput();
             tavolo.aggiungiCartaParty(cartaScelta, turno.getGiocatoreDiTurno().getId());
             
-//            gui.mostraMessaggio("Hai giocato: " + cartaScelta.getNome());
-//
-//            gui.richiediConfermaEffetto("Vuoi lanciare i dadi per l'effetto di " + cartaScelta.getNome() + "?");
+            turno.addMessage(("Hai giocato: " + cartaScelta.getNome()));
+            turno.addMessage("Vuoi lanciare i dadi per l'effetto di " + cartaScelta.getNome() + "?");
             turno.setAttesa(CONFERMA_EFFETTO);
             this.step = 3;
             return false;
@@ -56,9 +55,6 @@ public class FaseGiocaCartaEroe implements Fase {
             Boolean vuoleAttivare = (Boolean) turno.popInput();
             
             if (vuoleAttivare) {
-                // ---> CORREZIONE QUI! <---
-                // Metto in cima la FaseEffetto e le do in pasto la carta giocata!
-                // Sarà lei a gestire dadi, modificatori ed esecuzione.
                 turno.aggiungiFaseInCima(new FaseEffetto(this.cartaScelta)); 
                 
                 this.step = 4;

@@ -6,5 +6,5 @@ public enum ClasseEroe {
     LADRO, 
     PALADINO, 
     RANGER, 
-    BARDO;
+    BARDO
 }

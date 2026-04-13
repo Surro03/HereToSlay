@@ -141,6 +141,7 @@ import it.univaq.controller.ControllerSubject;
 import it.univaq.entity.*;
 import it.univaq.technical.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -150,7 +151,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;
     private boolean giocoInEsecuzione = true;
-    private Map<Integer, Integer> mappaIndiciUniversali;
+    private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<Integer, Integer>();
     private StatoUI statoAttuale;
     private int numeroMassimoScelte;
 
@@ -220,10 +221,10 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
 
                 int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
 
-                // Richiama il metodo esplicito per le carte
-                controller.scegliCartaEroe(indiceRealeNellaMano);
-
                 this.statoAttuale = StatoUI.SCELTA_MOSSA;
+
+                // Richiama il metodo esplicito per le carte
+                controller.scegliCarta(indiceRealeNellaMano);
             }
         } catch (NumberFormatException e) {
             System.out.print("[!] Devi inserire un NUMERO: ");
@@ -302,7 +303,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                         e.getRequisito());
 
                 // Salviamo la corrispondenza: Scelta a schermo -> Posizione reale nella mano
-                mappaIndiciUniversali.put(sceltaVisiva, i);
+                this.mappaIndiciUniversali.put(sceltaVisiva, i);
                 sceltaVisiva++;
             }
         }
@@ -356,12 +357,12 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     }
 
     @Override
-    public void richiediConfermaEffetto(String messaggio) {
+    public void richiediConfermaEffetto() {
         // 1. Cambio lo stato per dire al ciclo principale cosa aspettarsi
         this.statoAttuale = StatoUI.CONFERMA_EFFETTO;
 
         // 2. Stampo semplicemente la domanda
-        System.out.print(messaggio + " (Si/No): ");
+        System.out.print("Vuoi usare l'effetto? (Si/No): ");
         // Il programma tornerà da solo a bloccarsi sullo scanner di avviaLoopInput().
     }
 
