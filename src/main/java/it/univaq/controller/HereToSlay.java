@@ -53,8 +53,9 @@ public class HereToSlay implements ControllerSubject {
 
     // --- IL MACRO-CICLO: Ritorno della spinta ---
     // Questo metodo viene chiamato dal Turno quando la sua pila si svuota
-    public void prossimoTurno() {
-        
+    @Override
+    public Player prossimoTurno() {
+
         // 1. Controlla se qualcuno ha vinto (Information Expert: lo sa il Tavolo)
         if (tavolo.checkVittoria(giocatoreAttivo.getId()).vittoria()) {
             gui.mostraMessaggio("VITTORIA! " + giocatoreAttivo.getNome() + " ha vinto la partita!");
@@ -67,21 +68,21 @@ public class HereToSlay implements ControllerSubject {
         this.giocatoreAttivo = elencoGiocatori.get(prossimoIndice);
 
         // 3. Nuova spinta per il nuovo giocatore!
-        this.iniziaTurno(this.giocatoreAttivo);
+        return this.giocatoreAttivo;
     }
 
     // --- IL CENTRALINO: Comunicazione con la UI ---
     // Qualsiasi click faccia l'utente sulla UI, i ragazzi della grafica 
     // devono chiamare questo metodo passandoti il dato.
-    public void riceviInputDaUI(Object datoInput) {
-        
-        System.out.println("LOG: HereToSlay riceve input dalla UI e lo passa al Turno.");
-        
-        // Il Controller non controlla l'input, fa solo da postino per il Turno!
-        if (this.turnoAttuale != null) {
-            this.turnoAttuale.riceviInput(datoInput, this.gui, this);
-        }
-    }
+//    public void riceviInputDaUI(Object datoInput) {
+//
+//        System.out.println("LOG: HereToSlay riceve input dalla UI e lo passa al Turno.");
+//
+//        // Il Controller non controlla l'input, fa solo da postino per il Turno!
+//        if (this.turnoAttuale != null) {
+//            this.turnoAttuale.riceviInput(datoInput, this.gui, this);
+//        }
+//    }
 
     // (Getter necessari)
     public Turno getTurnoAttuale() { return turnoAttuale; }

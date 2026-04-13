@@ -7,9 +7,9 @@ import it.univaq.controller.HereToSlay;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-    public class Turno {
+public class Turno {
     private int paRimanenti;
-    private Player giocatoreDiTurno;
+    private final Player giocatoreDiTurno;
     private Object risultatoSottoFase;
     // Usiamo Deque per una VERA struttura a Pila (Stack LIFO)
     private Deque<Fase> pilaFasi;
@@ -56,16 +56,16 @@ import java.util.Deque;
     // Metodo che la UI chiamerà quando l'utente clicca un bottone
     public void riceviInput(Object input, InterfacciaUtente gui, HereToSlay controller) {
         this.inputInSospeso = input;
-        
+
         // Risveglio il motore!
-        this.avanzaMotoreFasi(gui, controller); 
+        this.avanzaMotoreFasi(gui, controller);
     }
 
     // --- IL MOTORE A STATI ASINCRONO ---
     public void avanzaMotoreFasi(InterfacciaUtente gui, HereToSlay controller) {
         if (pilaFasi.isEmpty()) {
             System.out.println("Turno di " + giocatoreDiTurno.getNome() + " terminato.");
-            controller.prossimoTurno(); 
+            controller.prossimoTurno();
             return;
         }
 

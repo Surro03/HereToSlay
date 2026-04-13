@@ -1,5 +1,6 @@
 package it.univaq.controller;
 
+import it.univaq.entity.Player;
 import it.univaq.ui.GameObserver;
 
 public interface ControllerSubject {
@@ -7,7 +8,8 @@ public interface ControllerSubject {
     void removeObserver(GameObserver observer);
 
     void iniziaPartita();
-    void verificaMossa(int mossaSelezionata);
+
+    Player prossimoTurno();
 
     void iniziaFlussoGiocaEroe();
 
