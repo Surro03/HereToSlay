@@ -87,7 +87,7 @@ public class HereToSlay implements ControllerSubject{
                 notificaTutti(obs -> obs.menuSelezioneMossa(this.giocatoreAttivo,this.verificaCarteInMano(CartaEroe.class) ,turnoAttuale.getPaRimasti()));
                 break;
             case SCELTA_CARTA_EROE:
-                notificaTutti(obs -> obs.richiediSceltaCarta(giocatoreAttivo.getMano().getEroiInMano()));
+                notificaTutti(obs -> obs.menuSceltaCartaEroe(giocatoreAttivo.getMano()));
                 break;
             case CONFERMA_EFFETTO:
                 notificaTutti(obs -> obs.richiediConfermaEffetto("Vuoi usare l'effetto?"));
@@ -107,7 +107,20 @@ public class HereToSlay implements ControllerSubject{
     // CHIAMATE SPECIFICHE DALLA UI
     // ==========================================================
     @Override
-    public void selezionaMossa(int mossa) { this.inoltraAlTurno(mossa); }
+    public void selezionaMossa(int mossa) {
+        boolean presenzaEroi = this.verificaCarteInMano(CartaEroe.class);
+        if (mossa == 1 && !presenzaEroi) {
+            notificaTutti(obs -> obs.erroreSelezioneMossa("Non hai Eroi da giocare nella tua mano"));
+            return; // Esce dal metodo, il controller torna in attesa di un nuovo input!
+            }
+
+        if (mossa < 1 || mossa > 7) {
+            notificaTutti(obs -> obs.erroreSelezioneMossa("Devi scegliere una mossa fra 1 e 7"));
+            return;
+            }
+
+        this.inoltraAlTurno(mossa);
+    }
 
     @Override
     public void scegliCartaEroe(int indiceRealeNellaMano) { this.inoltraAlTurno(indiceRealeNellaMano); }

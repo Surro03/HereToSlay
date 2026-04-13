@@ -17,5 +17,7 @@ public interface ControllerSubject {
 
     void scegliCartaEroe(int indiceRealeNellaMano);
 
+    void confermaAttivazioneEffetto(boolean vuoleAttivare);
+
     void annullaScelta();
 }

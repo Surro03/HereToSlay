@@ -1,6 +1,6 @@
 package it.univaq.technical;
 
-i
+
 import it.univaq.entity.CartaModificatore;
 
 public class FaseModificatori implements Fase {
@@ -16,13 +16,13 @@ public class FaseModificatori implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno, InterfacciaUtente gui) {
+    public boolean eseguiFase(Turno turno) {
         
         // --- STEP 0: INIZIO TIMER E RICHIESTA ---
         if (this.step == 0) {
             System.out.println("LOG: FaseModificatori iniziata. Avvio timer sfide...");
             
-            gui.richiediGiocataModificatori(punteggioAttuale);
+            //gui.richiediGiocataModificatori(punteggioAttuale);
             
             this.step = 1;
             return false; // Mi addormento
@@ -36,7 +36,7 @@ public class FaseModificatori implements Fase {
             // CASO A: Il timer è scaduto!
             if (inputRicevuto instanceof String && inputRicevuto.equals("TIMEOUT")) {
                 System.out.println("LOG: Nessuno ha giocato modificatori. Tempo scaduto!");
-                gui.mostraMessaggio("Fase modificatori conclusa. Punteggio finale: " + punteggioAttuale);
+                //gui.mostraMessaggio("Fase modificatori conclusa. Punteggio finale: " + punteggioAttuale);
                 
                 // ---> CORREZIONE 2 FONDAMENTALE <---
                 // Appoggio il punteggio aggiornato nel turno, così la FaseEffetto lo trova!
@@ -57,7 +57,7 @@ public class FaseModificatori implements Fase {
                 
                 System.out.println("LOG: Giocato modificatore! Nuovo punteggio: " + this.punteggioAttuale);
                 
-                gui.aggiornaSchermataModificatori(this.punteggioAttuale);
+                //gui.aggiornaSchermataModificatori(this.punteggioAttuale);
                 
                 return false; 
             }

@@ -226,24 +226,26 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                 this.statoAttuale = StatoUI.SCELTA_MOSSA;
             }
         } catch (NumberFormatException e) {
-            // Ora il gioco non crasha più se l'utente sbaglia a digitare!
             System.out.print("[!] Devi inserire un NUMERO: ");
         }
     }
 
     private void gestisciInputConfermaEffetto(String input) {
-        // Qui non serve convertire in numero, ci aspettiamo una stringa!
-        boolean vuoleAttivare = input.equalsIgnoreCase("Si");
 
-        // Ripristiniamo lo stato principale
-        this.statoAttuale = StatoUI.SCELTA_MOSSA;
-
-        // Inviamo il boolean sicuro al controller
-        controller.confermaAttivazioneEffetto(vuoleAttivare);
+        if (input.equalsIgnoreCase("Si") || input.equalsIgnoreCase("No")) {
+            // Input valido! Converto in boolean
+            boolean vuoleAttivare = input.equalsIgnoreCase("Si");
+            // 1. Ripristino il cartello principale
+            this.statoAttuale = StatoUI.SCELTA_MOSSA;
+            // 2. Invio la risposta definitiva al motore di gioco
+            controller.confermaAttivazioneEffetto(vuoleAttivare);
+        } else {
+            System.out.print("[!] Input non valido, devi dire Si o No: ");
+        }
     }
 
     @Override
-    public void menuSelezioneMossa(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti) {
+    public void menuSelezioneMossa(Player giocatoreAttivo, boolean presenzaEroi, int paRimasti) {
 
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Turno di: " + giocatoreAttivo.getNome() + " | PA disponibili: " + paRimasti);
@@ -253,7 +255,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         System.out.printf("%-3s | %-30s | %-10s%n", "ID", "AZIONE", "COSTO PA");
         System.out.println("-".repeat(50));
 
-        if (isEroiEmpty) {
+        if (!presenzaEroi) {
             System.out.println("   Non hai Eroi da giocare nella tua mano   ");
         } else {
             System.out.println(" 1  | Gioca Carta Eroe               | 1 PA");
@@ -277,7 +279,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     }
 
     @Override
-    public void richiediSceltaCartaEroe(Mano mano) {
+    public void menuSceltaCartaEroe(Mano mano) {
         // 1. Cambiamo lo stato della UI per bloccare i comandi del menu principale
         this.statoAttuale = StatoUI.SCELTA_EROE;
         System.out.println("\n--- SCEGLI L'EROE DA GIOCARE ---");
@@ -354,20 +356,15 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     }
 
     @Override
-    public Boolean richiestaUtilizzoEffetto(String nomeCarta) {
-        String scelta;
-        while (true) {
-            System.out.println("Vuoi provare ad attivare l'effetto di " + nomeCarta + "? (Si/No)");
-            scelta = this.scanner.nextLine().trim();
-            if (scelta.equalsIgnoreCase("Si")) {
-                return true;
-            }
-            if (scelta.equalsIgnoreCase("No")) {
-                return false;
-            }
-            System.out.println("[!] Input non valido, devi dire Si o No.");
-        }
+    public void richiediConfermaEffetto(String messaggio) {
+        // 1. Cambio lo stato per dire al ciclo principale cosa aspettarsi
+        this.statoAttuale = StatoUI.CONFERMA_EFFETTO;
+
+        // 2. Stampo semplicemente la domanda
+        System.out.print(messaggio + " (Si/No): ");
+        // Il programma tornerà da solo a bloccarsi sullo scanner di avviaLoopInput().
     }
+
 
     @Override
     public void rispostaUtilizzoEffetto(Boolean risposta) {

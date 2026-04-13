@@ -6,19 +6,19 @@ import java.util.List;
 
 public interface GameObserver {
 
-    void menuSelezioneMossa(Player giocatoreAttivo, boolean isEroiEmpty, int paRimasti);
+    void menuSelezioneMossa(Player giocatoreAttivo, boolean presenzaEroi, int paRimasti);
 
     void erroreSelezioneMossa(String errore);
 
     //void messaggioMossaSelezionata(int paRimasti, Boolean succeso, String mossa);
 
-    void richiediSceltaCartaEroe(Mano mano);
+    void menuSceltaCartaEroe(Mano mano);
 
     //<T extends Carta> T scegliCartaDaGiocare(String tipoCarta, List<T> carteDisponibili, String nomePlayer);
 
     void richiestaSfida();
 
-    Boolean richiestaUtilizzoEffetto(String nomeCarta);
+    void richiediConfermaEffetto(String nomeCarta);
 
     void rispostaUtilizzoEffetto(Boolean risposta);
 
@@ -114,7 +114,7 @@ public interface InterfacciaUtente {
 
     void richiestaSfida();
 
-    Boolean richiestaUtilizzoEffetto(String nomeCarta);
+    Boolean richiediConfermaEffetto(String nomeCarta);
 
     void rispostaUtilizzoEffetto(Boolean risposta);
 

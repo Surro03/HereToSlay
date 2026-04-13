@@ -71,7 +71,7 @@ public class FaseGiocaCartaEroe implements Fase {
         // --- STEP 3: CONCLUSIONE ---
         else if (this.step == 4) {
             // Qui arriviamo solo DOPO che FaseEffetto (e tutte le sue sotto-fasi) hanno finito.
-            gui.mostraMessaggio("Risoluzione della carta Eroe completata.");
+            //gui.mostraMessaggio("Risoluzione della carta Eroe completata.");
             return true; 
         }
 

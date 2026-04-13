@@ -22,7 +22,7 @@ public class FaseEffetto implements Fase {
             
             // 1. Tiro i dadi
             this.punteggioDadiBase = lanciaDueDadi(); 
-            gui.mostraMessaggio("Hai tirato i dadi! Risultato base: " + this.punteggioDadiBase);
+            //gui.mostraMessaggio("Hai tirato i dadi! Risultato base: " + this.punteggioDadiBase);
             
             // 2. Chiamo la fase dei Modificatori
             turno.aggiungiFaseInCima(new FaseModificatori(this.punteggioDadiBase));
@@ -37,17 +37,17 @@ public class FaseEffetto implements Fase {
             // ---> CORREZIONE QUI: Recupero un Float invece di un Integer! <---
             Float punteggioFinale = (Float) turno.popRisultatoSottoFase();
             
-            gui.mostraMessaggio("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale);
+            //gui.mostraMessaggio("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale);
             
             // 4. Controllo se l'effetto si attiva (passando il Float)
             if (carta.checkAttivazioneEffetto(punteggioFinale)) {
                 
-                gui.mostraMessaggio("Successo! Effetto attivato: " + carta.getEffetto());
+                //gui.mostraMessaggio("Successo! Effetto attivato: " + carta.getEffetto());
                 
                 // [!] QUI ANDRÀ LA LOGICA REALE DELL'EFFETTO [!]
                 
             } else {
-                gui.mostraMessaggio("Fallito! Il punteggio " + punteggioFinale + " non basta.");
+                //gui.mostraMessaggio("Fallito! Il punteggio " + punteggioFinale + " non basta.");
             }
             
             return true; // La Fase Effetto è conclusa!
