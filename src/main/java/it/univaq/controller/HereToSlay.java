@@ -2,12 +2,13 @@ package it.univaq.controller;
 
 import it.univaq.entity.*;
 import it.univaq.technical.*;
-import it.univaq.ui.InterfacciaUtente;
+import it.univaq.ui.GameObserver;
+
 import java.util.List;
 
-public class HereToSlay {
+public class HereToSlay implements ControllerSubject {
 
-    private InterfacciaUtente gui;
+    private List<GameObserver> observers;
     private final List<Player> elencoGiocatori;
     private Player giocatoreAttivo;
     private final Tavolo tavolo;
@@ -15,21 +16,24 @@ public class HereToSlay {
     // Il nostro nuovo e fiammante motore a stati
     private Turno turnoAttuale; 
 
-    public HereToSlay(List<Player> elencoGiocatori, InterfacciaUtente gui) {
+    public HereToSlay(List<Player> elencoGiocatori) {
         this.elencoGiocatori = elencoGiocatori;
-        this.gui = gui;
         this.tavolo = new Tavolo(elencoGiocatori);
         // Niente più inizializzazione di PilaFasi qui dentro!
     }
 
-    // --- IL BIG BANG: Inizio della partita ---
+    @Override
+    public void addObserver(GameObserver gameObserver) {
+        this.observers.add(gameObserver);
+    }
+    @Override
+    public void removeObserver(GameObserver gameObserver) {
+        this.observers.remove(gameObserver);
+    }
+
+    @Override
     public void iniziaPartita() {
-        System.out.println("LOG: Partita Avviata!");
-        
-        // Setup iniziale (es. mischia i mazzi)
-        // tavolo.preparaPartita();
-        
-        this.giocatoreAttivo = elencoGiocatori.get(0);
+        this.giocatoreAttivo = elencoGiocatori.getFirst();
         this.iniziaTurno(this.giocatoreAttivo);
     }
 

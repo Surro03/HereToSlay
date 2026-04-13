@@ -17,18 +17,8 @@ public class HereToSlaySetup {
         // 1. Crea i giocatori con le loro mani pre-impostate per il test
         List<Player> playerList = this.setupPlayers(2, null);
         
-        // 2. Crea l'interfaccia grafica
-        UITerminale uiTerminale = new UITerminale();
-        
-        // 3. Crea il Controller usando il NUOVO costruttore
-        HereToSlay controller = new HereToSlay(playerList, uiTerminale);
-        
-        // ---> 4. IL COLLEGAMENTO MAGICO <---
-        // Diciamo alla UI qual è il controller a cui deve spedire i messaggi dei bottoni!
-        uiTerminale.setController(controller);
-
-        // N.B: Abbiamo rimosso GeneratoreDiEventi e FinestraTemporaleObserver!
-        // Ora il gioco non si bloccherà più con Thread strani, fa tutto la Pila.
+        // 2. Crea il Controller usando il NUOVO costruttore
+        HereToSlay controller = new HereToSlay(playerList);
 
         return controller;
     }
