@@ -2,6 +2,7 @@ package it.univaq.technical;
 
 
 import it.univaq.entity.CartaModificatore;
+import it.univaq.entity.Tavolo;
 
 public class FaseModificatori implements Fase {
     
@@ -16,7 +17,7 @@ public class FaseModificatori implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno) {
+    public boolean eseguiFase(Turno turno, Tavolo tavolo) {
         
         // --- STEP 0: INIZIO TIMER E RICHIESTA ---
         if (this.step == 0) {

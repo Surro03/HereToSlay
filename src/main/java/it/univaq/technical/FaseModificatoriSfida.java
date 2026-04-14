@@ -2,6 +2,7 @@ package it.univaq.technical;
 
 import it.univaq.entity.CartaModificatore;
 import it.univaq.entity.Player;
+import it.univaq.entity.Tavolo;
 
 public class FaseModificatoriSfida implements Fase {
 
@@ -19,7 +20,7 @@ public class FaseModificatoriSfida implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno) {
+    public boolean eseguiFase(Turno turno, Tavolo tavolo) {
 
         if (this.step == 0) {
             this.step = 1;
@@ -36,11 +37,13 @@ public class FaseModificatoriSfida implements Fase {
                 return true;
             }
 
-            else if (inputRicevuto instanceof GiocataModificatoreSfida giocata) {
-                float valore = giocata.carta().getValoreScelto(giocata.usaPositivo());
+            else if (inputRicevuto instanceof GiocataModificatoreSfida(
+                    CartaModificatore carta, boolean usaPositivo, Player bersaglio
+            )) {
+                float valore = carta.getValoreScelto(usaPositivo);
 
                 // Applica il modificatore a chi è stato scelto come bersaglio!
-                if (giocata.bersaglio().equals(giocatoreAttivo)) {
+                if (bersaglio.equals(giocatoreAttivo)) {
                     this.punteggioAttivo += valore;
                 } else {
                     this.punteggioSfidante += valore;

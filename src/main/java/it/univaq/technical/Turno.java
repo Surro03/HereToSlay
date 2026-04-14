@@ -9,6 +9,7 @@ import java.util.Deque;
 import java.util.List;
 
 public class Turno {
+    private Tavolo tavolo;
     private int paRimanenti;
     private final Player giocatoreDiTurno;
     private Object risultatoSottoFase;
@@ -20,11 +21,12 @@ public class Turno {
     // Variabile "Posta in arrivo" per i dati che ci manda la UI
     private Object inputInSospeso;
 
-    public Turno(Player giocatoreDiTurno) {
+    public Turno(Player giocatoreDiTurno, Tavolo tavolo) {
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.paRimanenti = 3;
         this.pilaFasi = new ArrayDeque<>();
         this.inputInSospeso = null;
+        this.tavolo = tavolo;
     }
 
     // --- GRASP: INFORMATION EXPERT (Gestione PA) ---
@@ -71,7 +73,7 @@ public class Turno {
         // Guardo chi c'è in cima adesso
         Fase faseInCima = pilaFasi.peek();
         assert faseInCima != null;
-        boolean faseConclusa = faseInCima.eseguiFase(this);
+        boolean faseConclusa = faseInCima.eseguiFase(this, this.tavolo);
 
         if (faseConclusa) {
             pilaFasi.pop(); 

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 public class HereToSlay implements ControllerSubject{
 
-    private List<GameObserver> observers;
+    private final List<GameObserver> observers;
     private final List<Player> elencoGiocatori;
     private Player giocatoreAttivo;
     private final Tavolo tavolo;
@@ -21,7 +21,6 @@ public class HereToSlay implements ControllerSubject{
     public HereToSlay(List<Player> elencoGiocatori) {
         this.elencoGiocatori = elencoGiocatori;
         this.tavolo = new Tavolo(elencoGiocatori);
-        // FIX: Inizializziamo la lista, altrimenti crasha!
         this.observers = new ArrayList<>();
     }
 
@@ -45,7 +44,7 @@ public class HereToSlay implements ControllerSubject{
     private void iniziaTurno(Player giocatore) {
         this.notificaTutti(obs -> obs.mostraMessaggio("\n--- INIZIA IL TURNO DI: " + giocatore.getNome() + " ---"));
 
-        this.turnoAttuale = new Turno(giocatore);
+        this.turnoAttuale = new Turno(giocatore, this.tavolo);
         this.turnoAttuale.aggiungiFaseInCima(new FaseSceltaMossa());
 
         // Diamo la "prima spinta" a vuoto per far partire la prima fase
@@ -90,7 +89,7 @@ public class HereToSlay implements ControllerSubject{
         // 4. Controllo: La fase si è fermata. Cosa aspetta?
         switch (this.turnoAttuale.getAttesa()) {
             case SCELTA_MOSSA_PRINCIPALE:
-                notificaTutti(obs -> obs.menuSelezioneMossa(this.giocatoreAttivo,this.verificaTipoDiCarteInMano(CartaEroe.class) ,turnoAttuale.getPaRimasti()));
+                notificaTutti(obs -> obs.menuSelezioneMossa(this.giocatoreAttivo,this.giocatoreAttivo.verificaTipoDiCarteInMano(CartaEroe.class) ,turnoAttuale.getPaRimasti()));
                 break;
             case SCELTA_CARTA_EROE:
                 notificaTutti(obs -> obs.menuSceltaCartaEroe(giocatoreAttivo.getMano()));
@@ -98,15 +97,7 @@ public class HereToSlay implements ControllerSubject{
             case CONFERMA_EFFETTO:
                 notificaTutti(GameObserver::richiediConfermaEffetto);
                 break;
-            case RICHIESTA_TAVOLO:
-                this.inoltraAlTurno(this.tavolo);
-                break;
         }
-    }
-
-    public boolean verificaTipoDiCarteInMano(Class<? extends Carta> classeCercata) {
-        return giocatoreAttivo.getMano().getCarteMano().stream()
-                .anyMatch(classeCercata::isInstance);
     }
 
     // ==========================================================
@@ -114,7 +105,7 @@ public class HereToSlay implements ControllerSubject{
     // ==========================================================
     @Override
     public void selezionaMossa(int mossa) {
-        boolean presenzaEroi = this.verificaTipoDiCarteInMano(CartaEroe.class);
+        boolean presenzaEroi = this.giocatoreAttivo.verificaTipoDiCarteInMano(CartaEroe.class);
         if (mossa == 1 && !presenzaEroi) {
             notificaTutti(obs -> obs.erroreSelezioneMossa("Non hai Eroi da giocare nella tua mano"));
             return; // Esce dal metodo, il controller torna in attesa di un nuovo input!

@@ -1,14 +1,16 @@
 package it.univaq.technical;
 
+import it.univaq.entity.Tavolo;
+
 public class FaseSceltaMossa implements Fase {
     
     private int step = 0;
 
     // NESSUNA GUI NELLA FIRMA DEL METODO!
     @Override
-    public boolean eseguiFase(Turno turno) {
+    public boolean eseguiFase(Turno turno, Tavolo tavolo) {
 
-        if (step == 0) {
+        if (this.step == 0) {
             System.out.println("LOG: FaseSceltaMossa iniziata. Calcolo i PA disponibili...");
 
             int pa = turno.getPaRimasti();
@@ -20,13 +22,13 @@ public class FaseSceltaMossa implements Fase {
             }
 
             // La fase NON stampa nulla. Dice semplicemente al Turno di cosa ha bisogno.
-            turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE);
+            this.step = 1;
 
-            step = 1;
+            turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE);
             return false; // Restituisce false per fermare il while del Turno.
         }
 
-        else if (step == 1) {
+        else if (this.step == 1) {
             System.out.println("LOG: FaseSceltaMossa risvegliata! Leggo l'input...");
 
             // Il controller ci ha appena iniettato l'input

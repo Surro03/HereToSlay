@@ -43,9 +43,8 @@ public class Tavolo {
 	 * 
 	 * @param carta
 	 */
-	public void ScartaCarta(Carta carta) {
-		// TODO - implement Tavolo.ScartaCarta
-		throw new UnsupportedOperationException();
+	public void aggiungiCartaPilaScarti(Carta carta) {
+		this.pilaScarti.aggiungiCarta(carta);
 	}
 
 	public void operation() {
@@ -53,9 +52,8 @@ public class Tavolo {
 		throw new UnsupportedOperationException();
 	}
 
-	public void aggiungiCartaParty (CartaEroe carta,int playerId){
-			partyMap.get(playerId).inserisciCarta(carta);
-
+	public void aggiungiCartaParty(CartaEroe carta,int playerId){
+			this.partyMap.get(playerId).inserisciCarta(carta);
 	}
 
 }

@@ -9,5 +9,5 @@ public interface Fase {
      * @param turno Il turno attuale, usato per controllare i PA e la pila.
      * @return TRUE se la fase ha finito (va tolta dalla pila), FALSE se si è messa in pausa.
      */
-    boolean eseguiFase(Turno turno);
+    boolean eseguiFase(Turno turno, Tavolo tavolo);
 }

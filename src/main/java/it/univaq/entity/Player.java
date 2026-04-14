@@ -49,6 +49,31 @@ public class Player {
                 .map(c -> (CartaEroe) c)
                 .toList();
     }
+    public List<CartaSfida> getSfideInMano() {
+        return this.mano.getCarteMano().stream()
+                .filter(c -> c instanceof CartaSfida)
+                .map(c -> (CartaSfida) c)
+                .toList();
+    }
+
+    public List<CartaOggetto> getOggettiInMano() {
+        return this.mano.getCarteMano().stream()
+                .filter(c -> c instanceof CartaOggetto)
+                .map(c -> (CartaOggetto) c)
+                .toList();
+    }
+
+    public List<CartaModificatore> getModificatoriInMano() {
+        return this.mano.getCarteMano().stream()
+                .filter(c -> c instanceof CartaModificatore)
+                .map(c -> (CartaModificatore) c)
+                .toList();
+    }
+
+    public boolean verificaTipoDiCarteInMano(Class<? extends Carta> classeCercata) {
+        return this.mano.getCarteMano().stream()
+                .anyMatch(classeCercata::isInstance);
+    }
 
     @Override
     public String toString() {

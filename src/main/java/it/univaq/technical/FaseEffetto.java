@@ -2,6 +2,7 @@ package it.univaq.technical;
 
 import it.univaq.entity.CartaEroe;
 import it.univaq.entity.Dado;
+import it.univaq.entity.Tavolo;
 
 public class FaseEffetto implements Fase {
 
@@ -15,7 +16,7 @@ public class FaseEffetto implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno) {
+    public boolean eseguiFase(Turno turno, Tavolo tavolo) {
         
         // --- STEP 0: LANCIO I DADI E AVVIO MODIFICATORI ---
         if (this.step == 0) {

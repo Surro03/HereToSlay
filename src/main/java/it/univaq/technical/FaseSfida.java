@@ -2,7 +2,7 @@ package it.univaq.technical;
 
 import it.univaq.entity.Carta;
 import it.univaq.entity.Player;
-import it.univaq.ui.InterfacciaUtente;
+import it.univaq.entity.Tavolo;
 
 public class FaseSfida implements Fase {
 
@@ -20,7 +20,7 @@ public class FaseSfida implements Fase {
     }
 
     @Override
-    public boolean eseguiFase(Turno turno) {
+    public boolean eseguiFase(Turno turno, Tavolo tavolo) {
 
         // STEP 0: Chiedo se qualcuno vuole lanciare una sfida
         if (this.step == 0) {
