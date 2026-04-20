@@ -150,9 +150,9 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
 
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;
-    private final boolean giocoInEsecuzione = true;
+    private boolean giocoInEsecuzione = true;
     private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<>();
-    private final Map<Integer, GiocataGiocatore> mappaEffettiModificatore = new HashMap<>();
+    private final Map<Integer, GiocataGiocatore> mappaEffettiCarta = new HashMap<>();
     private StatoUI statoAttuale;
     private int numeroMassimoScelte;
 
@@ -206,6 +206,9 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     gestisciInputAttesaEffettoModificatore(input);
                     break;
 
+                case FINE_PARTITA:
+                    this.giocoInEsecuzione = false;
+                    break;
                 default:
                     System.out.println("[!] Errore critico: Stato UI sconosciuto.");
                     break;
@@ -223,7 +226,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             }
 
             // Vado a pescare il comando esatto associato a quel numero
-            GiocataGiocatore giocata = this.mappaEffettiModificatore.get(scelta);
+            GiocataGiocatore giocata = this.mappaEffettiCarta.get(scelta);
 
             // Lo invio al controller
             this.controller.sceltaBersaglioEffettoModificatore(giocata);
@@ -573,7 +576,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
 
         // Pulisco la mappa dalla giocata precedente
-        this.mappaEffettiModificatore.clear();
+        this.mappaEffettiCarta.clear();
         int sceltaVisiva = 1;
 
         System.out.println("\n--- DETTAGLI MODIFICATORE ---");
@@ -586,7 +589,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValorePositivo()));
 
             // SALVO L'INTENZIONE NELLA MAPPA!
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.POSITIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -595,7 +598,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValoreNegativo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.NEGATIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
         this.numeroMassimoScelte = sceltaVisiva - 1;
@@ -623,7 +626,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
 
         // Pulisco la mappa dalla giocata precedente
-        this.mappaEffettiModificatore.clear();
+        this.mappaEffettiCarta.clear();
         int sceltaVisiva = 1;
 
         System.out.println("\n--- DETTAGLI MODIFICATORE ---");
@@ -636,7 +639,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValorePositivo()));
 
             // SALVO L'INTENZIONE NELLA MAPPA!
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -645,7 +648,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValoreNegativo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 
@@ -654,7 +657,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValorePositivo(), sfidante.getNome(), (punteggioSfidante + mod.getValorePositivo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -663,7 +666,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), sfidante.getNome(), (punteggioSfidante + mod.getValoreNegativo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
+            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 

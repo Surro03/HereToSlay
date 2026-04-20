@@ -10,7 +10,6 @@ public interface GameObserver {
 
     void erroreSelezioneMossa(String errore);
 
-
     void menuSceltaCartaEroe(Mano mano);
 
     void menuSfida(Player giocatoreAttivo, Carta cartaGiocata, Player giocatoreInterrogato, List<Integer> indiciCarteGiocabili);

@@ -9,7 +9,7 @@ public class Main {
 
         System.out.println("=== BENVENUTO IN HERE TO SLAY ===");
 
-        // 1. Creo l'oggetto che si occuperà di preparare la partita (senza parametri!)
+        // 1. Creo l'oggetto che si occuperà di preparare la partita
         HereToSlaySetup hereToSlaySetup = new HereToSlaySetup();
 
         // 2. Dico al setup di fare la sua magia. 
