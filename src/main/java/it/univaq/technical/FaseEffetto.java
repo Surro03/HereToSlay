@@ -61,7 +61,7 @@ public class FaseEffetto implements Fase {
     // Metodo di servizio per simulare i dadi
     private int lanciaDadi(int numDadi) {
         int risultato = 0;
-        for (int i = 0; i <= numDadi; i++) {
+        for (int i = 0; i < numDadi; i++) {
             risultato = risultato + dado.tiraDado();
         }
         return risultato;

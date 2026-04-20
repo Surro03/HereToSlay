@@ -37,7 +37,7 @@ public class FaseSfida implements Fase {
 
                 // Incremento l'indice e riavvio il loop istantaneamente!
                 this.indiceAvversarioAttuale++;
-                return false;
+                return this.eseguiFase(turno, tavolo);
             }
             List<Integer> indiciCarteGiocabili = giocatoreInterrogato.getMano().getIndiciCarteDiTipo(CartaSfida.class);
             this.step = 1;
@@ -52,7 +52,7 @@ public class FaseSfida implements Fase {
             if (risposta == null) {
                 indiceAvversarioAttuale++;
                 this.step = 0;
-                return false;
+                return this.eseguiFase(turno, tavolo);
             }else{
                 this.avversarioAttuale = turno.getAvversari().get(indiceAvversarioAttuale);
                 Carta cartaDaScartare = this.avversarioAttuale.getMano().rimuoviCarta(risposta);
