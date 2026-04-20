@@ -37,13 +37,13 @@ public class FaseEffetto implements Fase {
         else if (this.step == 1) {
             
 
-            Float punteggioFinale = (Float) turno.popRisultatoSottoFase();
+            RisultatoFaseModificatoriNormale punteggioFinale = (RisultatoFaseModificatoriNormale) turno.popRisultatoSottoFase();
             
-            turno.addMessage("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale);
+            turno.addMessage("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale.punteggioFinale());
             
             // 4. Controllo se l'effetto si attiva (passando il Float)
-            if (carta.checkAttivazioneEffetto(punteggioFinale)) {
-                
+            if (carta.checkAttivazioneEffetto(punteggioFinale.punteggioFinale())) {
+
                 turno.addMessage("Successo! Effetto attivato: " + carta.getEffetto());
                 
                 // [!] QUI ANDRÀ LA LOGICA REALE DELL'EFFETTO [!]
