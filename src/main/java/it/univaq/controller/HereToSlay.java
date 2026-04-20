@@ -123,11 +123,6 @@ public class HereToSlay implements ControllerSubject{
     public void annullaScelta() { this.inoltraAlTurno(null); }
 
     @Override
-    public void sceltaGiocareCartaModificatore(Integer scelta) {
-        this.inoltraAlTurno(scelta);
-    }
-
-    @Override
     public void sceltaBersaglioEffettoModificatore(GiocataGiocatore giocata) {
         this.inoltraAlTurno(giocata);
     }
@@ -135,8 +130,6 @@ public class HereToSlay implements ControllerSubject{
     @Override
     public void confermaAttivazioneEffetto(boolean vuoleAttivare) { this.inoltraAlTurno(vuoleAttivare); }
 
-    @Override
-    public void sceltaGiocareSfida(Integer scelta) {this.inoltraAlTurno(scelta);}
 
 
 

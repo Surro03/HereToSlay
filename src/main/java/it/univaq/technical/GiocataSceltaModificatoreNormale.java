@@ -1,8 +1,7 @@
 package it.univaq.technical;
+import it.univaq.entity.CartaModificatore;
 
-
-public record GiocataSceltaModificatore(
-        BersaglioModificatore bersaglio,
+public record GiocataSceltaModificatoreNormale(
         TipoEffetto tipoEffetto
 )
         implements GiocataGiocatore

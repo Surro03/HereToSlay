@@ -73,7 +73,7 @@ public class FaseModificatoriSfida implements Fase {
 
         } else if (this.step == 2) {
             // 1. Prendo il Payload
-            GiocataSceltaModificatore giocata = (GiocataSceltaModificatore) turno.popInput();
+            GiocataSceltaModificatoreSfida giocata = (GiocataSceltaModificatoreSfida) turno.popInput();
 
             // 2. Capisco QUALE valore devo usare dalla carta in sospeso
             int valoreDaApplicare = (giocata.tipoEffetto() == TipoEffetto.POSITIVO)

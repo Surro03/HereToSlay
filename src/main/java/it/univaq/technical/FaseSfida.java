@@ -2,7 +2,6 @@ package it.univaq.technical;
 
 import it.univaq.entity.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FaseSfida implements Fase {
@@ -78,7 +77,7 @@ public class FaseSfida implements Fase {
         else if (this.step == 2) {
             // Recupero un array con i due punteggi finali
             RisultatoFaseModificatoriSfida punteggiFinali = (RisultatoFaseModificatoriSfida) turno.popRisultatoSottoFase();
-            int punteggioFinaleGiocatoreDiTurno = punteggiFinali.punteggioFinaleGiocatoreDiturno();
+            int punteggioFinaleGiocatoreDiTurno = punteggiFinali.punteggioFinaleGiocatoreDiTurno();
             int punteggioFinaleSfidante = punteggiFinali.punteggioFinaleSfidante();
             turno.addMessage("Risultato Finale | " + turno.getGiocatoreDiTurno().getNome() + ": " + punteggioFinaleGiocatoreDiTurno+ " | " + this.avversarioAttuale.getNome() + ": " + punteggioFinaleSfidante );
 

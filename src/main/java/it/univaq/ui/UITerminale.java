@@ -150,9 +150,9 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
 
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;
-    private boolean giocoInEsecuzione = true;
+    private final boolean giocoInEsecuzione = true;
     private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<>();
-    private final Map<Integer, GiocataSceltaModificatore> mappaEffettiModificatore = new HashMap<>();
+    private final Map<Integer, GiocataGiocatore> mappaEffettiModificatore = new HashMap<>();
     private StatoUI statoAttuale;
     private int numeroMassimoScelte;
 
@@ -195,7 +195,11 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     break;
 
                 case SCELTA_MODIFICATORE_SFIDA:
-                    gestisciInputRispostaSceltaModificatore(input);
+                    gestisciInputRispostaSceltaModificatoreSfida(input);
+                    break;
+
+                case SCELTA_MODIFICATORE:
+                    gestisciInputRispostaSceltaModificatoreNormale(input);
                     break;
 
                 case ATTESA_EFFETTO_MODIFICATORE:
@@ -229,7 +233,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         }
     }
 
-    private void gestisciInputRispostaSceltaModificatore(String input) {
+    private void gestisciInputRispostaSceltaModificatoreSfida(String input) {
         try {
             int scelta = Integer.parseInt(input);
 
@@ -248,6 +252,28 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.print("[!] Devi inserire un NUMERO: ");
         }
     }
+
+    private void gestisciInputRispostaSceltaModificatoreNormale(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+
+            if (scelta < 0 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
+            } else {
+                if (scelta == 0){
+                    controller.scegliCarta(null);
+                }else {
+                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
+                    // Richiama il metodo esplicito per le carte
+                    controller.scegliCarta(indiceRealeNellaMano);
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.print("[!] Devi inserire un NUMERO: ");
+        }
+    }
+
+
 
     private void gestisciInputSceltaOggetto(String input) {
     }
@@ -492,6 +518,92 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     }
 
     @Override
+    public void menuSceltaCartaModificatore(int punteggioAttuale, Player giocatoreDiTurno, List<Integer> indiciCarteGiocabili, Player giocatoreInterrogato){
+        // 1. Cambio lo stato per il Vigile Urbano
+        this.statoAttuale = StatoUI.SCELTA_MODIFICATORE;
+
+        // 3. Faccio la chiamata al giocatore di turno
+        System.out.println("\n>> " + giocatoreInterrogato.getNome().toUpperCase() + ", tocca a te!");
+
+        System.out.println("Ecco le tue carte in mano:");
+        List<Carta> carteInMano = giocatoreInterrogato.getMano().getCarteMano();
+
+        // Stampo TUTTA la mano a scopo informativo
+        for (int i = 0; i < carteInMano.size(); i++) {
+            Carta c = carteInMano.get(i);
+            // Uso un formato semplice, visto che qui è solo visualizzazione
+            System.out.printf("  %d | %s [%s]%n", (i + 1), c.getNome(), c.getClass().getSimpleName().replace("Carta", ""));
+        }
+
+        System.out.println("------------------------------------");
+        System.out.println("\n--- SCEGLI SE GIOCARE UNA CARTA MODIFICATORE ---");
+        System.out.printf("%-4s | %-15s | %-20s %n", "NUM.", "NOME CARTA", "VALORE MODIFICATORE");
+        System.out.println("-".repeat(45));
+
+        this.mappaIndiciUniversali.clear();
+        int sceltaVisiva = 1;
+
+        for (Integer indiceReale : indiciCarteGiocabili) {
+
+            Carta c = carteInMano.get(indiceReale);
+
+            CartaModificatore mod = (CartaModificatore) c;
+
+
+            String valori = String.format("+%d / %d", mod.getValorePositivo(), mod.getValoreNegativo());
+
+            // 4. Stampo Numero, Nome e Valori
+            System.out.printf("[%d]  | %-15s | %-20s %n", sceltaVisiva, mod.getNome(), valori);
+
+            // Salviamo la corrispondenza
+            this.mappaIndiciUniversali.put(sceltaVisiva, indiceReale);
+            sceltaVisiva++;
+        }
+
+        System.out.println("-".repeat(45));
+        System.out.println("[0]  | PASSA (Non usare modificatori)");
+        this.numeroMassimoScelte = sceltaVisiva - 1;
+
+        // 4. La domanda finale
+        System.out.print("\n> Scegli una Carta Modificatore (oppure 0 per passare): ");
+    }
+
+    @Override
+    public void menuSceltaEffettoModificatore(int punteggioAttuale, Player giocatoreDiTurno, CartaModificatore mod) {
+        this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
+
+        // Pulisco la mappa dalla giocata precedente
+        this.mappaEffettiModificatore.clear();
+        int sceltaVisiva = 1;
+
+        System.out.println("\n--- DETTAGLI MODIFICATORE ---");
+        System.out.println("Hai giocato: " + mod.getNome());
+        System.out.println("\nCome vuoi usare questa carta?");
+
+        // Opzione: Buff
+        if (mod.getValorePositivo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValorePositivo()));
+
+            // SALVO L'INTENZIONE NELLA MAPPA!
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.POSITIVO));
+            sceltaVisiva++;
+        }
+
+        // Opzione: Debuff
+        if (mod.getValoreNegativo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValoreNegativo()));
+
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.NEGATIVO));
+            sceltaVisiva++;
+        }
+        this.numeroMassimoScelte = sceltaVisiva - 1;
+        System.out.println("-".repeat(45));
+        System.out.print("> Scegli l'effetto (1-" + this.numeroMassimoScelte + "): ");
+    }
+
+    @Override
     public void richiediConfermaEffetto() {
         // 1. Cambio lo stato per dire al ciclo principale cosa aspettarsi
         this.statoAttuale = StatoUI.CONFERMA_EFFETTO;
@@ -501,98 +613,9 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         // Il programma tornerà da solo a bloccarsi sullo scanner di avviaLoopInput().
     }
 
-
-    @Override
-    public void rispostaUtilizzoEffetto(Boolean risposta) {
-        if (risposta) {
-            System.out.println("\n--- Fase 3: Finestra Modificatori ---");
-        }else{
-            System.out.println("Effetto non attivato, fine utilizzo PA");
-        }
-    }
-
-    @Override
-    public void risultatoTiroDadi(int risultato) {
-        System.out.println("Il valore attuale del tiro è: " + risultato + ", inizio fase modificatori");
-    }
-
-    @Override
-    public void punteggioIntermedio(Float punteggio) {
-        System.out.println("Modificatore applicato! Nuovo punteggio provvisorio: " + punteggio);
-    }
-
-    @Override
-    public void punteggiDefinitivi(Float risultato, String nomePlayer) {
-        System.out.printf("Valore finale del tiro di %s: %+.0f%n", nomePlayer, risultato);
-    }
-
-    @Override
-    public void esitoRequisito(Boolean esitoRequisito, String descrizioneEffetto) {
-        System.out.println("\n--- Fase 4: Verifica Requisiti ---");
-        if (esitoRequisito) {
-            System.out.println("--- Esito positivo, puoi attivare l'effetto della carta! ---");
-        }else{
-            System.out.println("--- Esito negativo, non puoi attivare l'effetto");
-        }
-    }
-
-    @Override
-    public void messaggioFineTurno(String nomePlayer) {
-        System.out.println("--- " + nomePlayer + "il tuo turno è terminato.");
-    }
-
-    @Override
-    public void numClassiDiverse(int classiDiverse) {
-        System.out.println("Classi uniche presenti nel party: " + classiDiverse);
-    }
-
     @Override
     public void mostraMessaggio(String messaggio) {
         System.out.println(messaggio);
-    }
-
-    @Override
-    public Boolean chiediSeGiocareModificatore(Player giocatore, int numModificatori) {
-        String scelta;
-        while (true) {
-            System.out.println("\n" + giocatore.getNome() + ", hai " + numModificatori + " modificatore/i. Vuoi giocarne uno? (Si/No)");
-            scelta = scanner.nextLine().trim();
-            if (scelta.equalsIgnoreCase("Si")) return true;
-            if (scelta.equalsIgnoreCase("No")) return false;
-            System.out.println("[!] Errore: Devi rispondere Si o No.");
-        }
-    }
-
-    @Override
-    public CartaModificatore scegliModificatoreDaGiocare(List<CartaModificatore> disponibili) {
-        System.out.println("\n--- SCEGLI UN MODIFICATORE DA GIOCARE ---");
-        System.out.printf("%-8s | %-18s | %-10s | %-10s%n", "NUMERO", "TIPO", "VALORE +", "VALORE -");
-        System.out.println("-".repeat(55));
-
-        for (int i = 0; i < disponibili.size(); i++) {
-            CartaModificatore mod = disponibili.get(i);
-            String vPos = (mod.getValorePositivo() != null) ? String.format("%+.0f", mod.getValorePositivo()) : " / ";
-            String vNeg = (mod.getValoreNegativo() != null) ? String.format("%.0f", mod.getValoreNegativo()) : " / ";
-            System.out.printf("[%d]      | %-18s | %-10s | %-10s%n", (i + 1), "Modificatore", vPos, vNeg);
-        }
-        System.out.println("-".repeat(55));
-
-        System.out.print("Digita il numero del modificatore: ");
-        int sceltaCartaModif = scanner.nextInt();
-        scanner.nextLine();
-
-        return disponibili.get(sceltaCartaModif - 1);
-    }
-
-    @Override
-    public Boolean chiediConfermaFineFase() {
-        String confermaTermina;
-        do {
-            System.out.println("\n[?] Tutti hanno passato. Terminare la fase modificatori? (Si/No)");
-            confermaTermina = scanner.nextLine().trim();
-        } while (!confermaTermina.equalsIgnoreCase("Si") && !confermaTermina.equalsIgnoreCase("No"));
-
-        return confermaTermina.equalsIgnoreCase("Si");
     }
 
     @Override
@@ -613,7 +636,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValorePositivo()));
 
             // SALVO L'INTENZIONE NELLA MAPPA!
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -622,7 +645,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValoreNegativo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 
@@ -631,7 +654,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValorePositivo(), sfidante.getNome(), (punteggioSfidante + mod.getValorePositivo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -640,18 +663,13 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), sfidante.getNome(), (punteggioSfidante + mod.getValoreNegativo()));
 
-            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 
         this.numeroMassimoScelte = sceltaVisiva - 1;
         System.out.println("-".repeat(45));
         System.out.print("> Scegli l'effetto (1-" + this.numeroMassimoScelte + "): ");
-    }
-
-    @Override
-    public void messaggioVittoria(String nomePlayer, String causa) {
-        System.out.println("--- " + nomePlayer +" vince per "+ causa+"! ---");
     }
 
     @Override
@@ -675,5 +693,6 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     public void timerInterrupted(Fase fase) {
         System.out.println("\n--- Timer interrotto dai giocatori, "+fase.getClass().getSimpleName()+" terminata ---");
     }
+
 }
 

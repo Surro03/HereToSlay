@@ -1,5 +1,6 @@
 package it.univaq.controller;
 
+import it.univaq.entity.CartaModificatore;
 import it.univaq.technical.GiocataGiocatore;
 import it.univaq.ui.GameObserver;
 
@@ -21,11 +22,7 @@ public interface ControllerSubject {
 
     void sceltaBersaglioEffettoModificatore(GiocataGiocatore giocata);
 
-    void sceltaGiocareSfida(Integer scelta);
-
     void annullaScelta();
-
-    void sceltaGiocareCartaModificatore(Integer scelta);
 
 
 

@@ -1,3 +1,3 @@
 package it.univaq.technical;
 
-public record RisultatoFaseModificatoriSfida(int punteggioFinaleGiocatoreDiturno, int punteggioFinaleSfidante) implements RisultatoFase {}
+public record RisultatoFaseModificatoriSfida(int punteggioFinaleGiocatoreDiTurno, int punteggioFinaleSfidante) implements RisultatoFase {}

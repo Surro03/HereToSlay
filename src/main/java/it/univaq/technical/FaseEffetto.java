@@ -24,10 +24,10 @@ public class FaseEffetto implements Fase {
             
             // 1. Tiro i dadi
             int punteggioDadiBase = lanciaDadi(2);
-            turno.addMessage("Hai tirato i dadi! Risultato base: " + punteggioDadiBase);
+            turno.addMessage("\n--- RISULTATO TIRO---\n"+ "Il valore del tiro di " + turno.getGiocatoreDiTurno().getNome() + " è : " + punteggioDadiBase + " |\n");
             
             // 2. Chiamo la fase dei Modificatori
-            turno.aggiungiFaseInCima(new FaseModificatori(punteggioDadiBase));
+            turno.aggiungiFaseInCima(new FaseModificatori(punteggioDadiBase, turno.getGiocatoreDiTurno()));
             
             this.step = 1;
             return false; // Mi metto in pausa
