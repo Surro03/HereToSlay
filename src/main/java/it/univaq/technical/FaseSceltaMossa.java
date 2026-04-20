@@ -1,5 +1,7 @@
 package it.univaq.technical;
 
+import it.univaq.entity.CartaEroe;
+import it.univaq.entity.Player;
 import it.univaq.entity.Tavolo;
 
 public class FaseSceltaMossa implements Fase {
@@ -23,8 +25,12 @@ public class FaseSceltaMossa implements Fase {
 
             // La fase NON stampa nulla. Dice semplicemente al Turno di cosa ha bisogno.
             this.step = 1;
+            Player attivo = turno.getGiocatoreDiTurno();
+            boolean haEroi = attivo.verificaTipoDiCarteInMano(CartaEroe.class);
 
-            turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE);
+            PayloadAttesa payload = new ContestoAttesaMossaPrincipale(attivo, haEroi, pa);
+
+            turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE, payload);
             return false; // Restituisce false per fermare il while del Turno.
         }
 

@@ -42,31 +42,12 @@ public class Player {
     }
 
     // --- GRASP: INFORMATION EXPERT ---
-    // Il Player sa cosa ha in mano, quindi è lui che filtra le carte Eroe!
-    public List<CartaEroe> getEroiInMano() {
-        return this.mano.getCarteMano().stream()
-                .filter(c -> c instanceof CartaEroe)
-                .map(c -> (CartaEroe) c)
-                .toList();
-    }
-    public List<CartaSfida> getSfideInMano() {
-        return this.mano.getCarteMano().stream()
-                .filter(c -> c instanceof CartaSfida)
-                .map(c -> (CartaSfida) c)
-                .toList();
-    }
+    // Il Player sa cosa ha in mano, quindi è lui che filtra le carte
+    public <T extends Carta> List<T> getCarteDiUnaClasseInMano(Class<T> tipoCarta) {
 
-    public List<CartaOggetto> getOggettiInMano() {
         return this.mano.getCarteMano().stream()
-                .filter(c -> c instanceof CartaOggetto)
-                .map(c -> (CartaOggetto) c)
-                .toList();
-    }
-
-    public List<CartaModificatore> getModificatoriInMano() {
-        return this.mano.getCarteMano().stream()
-                .filter(c -> c instanceof CartaModificatore)
-                .map(c -> (CartaModificatore) c)
+                .filter(tipoCarta::isInstance)
+                .map(tipoCarta::cast)
                 .toList();
     }
 

@@ -2,25 +2,25 @@ package it.univaq.entity;
 
 public class CartaModificatore extends Carta {
 
-	private Float valorePositivo;
-	private Float valoreNegativo;
+	private Integer valorePositivo;
+	private Integer valoreNegativo;
 	private String effetto;
 
-    public CartaModificatore(Float valorePositivo, Float valoreNegativo, String effetto) {
-        super("ciao");
+    public CartaModificatore(Integer valorePositivo, Integer valoreNegativo, String effetto) {
+        super("ciao", "Carta Modificatore");
         this.valorePositivo = valorePositivo;
         this.valoreNegativo = valoreNegativo;
         this.effetto = effetto;
     }
 
-    public CartaModificatore(Integer valore, Float valorePositivo, String effetto) {
-        super("ciao");
+    public CartaModificatore(Integer valorePositivo, String effetto) {
+        super("ciao", "Carta Modificatore");
         this.valorePositivo = valorePositivo;
         this.valoreNegativo = null;
         this.effetto = effetto;
     }
 
-public Float getValoreScelto(boolean usaPositivo) {
+public Integer getValoreScelto(boolean usaPositivo) {
     if (usaPositivo) {
         return this.valorePositivo;
     } else {
@@ -29,19 +29,19 @@ public Float getValoreScelto(boolean usaPositivo) {
 }
 
 
-    public Float getValorePositivo() {
+    public Integer getValorePositivo() {
         return valorePositivo;
     }
 
-    public void setValorePositivo(Float valorePositivo) {
+    public void setValorePositivo(Integer valorePositivo) {
         this.valorePositivo = valorePositivo;
     }
 
-    public Float getValoreNegativo() {
+    public Integer getValoreNegativo() {
         return valoreNegativo;
     }
 
-    public void setValoreNegativo(Float valoreNegativo) {
+    public void setValoreNegativo(Integer valoreNegativo) {
         this.valoreNegativo = valoreNegativo;
     }
 

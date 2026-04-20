@@ -1,5 +1,6 @@
 package it.univaq.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mano {
@@ -23,11 +24,30 @@ public class Mano {
         return carteMano.size();
     }
 
-    public Carta ottieniCarta(int numeroCarta) {
+    public Carta rimuoviCarta(int numeroCarta) {
         Carta carta = carteMano.get(numeroCarta);
         carteMano.remove(numeroCarta);
         return carta;
 
+    }
+
+    public Carta getCarta(int numeroCarta) {
+        Carta carta = carteMano.get(numeroCarta);
+        carteMano.remove(numeroCarta);
+        return carta;
+
+    }
+
+    public List<Integer> getIndiciCarteDiTipo(Class<?> tipoCarta) {
+        List<Integer> indici = new ArrayList<>();
+        List<Carta> carte = this.getCarteMano();
+
+        for (int i = 0; i < carte.size(); i++) {
+            if (tipoCarta.isAssignableFrom(carte.get(i).getClass())) {
+                indici.add(i);
+            }
+        }
+        return indici;
     }
 
     public void setNumeroCarte(Integer numeroCarte) {

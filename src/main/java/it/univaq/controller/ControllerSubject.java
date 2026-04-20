@@ -1,8 +1,10 @@
 package it.univaq.controller;
 
+import it.univaq.technical.GiocataGiocatore;
 import it.univaq.ui.GameObserver;
 
 public interface ControllerSubject {
+
     void addObserver(GameObserver observer);
 
     void removeObserver(GameObserver observer);
@@ -13,9 +15,18 @@ public interface ControllerSubject {
 
     void selezionaMossa(int mossa);
 
-    void scegliCarta(int indiceRealeNellaMano);
+    void scegliCarta(Integer indiceRealeNellaMano);
 
     void confermaAttivazioneEffetto(boolean vuoleAttivare);
 
+    void sceltaBersaglioEffettoModificatore(GiocataGiocatore giocata);
+
+    void sceltaGiocareSfida(Integer scelta);
+
     void annullaScelta();
+
+    void sceltaGiocareCartaModificatore(Integer scelta);
+
+
+
 }

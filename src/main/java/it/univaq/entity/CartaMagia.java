@@ -4,8 +4,8 @@ public class CartaMagia extends Carta {
 
 	private String effetto;
 
-    public CartaMagia(String effetto) {
-        super("ciao");
+    public CartaMagia(String effetto, String nome) {
+        super("ciao", nome );
         this.effetto = effetto;
     }
 

@@ -151,7 +151,8 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;
     private boolean giocoInEsecuzione = true;
-    private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<Integer, Integer>();
+    private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<>();
+    private final Map<Integer, GiocataSceltaModificatore> mappaEffettiModificatore = new HashMap<>();
     private StatoUI statoAttuale;
     private int numeroMassimoScelte;
 
@@ -189,10 +190,62 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     gestisciInputConfermaEffetto(input);
                     break;
 
+                case RISPOSTA_SFIDA:
+                    gestisciInputRispostaSfida(input);
+                    break;
+
+                case SCELTA_MODIFICATORE_SFIDA:
+                    gestisciInputRispostaSceltaModificatore(input);
+                    break;
+
+                case ATTESA_EFFETTO_MODIFICATORE:
+                    gestisciInputAttesaEffettoModificatore(input);
+                    break;
+
                 default:
                     System.out.println("[!] Errore critico: Stato UI sconosciuto.");
                     break;
             }
+        }
+    }
+
+    private void gestisciInputAttesaEffettoModificatore(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+
+            if (scelta < 1 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 1 e " + this.numeroMassimoScelte + ": ");
+                return;
+            }
+
+            // Vado a pescare il comando esatto associato a quel numero
+            GiocataGiocatore giocata = this.mappaEffettiModificatore.get(scelta);
+
+            // Lo invio al controller
+            this.controller.sceltaBersaglioEffettoModificatore(giocata);
+
+        } catch (NumberFormatException e) {
+            System.out.print("[!] Devi inserire un NUMERO: ");
+        }
+    }
+
+    private void gestisciInputRispostaSceltaModificatore(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+
+            if (scelta < 0 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
+            } else {
+                if (scelta == 0){
+                    controller.scegliCarta(null);
+                }else {
+                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
+                    // Richiama il metodo esplicito per le carte
+                    controller.scegliCarta(indiceRealeNellaMano);
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.print("[!] Devi inserire un NUMERO: ");
         }
     }
 
@@ -242,6 +295,26 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             controller.confermaAttivazioneEffetto(vuoleAttivare);
         } else {
             System.out.print("[!] Input non valido, devi dire Si o No: ");
+        }
+    }
+
+    private void gestisciInputRispostaSfida(String input) {
+        try {
+            int scelta = Integer.parseInt(input);
+
+            if (scelta < 0 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
+            } else {
+                if (scelta == 0){
+                    controller.scegliCarta(null);
+                }else {
+                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
+                    // Richiama il metodo esplicito per le carte
+                    controller.scegliCarta(indiceRealeNellaMano);
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.print("[!] Devi inserire un NUMERO: ");
         }
     }
 
@@ -312,48 +385,110 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         System.out.print("> Scegli il numero dell'eroe (1-" + this.numeroMassimoScelte + "): ");
     }
 
-//    @Override
-//    public <T extends Carta> T scegliCartaDaGiocare(String tipoCarta, List<T> tipoCartaInMano, String nomePlayer) {
-//        T cartaScelta = null;
-//        if (tipoCarta.equals("CartaEroe")) {
-//            System.out.println("\n");
-//            System.out.println("SCEGLI L'EROE DA GIOCARE");
-//            System.out.println("-".repeat(40));
-//            System.out.printf("%-4s | %-18s | %-10s | %-5s%n", "NUMERO", "NOME", "CLASSE", "REQ.");
-//            System.out.println("-".repeat(40));
-//            for (int i = 0; i < tipoCartaInMano.size(); i++) {
-//                CartaEroe e = (CartaEroe) tipoCartaInMano.get(i);
-//                System.out.printf("[%d]    | %-18s | %-10s | %d+%n",
-//                        (i + 1),
-//                        e.getNome(),
-//                        e.getClasseEroe(),
-//                        e.getRequisito());
-//            }
-//            System.out.println("-".repeat(40));
-//            while (true) {
-//                System.out.print("Scegli il numero dell'eroe da giocare (1-" + tipoCartaInMano.size() + "): ");
-//                int sceltaCarta = scanner.nextInt();
-//                scanner.nextLine();
-//                if (sceltaCarta < 1 || sceltaCarta > tipoCartaInMano.size()) {
-//                    System.out.println("Devi digitare un numero valido compreso tra 1 e " + tipoCartaInMano.size() + ".");
-//                } else {
-//                    cartaScelta = tipoCartaInMano.get(sceltaCarta - 1);
-//                    System.out.println("\n"+ nomePlayer+ " gioca la carta: " + cartaScelta.getNome());
-//                    break;
-//                }
-//            }
-//        }
-//        return cartaScelta;
-//    }
+    @Override
+    public void menuSfida(Player giocatoreDiTurno, Carta cartaDaSfidare, Player giocatoreInterrogato, List<Integer> indiciCarteGiocabili) {
+        // 1. Cambio lo stato per il Vigile Urbano
+        this.statoAttuale = StatoUI.RISPOSTA_SFIDA;
+
+        // 2. Stampo le informazioni generali
+        System.out.println("\n--- ATTENZIONE: GIOCATA IN CORSO ---");
+        System.out.println(giocatoreDiTurno.getNome() + " sta cercando di giocare: " + cartaDaSfidare.getNome());
+        System.out.println("------------------------------------");
+
+        // 3. Faccio la chiamata al giocatore di turno
+        System.out.println("\n>> " + giocatoreInterrogato.getNome().toUpperCase() + ", tocca a te!");
+
+        System.out.println("Ecco le tue carte in mano:");
+        List<Carta> carteInMano = giocatoreInterrogato.getMano().getCarteMano();
+
+        // Stampo TUTTA la mano a scopo informativo
+        for (int i = 0; i < carteInMano.size(); i++) {
+            Carta c = carteInMano.get(i);
+            // Uso un formato semplice, visto che qui è solo visualizzazione
+            System.out.printf("  %d | %s [%s]%n", (i + 1), c.getNome(), c.getClass().getSimpleName().replace("Carta", ""));
+        }
+
+        System.out.println("------------------------------------");
+        System.out.println("\n--- SCEGLI SE GIOCARE UNA CARTA SFIDA ---");
+        System.out.printf("%-4s | %-20s %n", "NUM.", "NOME CARTA");
+        System.out.println("-".repeat(30));
+
+        // Puliamo la mappa delle scelte precedenti
+        this.mappaIndiciUniversali.clear();
+        int sceltaVisiva = 1;
+
+        // ---> IL MIRACOLO ARCHITETTURALE <---
+        // Invece di scorrere tutta la mano e usare "instanceof",
+        // scorro SOLO gli indici che il Backend mi ha autorizzato a usare!
+        for (Integer indiceReale : indiciCarteGiocabili) {
+
+            Carta c = carteInMano.get(indiceReale); // Pesco la carta esatta
+
+            System.out.printf("[%d]  | %-20s %n", sceltaVisiva, c.getNome());
+
+            // Salviamo la corrispondenza: Scelta a schermo -> Posizione reale nella mano
+            this.mappaIndiciUniversali.put(sceltaVisiva, indiceReale);
+            sceltaVisiva++;
+        }
+
+        System.out.println("-".repeat(30));
+        System.out.println("[ 0 ]  | PASSA (Non usare sfide)");
+
+        this.numeroMassimoScelte = sceltaVisiva - 1;
+
+        // 4. La domanda finale
+        System.out.print("\n> Scegli una Carta Sfida (oppure 0 per passare): ");
+    }
 
     @Override
-    public void richiestaSfida() {
-        //In teoria qui andrebbe la fase sfida
-        System.out.println("\n--- Fase 2: Finestra di Sfida ---");
-        System.out.println("In attesa di reazioni dagli avversari...");
-        // Simuliamo che nessuno giochi una CartaSfida, quindi scatta il timeout
-        System.out.println("Ricevuto timeout! Nessuno ha giocato una carta Sfida.");
-        System.out.println("La carta Eroe entra in gioco senza ostacoli.");
+    public  void menuSceltaCartaModificatore(int punteggioGiocatoreDiTurno, int punteggioAvversario, Player giocatoreDiTurno, Player avversario, List<Integer> indiciCarteGiocabili, Player giocatoreInterrogato){
+        // 1. Cambio lo stato per il Vigile Urbano
+        this.statoAttuale = StatoUI.SCELTA_MODIFICATORE_SFIDA;
+
+        // 3. Faccio la chiamata al giocatore di turno
+        System.out.println("\n>> " + giocatoreInterrogato.getNome().toUpperCase() + ", tocca a te!");
+
+        System.out.println("Ecco le tue carte in mano:");
+        List<Carta> carteInMano = giocatoreInterrogato.getMano().getCarteMano();
+
+        // Stampo TUTTA la mano a scopo informativo
+        for (int i = 0; i < carteInMano.size(); i++) {
+            Carta c = carteInMano.get(i);
+            // Uso un formato semplice, visto che qui è solo visualizzazione
+            System.out.printf("  %d | %s [%s]%n", (i + 1), c.getNome(), c.getClass().getSimpleName().replace("Carta", ""));
+        }
+
+        System.out.println("------------------------------------");
+        System.out.println("\n--- SCEGLI SE GIOCARE UNA CARTA MODIFICATORE ---");
+        System.out.printf("%-4s | %-15s | %-20s %n", "NUM.", "NOME CARTA", "VALORE MODIFICATORE");
+        System.out.println("-".repeat(45));
+
+        this.mappaIndiciUniversali.clear();
+        int sceltaVisiva = 1;
+
+        for (Integer indiceReale : indiciCarteGiocabili) {
+
+            Carta c = carteInMano.get(indiceReale);
+
+            CartaModificatore mod = (CartaModificatore) c;
+
+
+            String valori = String.format("+%d / %d", mod.getValorePositivo(), mod.getValoreNegativo());
+
+            // 4. Stampo Numero, Nome e Valori
+            System.out.printf("[%d]  | %-15s | %-20s %n", sceltaVisiva, mod.getNome(), valori);
+
+            // Salviamo la corrispondenza
+            this.mappaIndiciUniversali.put(sceltaVisiva, indiceReale);
+            sceltaVisiva++;
+        }
+
+        System.out.println("-".repeat(45));
+        System.out.println("[0]  | PASSA (Non usare modificatori)");
+        this.numeroMassimoScelte = sceltaVisiva - 1;
+
+        // 4. La domanda finale
+        System.out.print("\n> Scegli una Carta Modificatore (oppure 0 per passare): ");
     }
 
     @Override
@@ -450,23 +585,6 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     }
 
     @Override
-    public Float scegliSegnoModificatore(CartaModificatore carta) {
-        System.out.println("Scegli il valore della carta modificatore");
-        System.out.println("1 Applica: " + carta.getValorePositivo());
-        System.out.println("2 Applica: " + carta.getValoreNegativo());
-        int sceltaSegno = scanner.nextInt();
-        scanner.nextLine();
-        while(true) {
-            if (sceltaSegno == 1) return carta.getValorePositivo();
-            if (sceltaSegno == 2) return carta.getValoreNegativo();
-            else{
-                System.out.println("Input non valido, inserire il numero del segno che si vuole applicare");
-                System.out.print("> ");
-            }
-        }
-    }
-
-    @Override
     public Boolean chiediConfermaFineFase() {
         String confermaTermina;
         do {
@@ -477,7 +595,59 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         return confermaTermina.equalsIgnoreCase("Si");
     }
 
+    @Override
+    public void menuSceltaEffettoModificatore(int punteggioGiocatoreDiTurno, int punteggioSfidante, Player giocatoreDiTurno, Player sfidante, CartaModificatore mod) {
+        this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
 
+        // Pulisco la mappa dalla giocata precedente
+        this.mappaEffettiModificatore.clear();
+        int sceltaVisiva = 1;
+
+        System.out.println("\n--- DETTAGLI MODIFICATORE ---");
+        System.out.println("Hai giocato: " + mod.getNome());
+        System.out.println("\nCome vuoi usare questa carta?");
+
+        // Opzione: Buff a chi ha giocato la carta
+        if (mod.getValorePositivo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValorePositivo()));
+
+            // SALVO L'INTENZIONE NELLA MAPPA!
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
+            sceltaVisiva++;
+        }
+
+        // Opzione: Debuff a chi ha giocato la carta
+        if (mod.getValoreNegativo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValoreNegativo()));
+
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
+            sceltaVisiva++;
+        }
+
+        // Opzione: Buff allo Sfidante
+        if (mod.getValorePositivo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValorePositivo(), sfidante.getNome(), (punteggioSfidante + mod.getValorePositivo()));
+
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
+            sceltaVisiva++;
+        }
+
+        // Opzione: Debuff allo Sfidante
+        if (mod.getValoreNegativo() != null) {
+            System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
+                    sceltaVisiva, mod.getValoreNegativo(), sfidante.getNome(), (punteggioSfidante + mod.getValoreNegativo()));
+
+            mappaEffettiModificatore.put(sceltaVisiva, new GiocataSceltaModificatore(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
+            sceltaVisiva++;
+        }
+
+        this.numeroMassimoScelte = sceltaVisiva - 1;
+        System.out.println("-".repeat(45));
+        System.out.print("> Scegli l'effetto (1-" + this.numeroMassimoScelte + "): ");
+    }
 
     @Override
     public void messaggioVittoria(String nomePlayer, String causa) {

@@ -16,9 +16,11 @@ public interface GameObserver {
 
     //<T extends Carta> T scegliCartaDaGiocare(String tipoCarta, List<T> carteDisponibili, String nomePlayer);
 
-    void richiestaSfida();
+    void menuSfida(Player giocatoreAttivo, Carta cartaGiocata, Player giocatoreInterrogato, List<Integer> indiciCarteGiocabili);
 
     void richiediConfermaEffetto();
+
+    void menuSceltaCartaModificatore(int punteggioGiocatoreDiTurno, int punteggioAvversario, Player giocatoreDiTurno, Player avversario, List<Integer> indiciCarteGiocabili, Player giocatoreInterrogato);
 
     void rispostaUtilizzoEffetto(Boolean risposta);
 
@@ -42,9 +44,11 @@ public interface GameObserver {
 
     CartaModificatore scegliModificatoreDaGiocare(List<CartaModificatore> disponibili);
 
-    Float scegliSegnoModificatore(CartaModificatore carta);
-
     Boolean chiediConfermaFineFase();
+
+
+    void menuSceltaEffettoModificatore(int punteggioGiocatoreDiTurno, int punteggioSfidante, Player giocatoreDiTurno, Player sfidante, CartaModificatore mod);
+
 }
 
 //package it.univaq.ui;

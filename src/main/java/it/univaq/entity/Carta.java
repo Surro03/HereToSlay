@@ -5,14 +5,10 @@ import java.sql.Blob;
 
 public abstract class Carta {
 
-	private String id;
-	private String descrizione;
-    private String nome;
+	protected String id;
+	protected String descrizione;
+    protected String nome;
 	//private Blob Immagine;
-
-    protected Carta(String descrizione) {
-        this(descrizione, null);
-    }
 
     protected Carta(String descrizione, String nome) {
         this.descrizione = descrizione;

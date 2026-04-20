@@ -5,7 +5,6 @@ public class CartaEroe extends Carta {
 	private Integer numOggetti;
     private CartaOggetto cartaOggetto;
 	private Integer requisito;
-	private String nome;
 	private String effetto;
 	private Integer costo;
 	private ClasseEroe classeEroe;
@@ -17,10 +16,9 @@ public class CartaEroe extends Carta {
 	}
 
     public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, Integer costo, ClasseEroe classeEroe) {
-        super("ciao");
+        super("ciao", nome);
         this.numOggetti = numOggetti;
         this.requisito = requisito;
-        this.nome = nome;
         this.effetto = effetto;
         this.costo = costo;
         this.classeEroe = classeEroe;
@@ -40,14 +38,6 @@ public class CartaEroe extends Carta {
 
     public void setRequisito(Integer requisito) {
         this.requisito = requisito;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getEffetto() {

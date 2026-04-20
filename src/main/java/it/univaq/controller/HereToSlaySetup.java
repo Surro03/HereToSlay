@@ -43,7 +43,7 @@ public class HereToSlaySetup {
                 new CartaEroe(0, 6, "Ascia Sfascia", "Distruggi un eroe avversario", 1, ClasseEroe.GUERRIERO),
 
                 // 2. Un Modificatore doppio (+1 / -1)
-                new CartaModificatore(1.0f, -1.0f, "Aggiungi +1 o sottrai -1 al tiro"),
+                new CartaModificatore(1, -1, "Aggiungi +1 o sottrai -1 al tiro"),
 
                 // 3. Una Carta Sfida generica
                 new CartaSfida(),
@@ -52,7 +52,7 @@ public class HereToSlaySetup {
                 new CartaEroe(0, 7, "Ezio Miaoditore", "Pesca due carte dal mazzo", 1, ClasseEroe.LADRO),
 
                 // 5. Un Modificatore singolo (+2)
-                new CartaModificatore(2, 2.0f, "Aggiungi +2 al tuo tiro")
+                new CartaModificatore(2, "Aggiungi +2 al tuo tiro")
         ));
 
         List<Carta> manoGiocatore2 = new ArrayList<>(Arrays.asList(
@@ -63,7 +63,7 @@ public class HereToSlaySetup {
                 new CartaSfida(2),
 
                 // 3. Un Modificatore molto forte (+3 / -3)
-                new CartaModificatore(3.0f, -3.0f, "Aggiungi +3 o sottrai -3 al tiro"),
+                new CartaModificatore(3, -3, "Aggiungi +3 o sottrai -3 al tiro"),
 
                 // 4. Un'altra Carta Sfida generica
                 new CartaSfida(),

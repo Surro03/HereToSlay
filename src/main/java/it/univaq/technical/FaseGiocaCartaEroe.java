@@ -16,7 +16,8 @@ public class FaseGiocaCartaEroe implements Fase {
         // --- STEP 0: SELEZIONE DELLA CARTA ---
         if (this.step == 0) {
             this.step = 1;
-            turno.setAttesa(SCELTA_CARTA_EROE);
+            PayloadAttesa contestoAttesaSceltaCartaEroe = new ContestoAttesaSceltaCartaEroe(turno.getGiocatoreDiTurno().getMano());
+            turno.setAttesa(SCELTA_CARTA_EROE, contestoAttesaSceltaCartaEroe);
             return false;
         } 
         
@@ -24,16 +25,15 @@ public class FaseGiocaCartaEroe implements Fase {
         else if (this.step == 1) {
 
             //Rimuove la carta dalla mano del giocatore e la salva nella fase
-            this.cartaScelta = (CartaEroe) turno.getGiocatoreDiTurno().getMano().ottieniCarta((int) turno.popInput());
+            this.cartaScelta = (CartaEroe) turno.getGiocatoreDiTurno().getMano().rimuoviCarta((int) turno.popInput());
 
             if (this.cartaScelta == null) return true; // L'utente ha annullato
 
             // Consumo il punto azione
             turno.consumaPA(1);
             // ---> INIETTO LA SFIDA NELLA PILA! <---
-            turno.aggiungiFaseInCima(new FaseSfida(this.cartaScelta, turno.getGiocatoreDiTurno()));
+            turno.aggiungiFaseInCima(new FaseSfida(this.cartaScelta));
             this.step = 2;
-            turno.setAttesa(RICHIESTA_TAVOLO);
             return false;
         }
 
@@ -53,7 +53,8 @@ public class FaseGiocaCartaEroe implements Fase {
             turno.addMessage(("Hai giocato: " + cartaScelta.getNome()));
             turno.addMessage("Vuoi lanciare i dadi per l'effetto di " + cartaScelta.getNome() + "?");
             this.step = 3;
-            turno.setAttesa(CONFERMA_EFFETTO);
+            PayloadAttesa contestoAttesaConfermaEffetto = new ContestoAttesaConfermaEffetto();
+            turno.setAttesa(CONFERMA_EFFETTO, contestoAttesaConfermaEffetto);
             return false;
         }
 
@@ -68,7 +69,8 @@ public class FaseGiocaCartaEroe implements Fase {
                 this.step = 4;
                 return false; 
             }
-            
+
+            this.step = 0;
             return true; // Se non vuole attivare, la giocata dell'eroe finisce qui.
         }
         

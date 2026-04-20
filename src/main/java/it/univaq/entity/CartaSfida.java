@@ -5,12 +5,12 @@ public class CartaSfida extends Carta {
 	private Integer classe;
 
     public CartaSfida(Integer classe) {
-        super("ciao");
+        super("ciao", "Carta Sfida");
         this.classe = classe;
     }
 
     public CartaSfida() {
-        super("ciao");
+        super("ciao", "Carta Sfida");
         this.classe = null;
     }
 

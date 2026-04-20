@@ -13,9 +13,10 @@ public class HereToSlay implements ControllerSubject{
 
     private final List<GameObserver> observers;
     private final List<Player> elencoGiocatori;
-    private Player giocatoreAttivo;
+    private Player giocatoreDiTurno;
     private final Tavolo tavolo;
     private Turno turnoAttuale;
+
 
 
     public HereToSlay(List<Player> elencoGiocatori) {
@@ -37,14 +38,16 @@ public class HereToSlay implements ControllerSubject{
 
     @Override
     public void iniziaPartita() {
-        this.giocatoreAttivo = elencoGiocatori.getFirst();
-        this.iniziaTurno(this.giocatoreAttivo);
+        this.giocatoreDiTurno = elencoGiocatori.getFirst();
+        this.iniziaTurno(this.giocatoreDiTurno);
     }
 
     private void iniziaTurno(Player giocatore) {
         this.notificaTutti(obs -> obs.mostraMessaggio("\n--- INIZIA IL TURNO DI: " + giocatore.getNome() + " ---"));
-
-        this.turnoAttuale = new Turno(giocatore, this.tavolo);
+        List<Player> avversari = elencoGiocatori.stream()
+                .filter(p -> !p.equals(this.giocatoreDiTurno))
+                .toList();
+        this.turnoAttuale = new Turno(giocatore, this.tavolo, avversari, elencoGiocatori);
         this.turnoAttuale.aggiungiFaseInCima(new FaseSceltaMossa());
 
         // Diamo la "prima spinta" a vuoto per far partire la prima fase
@@ -54,18 +57,18 @@ public class HereToSlay implements ControllerSubject{
     @Override
     public void prossimoTurno() {
         // 1. Controlla Vittoria
-        if (tavolo.checkVittoria(giocatoreAttivo.getId()).vittoria()) {
-            notificaTutti(obs -> obs.mostraMessaggio("VITTORIA! " + giocatoreAttivo.getNome() + " ha vinto!"));
+        if (tavolo.checkVittoria(giocatoreDiTurno.getId()).vittoria()) {
+            notificaTutti(obs -> obs.mostraMessaggio("VITTORIA! " + giocatoreDiTurno.getNome() + " ha vinto!"));
             // Non facciamo ripartire il turno. Il gioco finisce qui.
             return;
         }
 
         // 2. Calcola il prossimo e riparte
-        int indiceAttuale = elencoGiocatori.indexOf(giocatoreAttivo);
+        int indiceAttuale = elencoGiocatori.indexOf(giocatoreDiTurno);
         int prossimoIndice = (indiceAttuale + 1) % elencoGiocatori.size();
-        this.giocatoreAttivo = elencoGiocatori.get(prossimoIndice);
+        this.giocatoreDiTurno = elencoGiocatori.get(prossimoIndice);
 
-        this.iniziaTurno(this.giocatoreAttivo);
+        this.iniziaTurno(this.giocatoreDiTurno);
     }
 
     // ==========================================================
@@ -87,16 +90,10 @@ public class HereToSlay implements ControllerSubject{
         }
 
         // 4. Controllo: La fase si è fermata. Cosa aspetta?
-        switch (this.turnoAttuale.getAttesa()) {
-            case SCELTA_MOSSA_PRINCIPALE:
-                notificaTutti(obs -> obs.menuSelezioneMossa(this.giocatoreAttivo,this.giocatoreAttivo.verificaTipoDiCarteInMano(CartaEroe.class) ,turnoAttuale.getPaRimasti()));
-                break;
-            case SCELTA_CARTA_EROE:
-                notificaTutti(obs -> obs.menuSceltaCartaEroe(giocatoreAttivo.getMano()));
-                break;
-            case CONFERMA_EFFETTO:
-                notificaTutti(GameObserver::richiediConfermaEffetto);
-                break;
+        PayloadAttesa attesa = this.turnoAttuale.getPayloadAttesa();
+
+        if (attesa != null) {
+            notificaTutti(attesa::notificaUI);
         }
     }
 
@@ -105,7 +102,7 @@ public class HereToSlay implements ControllerSubject{
     // ==========================================================
     @Override
     public void selezionaMossa(int mossa) {
-        boolean presenzaEroi = this.giocatoreAttivo.verificaTipoDiCarteInMano(CartaEroe.class);
+        boolean presenzaEroi = this.giocatoreDiTurno.verificaTipoDiCarteInMano(CartaEroe.class);
         if (mossa == 1 && !presenzaEroi) {
             notificaTutti(obs -> obs.erroreSelezioneMossa("Non hai Eroi da giocare nella tua mano"));
             return; // Esce dal metodo, il controller torna in attesa di un nuovo input!
@@ -120,12 +117,27 @@ public class HereToSlay implements ControllerSubject{
     }
 
     @Override
-    public void scegliCarta(int indiceRealeNellaMano) { this.inoltraAlTurno(indiceRealeNellaMano); }
+    public void scegliCarta(Integer indiceRealeNellaMano) { this.inoltraAlTurno(indiceRealeNellaMano); }
 
     @Override
     public void annullaScelta() { this.inoltraAlTurno(null); }
 
     @Override
+    public void sceltaGiocareCartaModificatore(Integer scelta) {
+        this.inoltraAlTurno(scelta);
+    }
+
+    @Override
+    public void sceltaBersaglioEffettoModificatore(GiocataGiocatore giocata) {
+        this.inoltraAlTurno(giocata);
+    }
+
+    @Override
     public void confermaAttivazioneEffetto(boolean vuoleAttivare) { this.inoltraAlTurno(vuoleAttivare); }
+
+    @Override
+    public void sceltaGiocareSfida(Integer scelta) {this.inoltraAlTurno(scelta);}
+
+
 
 }

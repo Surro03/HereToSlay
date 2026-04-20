@@ -9,24 +9,28 @@ import java.util.Deque;
 import java.util.List;
 
 public class Turno {
-    private Tavolo tavolo;
+    private final Tavolo tavolo;
     private int paRimanenti;
     private final Player giocatoreDiTurno;
+    private final List<Player> avversari;
+    private final List<Player> elencoGiocatori;
     private Object risultatoSottoFase;
     private TipoAttesa tipoAttesa;
+    private PayloadAttesa payloadAttesa;
     private List<String> messagesBuffer = new ArrayList<>();
-    // Usiamo Deque per una VERA struttura a Pila
     private Deque<Fase> pilaFasi;
     
     // Variabile "Posta in arrivo" per i dati che ci manda la UI
     private Object inputInSospeso;
 
-    public Turno(Player giocatoreDiTurno, Tavolo tavolo) {
+    public Turno(Player giocatoreDiTurno, Tavolo tavolo, List<Player> avversari, List<Player> elencoGiocatori) {
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.paRimanenti = 3;
         this.pilaFasi = new ArrayDeque<>();
         this.inputInSospeso = null;
         this.tavolo = tavolo;
+        this.avversari = avversari;
+        this.elencoGiocatori = elencoGiocatori;
     }
 
     // --- GRASP: INFORMATION EXPERT (Gestione PA) ---
@@ -121,8 +125,22 @@ public class Turno {
 
     public void setAttesa(TipoAttesa tipoAttesa) {this.tipoAttesa = tipoAttesa;}
 
+    public void setAttesa(TipoAttesa tipoAttesa, PayloadAttesa payloadAttesa) {
+        this.tipoAttesa = tipoAttesa;
+        this.payloadAttesa = payloadAttesa;
+    }
+
     public TipoAttesa getAttesa() {return this.tipoAttesa;}
 
+    public PayloadAttesa getPayloadAttesa() {return this.payloadAttesa;}
+
+    public List<Player> getAvversari() {
+        return avversari;
+    }
+
+    public List<Player> getListaGiocatori() {
+        return this.elencoGiocatori;
+    }
 }
 
 

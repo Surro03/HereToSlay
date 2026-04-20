@@ -6,4 +6,7 @@ public enum StatoUI {
         SCELTA_MAGIA,
         SCELTA_OGGETTO,
         CONFERMA_EFFETTO,
+        SCELTA_MODIFICATORE_SFIDA,
+        RISPOSTA_SFIDA,
+        ATTESA_EFFETTO_MODIFICATORE,
 }

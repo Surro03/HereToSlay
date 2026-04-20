@@ -1,22 +1,19 @@
 package it.univaq.technical;
 
-import it.univaq.entity.Carta;
-import it.univaq.entity.Player;
-import it.univaq.entity.Tavolo;
+import it.univaq.entity.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FaseSfida implements Fase {
 
     private int step = 0;
-    private Carta cartaGiocata;
-    private Player giocatoreAttivo;
-
-    private Player sfidante;
-    private float valorePlayer;
-    private float valoreSfidante;
-
-    public FaseSfida(Carta cartaGiocata, Player giocatoreAttivo) {
+    private final Carta cartaGiocata;
+    private final Dado dado = new Dado(6);
+    private int indiceAvversarioAttuale = 0;
+    private Player avversarioAttuale;
+    public FaseSfida(Carta cartaGiocata) {
         this.cartaGiocata = cartaGiocata;
-        this.giocatoreAttivo = giocatoreAttivo;
     }
 
     @Override
@@ -24,34 +21,54 @@ public class FaseSfida implements Fase {
 
         // STEP 0: Chiedo se qualcuno vuole lanciare una sfida
         if (this.step == 0) {
+
+            if (this.indiceAvversarioAttuale >= turno.getAvversari().size()) {
+                turno.addMessage("Nessuno ha sfidato la carta!");
+                turno.salvaRisultatoSottoFase(true); // Sopravvissuta = true
+                return true; // La fase Sfida finisce vittoriosamente!
+            }
+
+            List<Player> avversari = turno.getAvversari();
+            Player giocatoreInterrogato = avversari.get(this.indiceAvversarioAttuale);
+            //Se la mano è totalmente vuota si salta il giocatore
+            if (giocatoreInterrogato.getMano().getCarteMano().isEmpty()) {
+
+                // Log per avvisare gli altri giocatori del salto automatico
+                //turno.inviaEvento(new NotificaMessaggio(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico."));
+
+                // Incremento l'indice e riavvio il loop istantaneamente!
+                this.indiceAvversarioAttuale++;
+                return false;
+            }
+            List<Integer> indiciCarteGiocabili = giocatoreInterrogato.getMano().getIndiciCarteDiTipo(CartaSfida.class);
             this.step = 1;
-            gui.richiediGiocataSfida(giocatoreAttivo, cartaGiocata);
+            PayloadAttesa payload = new ContestoAttesaSfida(turno.getGiocatoreDiTurno(), cartaGiocata, giocatoreInterrogato, indiciCarteGiocabili);
+            turno.setAttesa(TipoAttesa.ATTESA_SFIDA, payload);
             return false;
         }
 
-        // STEP 1: Ricevo la sfida (o il timeout se nessuno fa nulla)
-        else if (this.step == 1) {
-            Object input = turno.popInput();
-
-            if (input instanceof String && input.equals("TIMEOUT")) {
-                gui.mostraMessaggio("Nessuno ha sfidato la giocata.");
-                turno.salvaRisultatoSottoFase(true); // Sopravvissuta
-                return true;
-            }
-            else if (input instanceof GiocataSfida giocata) {
-                this.sfidante = giocata.sfidante();
-                this.sfidante.getMano().rimuoviCarta(giocata.carta()); // Rimuovo la Sfida dalla mano!
-
-                gui.mostraMessaggio("⚔️ " + sfidante.getNome() + " HA LANCIATO UNA SFIDA!");
+        //STEP 1: Verifico se il giocatore vuole tirare una sfida e la scarto dalla sua mano
+        if (this.step == 1) {
+            Integer risposta = (Integer) turno.popInput();
+            if (risposta == null) {
+                indiceAvversarioAttuale++;
+                this.step = 0;
+                return false;
+            }else{
+                this.avversarioAttuale = turno.getAvversari().get(indiceAvversarioAttuale);
+                Carta cartaDaScartare = this.avversarioAttuale.getMano().rimuoviCarta(risposta);
+                tavolo.aggiungiCartaPilaScarti(cartaDaScartare);
+                turno.addMessage(" --- " + this.avversarioAttuale.getNome() + " HA LANCIATO UNA SFIDA! ---");
 
                 // Tiriamo i dadi
-                this.valorePlayer = lanciaDueDadi();
-                this.valoreSfidante = lanciaDueDadi();
+                int valorePlayer = lanciaDadi(2);
+                int valoreSfidante = lanciaDadi(2);
 
-                gui.mostraMessaggio("Tiro Base | " + giocatoreAttivo.getNome() + ": " + valorePlayer + " | " + sfidante.getNome() + ": " + valoreSfidante);
+                turno.addMessage("\n--- RISULTATI INIZIALI SFIDA ---\n"+ "Tiro di " + turno.getGiocatoreDiTurno().getNome() + ": " + valorePlayer + " |\n" + "Tiro di " + avversarioAttuale.getNome() + ": " + valoreSfidante +" |");
 
                 // Lancio la fase modificatori DOPPIA!
-                turno.aggiungiFaseInCima(new FaseModificatoriSfida(valorePlayer, valoreSfidante, giocatoreAttivo, sfidante));
+                turno.aggiungiFaseInCima(new FaseModificatoriSfida(valorePlayer, valoreSfidante, turno.getGiocatoreDiTurno(), avversarioAttuale));
+
                 this.step = 2;
                 return false;
             }
@@ -60,18 +77,17 @@ public class FaseSfida implements Fase {
         // STEP 2: Calcolo il vincitore dopo i modificatori
         else if (this.step == 2) {
             // Recupero un array con i due punteggi finali
-            float[] punteggiFinali = (float[]) turno.popRisultatoSottoFase();
-            float finalPlayer = punteggiFinali[0];
-            float finalSfidante = punteggiFinali[1];
+            RisultatoFaseModificatoriSfida punteggiFinali = (RisultatoFaseModificatoriSfida) turno.popRisultatoSottoFase();
+            int punteggioFinaleGiocatoreDiTurno = punteggiFinali.punteggioFinaleGiocatoreDiturno();
+            int punteggioFinaleSfidante = punteggiFinali.punteggioFinaleSfidante();
+            turno.addMessage("Risultato Finale | " + turno.getGiocatoreDiTurno().getNome() + ": " + punteggioFinaleGiocatoreDiTurno+ " | " + this.avversarioAttuale.getNome() + ": " + punteggioFinaleSfidante );
 
-            gui.mostraMessaggio("Risultato Finale | " + giocatoreAttivo.getNome() + ": " + finalPlayer + " | " + sfidante.getNome() + ": " + finalSfidante);
-
-            // In caso di parità, vince lo sfidante! (Regola di HTS)
-            if (finalPlayer > finalSfidante) {
-                gui.mostraMessaggio("✅ " + giocatoreAttivo.getNome() + " vince la sfida! La carta entra in gioco.");
+            // In caso di parità, vince lo sfidante!
+            if (punteggioFinaleGiocatoreDiTurno > punteggioFinaleSfidante) {
+                turno.addMessage(turno.getGiocatoreDiTurno().getNome() + " vince la sfida! La carta entra in gioco.");
                 turno.salvaRisultatoSottoFase(true); // Sopravvissuta
             } else {
-                gui.mostraMessaggio("❌ " + sfidante.getNome() + " vince la sfida! La carta " + cartaGiocata.getNome() + " viene distrutta.");
+                turno.addMessage(this.avversarioAttuale.getNome() + " vince la sfida! La carta " + cartaGiocata.getNome() + " viene distrutta.");
                 turno.salvaRisultatoSottoFase(false); // Distrutta
             }
             return true;
@@ -80,7 +96,11 @@ public class FaseSfida implements Fase {
         return true;
     }
 
-    private int lanciaDueDadi() {
-        return (int)(Math.random() * 6) + 1 + (int)(Math.random() * 6) + 1;
+    private int lanciaDadi(int numDadi) {
+        int risultato = 0;
+        for (int i = 0; i < numDadi; i++) {
+            risultato = risultato + dado.tiraDado();
+        }
+        return risultato;
     }
 }
