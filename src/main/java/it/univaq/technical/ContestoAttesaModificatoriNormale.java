@@ -10,7 +10,7 @@ public record ContestoAttesaModificatoriNormale(
         Player giocatoreCheHaTirato,
         Player giocatoreInterrogato,
         List<Integer> indiciCarteGiocabili
-) implements PayloadAttesa{
+) implements ContestoAttesa {
     @Override
     public void notificaUI(GameObserver obs) {
         obs.menuSceltaCartaModificatore(punteggioAttuale, giocatoreCheHaTirato, indiciCarteGiocabili, giocatoreInterrogato);

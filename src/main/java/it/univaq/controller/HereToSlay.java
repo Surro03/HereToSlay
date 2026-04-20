@@ -90,7 +90,7 @@ public class HereToSlay implements ControllerSubject{
         }
 
         // 4. Controllo: La fase si è fermata. Cosa aspetta?
-        PayloadAttesa attesa = this.turnoAttuale.getPayloadAttesa();
+        ContestoAttesa attesa = this.turnoAttuale.getPayloadAttesa();
 
         if (attesa != null) {
             notificaTutti(attesa::notificaUI);

@@ -16,7 +16,7 @@ public class Turno {
     private final List<Player> elencoGiocatori;
     private Object risultatoSottoFase;
     private TipoAttesa tipoAttesa;
-    private PayloadAttesa payloadAttesa;
+    private ContestoAttesa contestoAttesa;
     private List<String> messagesBuffer = new ArrayList<>();
     private Deque<Fase> pilaFasi;
     
@@ -125,14 +125,14 @@ public class Turno {
 
     public void setAttesa(TipoAttesa tipoAttesa) {this.tipoAttesa = tipoAttesa;}
 
-    public void setAttesa(TipoAttesa tipoAttesa, PayloadAttesa payloadAttesa) {
+    public void setAttesa(TipoAttesa tipoAttesa, ContestoAttesa contestoAttesa) {
         this.tipoAttesa = tipoAttesa;
-        this.payloadAttesa = payloadAttesa;
+        this.contestoAttesa = contestoAttesa;
     }
 
     public TipoAttesa getAttesa() {return this.tipoAttesa;}
 
-    public PayloadAttesa getPayloadAttesa() {return this.payloadAttesa;}
+    public ContestoAttesa getPayloadAttesa() {return this.contestoAttesa;}
 
     public List<Player> getAvversari() {
         return avversari;

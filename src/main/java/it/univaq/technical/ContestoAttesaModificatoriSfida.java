@@ -11,7 +11,7 @@ public record ContestoAttesaModificatoriSfida(
         List<Integer> indiciCarteGiocabili,
         Player giocatoreDiTurno,
         Player avversario,
-        Player giocatoreInterrogato) implements PayloadAttesa {
+        Player giocatoreInterrogato) implements ContestoAttesa {
 
     @Override
     public void notificaUI(GameObserver obs) {

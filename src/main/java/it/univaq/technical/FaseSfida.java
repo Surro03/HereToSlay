@@ -41,7 +41,7 @@ public class FaseSfida implements Fase {
             }
             List<Integer> indiciCarteGiocabili = giocatoreInterrogato.getMano().getIndiciCarteDiTipo(CartaSfida.class);
             this.step = 1;
-            PayloadAttesa payload = new ContestoAttesaSfida(turno.getGiocatoreDiTurno(), cartaGiocata, giocatoreInterrogato, indiciCarteGiocabili);
+            ContestoAttesa payload = new ContestoAttesaSfida(turno.getGiocatoreDiTurno(), cartaGiocata, giocatoreInterrogato, indiciCarteGiocabili);
             turno.setAttesa(TipoAttesa.ATTESA_SFIDA, payload);
             return false;
         }

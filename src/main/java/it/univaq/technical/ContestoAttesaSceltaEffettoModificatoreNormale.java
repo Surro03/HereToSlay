@@ -7,7 +7,7 @@ import it.univaq.ui.GameObserver;
 public record ContestoAttesaSceltaEffettoModificatoreNormale(
         int punteggioAttuale,
         Player giocatoreCheHaTirato,
-        CartaModificatore cartaModificatoreScelta) implements PayloadAttesa{
+        CartaModificatore cartaModificatoreScelta) implements ContestoAttesa {
     @Override
     public void notificaUI(GameObserver obs) {
         obs.menuSceltaEffettoModificatore(punteggioAttuale, giocatoreCheHaTirato, cartaModificatoreScelta);

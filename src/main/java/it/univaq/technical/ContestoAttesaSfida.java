@@ -10,7 +10,7 @@ public record ContestoAttesaSfida(
         Carta cartaDaSfidare,
         Player giocatoreInterrogato,
         List<Integer> indiciSfideGiocabili
-) implements PayloadAttesa {
+) implements ContestoAttesa {
 
     @Override
     public void notificaUI(GameObserver obs) {

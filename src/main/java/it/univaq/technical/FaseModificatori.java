@@ -53,7 +53,7 @@ public class FaseModificatori implements Fase {
 
             // 4. Mando l'attesa alla UI
             List<Integer> indiciGiocabili = this.giocatoreInterrogato.getMano().getIndiciCarteDiTipo(CartaModificatore.class);
-            PayloadAttesa contesto = new ContestoAttesaModificatoriNormale(this.punteggioAttuale, this.giocatoreCheHaTirato, this.giocatoreInterrogato, indiciGiocabili);
+            ContestoAttesa contesto = new ContestoAttesaModificatoriNormale(this.punteggioAttuale, this.giocatoreCheHaTirato, this.giocatoreInterrogato, indiciGiocabili);
             turno.setAttesa(TipoAttesa.ATTESA_SCELTA_MODIFICATORI, contesto);
 
             return false; // Mi addormento
@@ -73,7 +73,7 @@ public class FaseModificatori implements Fase {
                 // IL GIOCATORE HA SCELTO UNA CARTA
                 this.cartaModificatoreScelta = (CartaModificatore) this.giocatoreInterrogato.getMano().rimuoviCarta(indiceCartaScelta);
 
-                PayloadAttesa contestoEffetto = new ContestoAttesaSceltaEffettoModificatoreNormale(this.punteggioAttuale, this.giocatoreCheHaTirato, this.cartaModificatoreScelta);
+                ContestoAttesa contestoEffetto = new ContestoAttesaSceltaEffettoModificatoreNormale(this.punteggioAttuale, this.giocatoreCheHaTirato, this.cartaModificatoreScelta);
                 turno.setAttesa(TipoAttesa.ATTESA_SCELTA_EFFETTO_MODIFICATORI, contestoEffetto);
 
                 this.step = 2;

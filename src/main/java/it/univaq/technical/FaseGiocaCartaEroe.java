@@ -16,7 +16,7 @@ public class FaseGiocaCartaEroe implements Fase {
         // --- STEP 0: SELEZIONE DELLA CARTA ---
         if (this.step == 0) {
             this.step = 1;
-            PayloadAttesa contestoAttesaSceltaCartaEroe = new ContestoAttesaSceltaCartaEroe(turno.getGiocatoreDiTurno().getMano());
+            ContestoAttesa contestoAttesaSceltaCartaEroe = new ContestoAttesaSceltaCartaEroe(turno.getGiocatoreDiTurno().getMano());
             turno.setAttesa(SCELTA_CARTA_EROE, contestoAttesaSceltaCartaEroe);
             return false;
         } 
@@ -53,7 +53,7 @@ public class FaseGiocaCartaEroe implements Fase {
             turno.addMessage(("Hai giocato: " + cartaScelta.getNome()));
             turno.addMessage("Vuoi lanciare i dadi per l'effetto di " + cartaScelta.getNome() + "?");
             this.step = 3;
-            PayloadAttesa contestoAttesaConfermaEffetto = new ContestoAttesaConfermaEffetto();
+            ContestoAttesa contestoAttesaConfermaEffetto = new ContestoAttesaConfermaEffetto();
             turno.setAttesa(CONFERMA_EFFETTO, contestoAttesaConfermaEffetto);
             return false;
         }

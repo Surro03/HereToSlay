@@ -28,7 +28,7 @@ public class FaseSceltaMossa implements Fase {
             Player attivo = turno.getGiocatoreDiTurno();
             boolean haEroi = attivo.verificaTipoDiCarteInMano(CartaEroe.class);
 
-            PayloadAttesa payload = new ContestoAttesaMossaPrincipale(attivo, haEroi, pa);
+            ContestoAttesa payload = new ContestoAttesaMossaPrincipale(attivo, haEroi, pa);
 
             turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE, payload);
             return false; // Restituisce false per fermare il while del Turno.

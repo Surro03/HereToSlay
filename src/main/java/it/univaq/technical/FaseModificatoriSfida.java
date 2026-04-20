@@ -51,7 +51,7 @@ public class FaseModificatoriSfida implements Fase {
                 return this.eseguiFase(turno, tavolo);
             }
             List<Integer> indiceCarteGiocabili = this.giocatoreInterrogato.getMano().getIndiciCarteDiTipo(CartaModificatore.class);
-            PayloadAttesa contestoAttesaModificatoriSfida = new ContestoAttesaModificatoriSfida(this.punteggioGiocatoreDiTurno, this.punteggioSfidante, indiceCarteGiocabili, this.giocatoreAttivo, this.sfidante, giocatoreInterrogato);
+            ContestoAttesa contestoAttesaModificatoriSfida = new ContestoAttesaModificatoriSfida(this.punteggioGiocatoreDiTurno, this.punteggioSfidante, indiceCarteGiocabili, this.giocatoreAttivo, this.sfidante, giocatoreInterrogato);
             turno.setAttesa(TipoAttesa.ATTESA_SCELTA_MODIFICATORI, contestoAttesaModificatoriSfida);
             return false;
 
@@ -65,7 +65,7 @@ public class FaseModificatoriSfida implements Fase {
                 return this.eseguiFase(turno, tavolo);
             } else {
                 this.cartaModificatoreScelta = (CartaModificatore) this.giocatoreInterrogato.getMano().rimuoviCarta(indiceCartaScelta);
-                PayloadAttesa contestoSceltaEffettoModificatore = new ContestoAttesaSceltaEffettoModificatore(this.punteggioGiocatoreDiTurno, this.punteggioSfidante, this.giocatoreAttivo, this.sfidante, this.cartaModificatoreScelta);
+                ContestoAttesa contestoSceltaEffettoModificatore = new ContestoAttesaSceltaEffettoModificatore(this.punteggioGiocatoreDiTurno, this.punteggioSfidante, this.giocatoreAttivo, this.sfidante, this.cartaModificatoreScelta);
                 turno.setAttesa(TipoAttesa.ATTESA_SCELTA_EFFETTO_MODIFICATORI, contestoSceltaEffettoModificatore);
                 this.step = 2;
                 return false;
