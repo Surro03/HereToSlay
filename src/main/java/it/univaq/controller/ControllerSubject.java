@@ -2,6 +2,7 @@ package it.univaq.controller;
 
 import it.univaq.entity.CartaModificatore;
 import it.univaq.technical.GiocataGiocatore;
+import it.univaq.technical.SceltaMossa;
 import it.univaq.ui.GameObserver;
 
 public interface ControllerSubject {
@@ -14,7 +15,7 @@ public interface ControllerSubject {
 
     void prossimoTurno();
 
-    void selezionaMossa(int mossa);
+    void selezionaMossa(SceltaMossa mossa);
 
     void scegliCarta(Integer indiceRealeNellaMano);
 

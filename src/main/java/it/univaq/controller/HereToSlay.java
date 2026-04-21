@@ -101,18 +101,7 @@ public class HereToSlay implements ControllerSubject{
     // CHIAMATE SPECIFICHE DALLA UI
     // ==========================================================
     @Override
-    public void selezionaMossa(int mossa) {
-        boolean presenzaEroi = this.giocatoreDiTurno.verificaTipoDiCarteInMano(CartaEroe.class);
-        if (mossa == 1 && !presenzaEroi) {
-            notificaTutti(obs -> obs.erroreSelezioneMossa("Non hai Eroi da giocare nella tua mano"));
-            return; // Esce dal metodo, il controller torna in attesa di un nuovo input!
-            }
-
-        if (mossa < 1 || mossa > 7) {
-            notificaTutti(obs -> obs.erroreSelezioneMossa("Devi scegliere una mossa fra 1 e 7"));
-            return;
-            }
-
+    public void selezionaMossa(SceltaMossa mossa) {
         this.inoltraAlTurno(mossa);
     }
 

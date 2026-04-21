@@ -152,7 +152,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     private final ControllerSubject controller;
     private boolean giocoInEsecuzione = true;
     private final Map<Integer, Integer> mappaIndiciUniversali = new HashMap<>();
-    private final Map<Integer, GiocataGiocatore> mappaEffettiCarta = new HashMap<>();
+    private final Map<Integer, GiocataGiocatore> mappaScelteGiocatore = new HashMap<>();
     private StatoUI statoAttuale;
     private int numeroMassimoScelte;
 
@@ -226,7 +226,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             }
 
             // Vado a pescare il comando esatto associato a quel numero
-            GiocataGiocatore giocata = this.mappaEffettiCarta.get(scelta);
+            GiocataGiocatore giocata = this.mappaScelteGiocatore.get(scelta);
 
             // Lo invio al controller
             this.controller.sceltaBersaglioEffettoModificatore(giocata);
@@ -287,7 +287,12 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
     private void gestisciInputMenuPrincipale(String input) {
         try {
             int scelta = Integer.parseInt(input);
-            controller.selezionaMossa(scelta);
+            if (scelta < 1 || scelta > this.numeroMassimoScelte) {
+                System.out.print("[!] Digita un numero compreso tra 1 e " + this.numeroMassimoScelte + ": ");
+            }else {
+                SceltaMossa mossaScelta = (SceltaMossa) this.mappaScelteGiocatore.get(scelta);
+                controller.selezionaMossa(mossaScelta);
+            }
         } catch (NumberFormatException e) {
             System.out.print("[!] Inserisci un numero valido: ");
         }
@@ -353,7 +358,8 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Turno di: " + giocatoreAttivo.getNome() + " | PA disponibili: " + paRimasti);
         System.out.println(giocatoreAttivo.getMano());
-
+        this.mappaScelteGiocatore.clear();
+        int sceltaVisiva = 1;
         System.out.println("\n--- SCEGLI LA TUA MOSSA ---");
         System.out.printf("%-3s | %-30s | %-10s%n", "ID", "AZIONE", "COSTO PA");
         System.out.println("-".repeat(50));
@@ -361,16 +367,25 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         if (!presenzaEroi) {
             System.out.println("   Non hai Eroi da giocare nella tua mano   ");
         } else {
-            System.out.println(" 1  | Gioca Carta Eroe               | 1 PA");
+            System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Eroe               | 1 PA");
+            mappaScelteGiocatore.put(sceltaVisiva, new SceltaGiocaCartaEroe());
+            sceltaVisiva++;
         }
-        System.out.println(" 2  | Gioca Carta Oggetto            | 1 PA");
-        System.out.println(" 3  | Gioca Carta Magia              | 1 PA");
-        System.out.println(" 4  | Pesca Carta dal Mazzo          | 1 PA");
-        System.out.println(" 5  | Utilizza Effetto Eroe          | 1 PA");
-        System.out.println(" 6  | Attacca un Mostro              | 2 PA");
-        System.out.println(" 7  | Scarta Mano e Pesca 5          | 3 PA");
+        System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Oggetto            | 1 PA");
+        sceltaVisiva++;
+        System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Magia              | 1 PA");
+        sceltaVisiva++;
+        System.out.println(" "+ sceltaVisiva +"  | Pesca Carta dal Mazzo          | 1 PA");
+        sceltaVisiva++;
+        System.out.println(" "+ sceltaVisiva +"  | Utilizza Effetto Eroe          | 1 PA");
+        sceltaVisiva++;
+        System.out.println(" "+ sceltaVisiva +"  | Attacca un Mostro              | 2 PA");
+        sceltaVisiva++;
+        System.out.println(" "+ sceltaVisiva +"  | Scarta Mano e Pesca 5          | 3 PA");
+        sceltaVisiva++;
         System.out.println("-".repeat(50));
         System.out.print("> Digita il numero della mossa: ");
+        this.numeroMassimoScelte = sceltaVisiva - 1;
         this.statoAttuale = StatoUI.SCELTA_MOSSA;
     }
 
@@ -576,7 +591,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
 
         // Pulisco la mappa dalla giocata precedente
-        this.mappaEffettiCarta.clear();
+        this.mappaScelteGiocatore.clear();
         int sceltaVisiva = 1;
 
         System.out.println("\n--- DETTAGLI MODIFICATORE ---");
@@ -589,7 +604,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValorePositivo()));
 
             // SALVO L'INTENZIONE NELLA MAPPA!
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.POSITIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -598,7 +613,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioAttuale + mod.getValoreNegativo()));
 
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.NEGATIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreNormale(TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
         this.numeroMassimoScelte = sceltaVisiva - 1;
@@ -626,7 +641,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         this.statoAttuale = StatoUI.ATTESA_EFFETTO_MODIFICATORE;
 
         // Pulisco la mappa dalla giocata precedente
-        this.mappaEffettiCarta.clear();
+        this.mappaScelteGiocatore.clear();
         int sceltaVisiva = 1;
 
         System.out.println("\n--- DETTAGLI MODIFICATORE ---");
@@ -639,7 +654,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                     sceltaVisiva, mod.getValorePositivo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValorePositivo()));
 
             // SALVO L'INTENZIONE NELLA MAPPA!
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -648,7 +663,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), giocatoreDiTurno.getNome(), (punteggioGiocatoreDiTurno + mod.getValoreNegativo()));
 
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.GIOCATORE_DI_TURNO, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 
@@ -657,7 +672,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValorePositivo(), sfidante.getNome(), (punteggioSfidante + mod.getValorePositivo()));
 
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.POSITIVO));
             sceltaVisiva++;
         }
 
@@ -666,7 +681,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
             System.out.printf("[ %d ] Dai %+d al tiro di %s | Nuovo tiro: %d%n",
                     sceltaVisiva, mod.getValoreNegativo(), sfidante.getNome(), (punteggioSfidante + mod.getValoreNegativo()));
 
-            mappaEffettiCarta.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
+            mappaScelteGiocatore.put(sceltaVisiva, new GiocataSceltaModificatoreSfida(BersaglioModificatore.SFIDANTE, TipoEffetto.NEGATIVO));
             sceltaVisiva++;
         }
 

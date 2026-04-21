@@ -51,8 +51,9 @@ public class Turno {
     }
 
     // --- GESTIONE DELLA PILA E INPUT (Il Segnalibro) ---
-    public void aggiungiFaseInCima(Fase nuovaFase) {
+    public Fase aggiungiFaseInCima(Fase nuovaFase) {
         this.pilaFasi.push(nuovaFase);
+        return this.pilaFasi.peek();
     }
 
     // Metodo che le Fasi usano per leggere il dato mandato dalla UI

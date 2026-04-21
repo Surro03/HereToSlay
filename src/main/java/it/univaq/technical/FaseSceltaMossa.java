@@ -35,30 +35,18 @@ public class FaseSceltaMossa implements Fase {
         }
 
         else if (this.step == 1) {
-            System.out.println("LOG: FaseSceltaMossa risvegliata! Leggo l'input...");
-
-            // Il controller ci ha appena iniettato l'input
-            Integer mossaScelta = (Integer) turno.popInput();
+            SceltaMossa mossaScelta = (SceltaMossa) turno.popInput();
 
             if (mossaScelta != null) {
-                switch (mossaScelta) {
-                    case 1:
-                        turno.aggiungiFaseInCima(new FaseGiocaCartaEroe());
-                        // Quando FaseGiocaCartaEroe finirà,
-                        // il Turno tornerà qui e ripartirà dallo step 0 per un'altra mossa!
-                        this.step = 0;
-                        return false;
-
-                    case 99: // Bottone "Passo il turno"
-                        return true;   // Mi autodistruggo e chiudo il turno.
-
-                    default:
-                        // Se per qualche motivo arriva un numero errato, resetto e richiedo.
-                        this.step = 0;
-                        return false;
-                }
+                mossaScelta.eseguiMossa(turno);
+                //Mi resetto allo step 0, così quando mi sveglierò ricalcolerò i PA
+                this.step = 0;
+                return false;
             }
-            return false;
+
+            // Se l'input era nullo o errato, richiedo semplicemente
+            this.step = 0;
+            return this.eseguiFase(turno, tavolo); // Salto Quantico
         }
         return true;
     }
