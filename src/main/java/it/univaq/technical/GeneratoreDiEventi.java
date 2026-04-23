@@ -1,67 +1,60 @@
 package it.univaq.technical;
 
+import it.univaq.ui.GameObserver;
+
 import java.time.Instant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class GeneratoreDiEventi {
-	private List<FinestraTemporaleObserver> finestraTemporaleObservers;
+	private List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> countdownTask; // Riferimento per fermare il countdown
     private FinestraTemporale finestraTemporaleGenerata;
     private final int SECONDI_DURATA;
 
-	public GeneratoreDiEventi(int SECONDI_DURATA, List<FinestraTemporaleObserver> finestraTemporaleObservers) {
+
+	public GeneratoreDiEventi(int SECONDI_DURATA) {
         this.SECONDI_DURATA = SECONDI_DURATA;
-        this.finestraTemporaleObservers = finestraTemporaleObservers;
 	}
 
-    public void notifyStartTimer(int durata, Fase fase) {
-        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerStarted(durata, fase);
-        }
+    public void addObserver(FinestraTemporaleObserver finestraTemporaleObserver) {
+        finestraTemporaleObservers.add(finestraTemporaleObserver);
     }
 
-    public void notifyRestartTimer(int durata){
-        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerRestarting(durata);
-        }
+    public void removeObserver(FinestraTemporaleObserver finestraTemporaleObserver) {
+        finestraTemporaleObservers.remove(finestraTemporaleObserver);
     }
 
-    public void notifyStopTimer(Fase fase) {
-        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerStopped(fase);
-        }
-    }
-
-    public void notifyInterruptionTimer(Fase fase){
-        for (FinestraTemporaleObserver finestraTemporaleObserver : finestraTemporaleObservers ) {
-            finestraTemporaleObserver.timerInterrupted(fase);
+    private void notificaTutti(Consumer<FinestraTemporaleObserver> action) {
+        for (FinestraTemporaleObserver obs : finestraTemporaleObservers) {
+            action.accept(obs);
         }
     }
 	/**
 	 * 
 	 * @param fase
 	 */
-	public void generaEvento(Fase fase) {
-		// TODO - implement GeneratoreDiEventi.generaEvento
-		throw new UnsupportedOperationException();
-	}
+//	public void generaEvento(ContestoEvento contestoEvento) {
+//		// TODO
+//	}
 
 
-    public synchronized void startTimerL(Fase fase) {
+    public synchronized void startTimer(Fase fase) {
         // 1. Se c'è un timer precedente ancora in attesa, lo annulliamo
         if (countdownTask != null) {
             countdownTask.cancel(false);
         }
 
         // 2. Messaggio iniziale (appare una volta sola)
-        this.notifyStartTimer(SECONDI_DURATA, fase);
+        this.notificaTutti(finestraTemporaleObserver -> finestraTemporaleObserver.timerStarted(SECONDI_DURATA, fase));
 
 
         // 3. Impostiamo la scadenza tecnica (per i controlli isAncoraValida())
@@ -71,19 +64,18 @@ public class GeneratoreDiEventi {
         // 4. Programmiamo il messaggio di "Tempo Scaduto" tra X secondi
         // Questo messaggio apparirà solo quando il tempo è effettivamente finito
 
-        countdownTask = scheduler.schedule(() -> this.notifyStopTimer(fase), SECONDI_DURATA, TimeUnit.SECONDS);
+        countdownTask = scheduler.schedule(() -> this.notificaTutti(finestraTemporaleObserver -> finestraTemporaleObserver.timerStopped(fase)), SECONDI_DURATA, TimeUnit.SECONDS);
     }
 
-    // AGGIUNGI QUESTO METODO: Fondamentale per fermare il timer se il giocatore è veloce!
-    public synchronized void stopTimer(Fase fase) {
-        if (countdownTask != null) {
+    // Arresto manuale (quando il giocatore risponde o passa)
+    public synchronized void stopTimerGiocatore(Fase fase) {
+        if (countdownTask != null && !countdownTask.isDone()) {
             countdownTask.cancel(false);
-            this.notifyInterruptionTimer(fase);
-
+            this.notificaTutti(finestraTemporaleObserver -> finestraTemporaleObserver.timerInterrupted(fase));
         }
     }
 
-	public synchronized void resetTimerL(Fase fase) {
+	public synchronized void resetTimer(Fase fase) {
         if (this.finestraTemporaleGenerata != null) {
             // 1. CANCELLA il vecchio messaggio di scadenza programmato
             if (countdownTask != null) {
@@ -95,10 +87,10 @@ public class GeneratoreDiEventi {
             this.finestraTemporaleGenerata.setFine(nuovaScadenza);
 
             // 3. AVVISA l'utente del reset
-            this.notifyRestartTimer(SECONDI_DURATA);
+            this.notificaTutti(finestraTemporaleObserver -> finestraTemporaleObserver.timerRestarting(SECONDI_DURATA));
 
             // 4. RIPROGRAMMA il messaggio di timeout per la nuova scadenza
-            countdownTask = scheduler.schedule(() -> this.notifyStopTimer(fase), SECONDI_DURATA, TimeUnit.SECONDS);
+            countdownTask = scheduler.schedule(() -> this.notificaTutti(obs -> obs.timerStarted(SECONDI_DURATA,fase)), SECONDI_DURATA, TimeUnit.SECONDS);
         }
 	}
 

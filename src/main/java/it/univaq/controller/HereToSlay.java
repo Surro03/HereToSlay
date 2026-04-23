@@ -9,20 +9,22 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public class HereToSlay implements ControllerSubject{
+public class HereToSlay implements ControllerSubject, FinestraTemporaleObserver{
 
     private final List<GameObserver> observers;
     private final List<Player> elencoGiocatori;
     private Player giocatoreDiTurno;
     private final Tavolo tavolo;
-    private Turno turnoAttuale;
+    private Turno turno;
+    private final GeneratoreDiEventi generatoreDiEventi;
 
 
 
-    public HereToSlay(List<Player> elencoGiocatori) {
+    public HereToSlay(List<Player> elencoGiocatori, GeneratoreDiEventi generatoreDiEventi) {
         this.elencoGiocatori = elencoGiocatori;
         this.tavolo = new Tavolo(elencoGiocatori);
         this.observers = new ArrayList<>();
+        this.generatoreDiEventi = generatoreDiEventi;
     }
 
     //Gestione Observers
@@ -47,8 +49,8 @@ public class HereToSlay implements ControllerSubject{
         List<Player> avversari = elencoGiocatori.stream()
                 .filter(p -> !p.equals(this.giocatoreDiTurno))
                 .toList();
-        this.turnoAttuale = new Turno(giocatore, this.tavolo, avversari, elencoGiocatori);
-        this.turnoAttuale.aggiungiFaseInCima(new FaseSceltaMossa());
+        this.turno = new Turno(giocatore, this.tavolo, avversari, elencoGiocatori, this.generatoreDiEventi);
+        this.turno.aggiungiFaseInCima(new FaseSceltaMossa());
 
         // Diamo la "prima spinta" a vuoto per far partire la prima fase
         this.inoltraAlTurno(null);
@@ -71,35 +73,31 @@ public class HereToSlay implements ControllerSubject{
         this.iniziaTurno(this.giocatoreDiTurno);
     }
 
-    // ==========================================================
-    // IL MOTORE CENTRALE: TRADUZIONE E NOTIFICA
-    // ==========================================================
+    //Motore del gioco
     private void inoltraAlTurno(Object dato) {
-        // 1. Spinge il dato. Il Turno fa i suoi giri e poi si addormenta.
-        this.turnoAttuale.riceviInput(dato);
+        // 1. Spinge il dato. Il Turno fa i suoi giri e poi rida la palla all'interfaccia
+        this.turno.riceviInput(dato);
 
         // 2. Controllo: Il turno è finito?
-        if (this.turnoAttuale.isTerminato()) {
+        if (this.turno.isTerminato()) {
             this.prossimoTurno();
             return;
         }
 
         //3. Controlla se ci sono messaggi da mandare alla UI
-        while (!this.turnoAttuale.getMessages().isEmpty()) {
-            notificaTutti(obs -> obs.mostraMessaggio(this.turnoAttuale.getFirstMessage()));
+        while (!this.turno.getMessages().isEmpty()) {
+            notificaTutti(obs -> obs.mostraMessaggio(this.turno.getFirstMessage()));
         }
 
         // 4. Controllo: La fase si è fermata. Cosa aspetta?
-        ContestoAttesa attesa = this.turnoAttuale.getPayloadAttesa();
+        ContestoAttesa attesa = this.turno.getPayloadAttesa();
 
         if (attesa != null) {
             notificaTutti(attesa::notificaUI);
         }
     }
 
-    // ==========================================================
-    // CHIAMATE SPECIFICHE DALLA UI
-    // ==========================================================
+    //Chiamate tipizzate per la UI
     @Override
     public void selezionaMossa(SceltaMossa mossa) {
         this.inoltraAlTurno(mossa);
@@ -119,7 +117,30 @@ public class HereToSlay implements ControllerSubject{
     @Override
     public void confermaAttivazioneEffetto(boolean vuoleAttivare) { this.inoltraAlTurno(vuoleAttivare); }
 
+    @Override
+    public void timerStarted(int durata, Fase fase) {
+        //Ingora.
+    }
 
+    @Override
+    public void timerRestarting(int durata) {
+        //Ignora.
+    }
 
+    @Override
+    public void timerInterrupted(Fase fase) {
+        //Ignora.
+    }
+
+    @Override
+    public void timerStopped(Fase fase) {
+        // Il timer è scaduto (nessuno ha risposto in tempo).
+        // Il Controller inietta un "null" nel Turno forzando il "Passa" del giocatore
+        this.turno.riceviInput(null);
+    }
+
+    public void addTimerObserver(FinestraTemporaleObserver obs) {
+        this.generatoreDiEventi.addObserver(obs);
+    }
 
 }

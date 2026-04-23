@@ -30,13 +30,14 @@ public class FaseModificatoriSfida implements Fase {
 
         if (this.step == 0) {
             if (this.indiceSkip >= turno.getListaGiocatori().size()) {
+
                 turno.addMessage("Fase Terminata");
                 RisultatoFase risultatoFaseModificatoriSfida = new RisultatoFaseModificatoriSfida(this.punteggioGiocatoreDiTurno, this.punteggioSfidante);
                 turno.salvaRisultatoSottoFase(risultatoFaseModificatoriSfida);
-                return true; // La fase Sfida finisce!
+                return true; // Fine fase Sfida
             }
             this.step = 1;
-            // Se indiceGiocatoreAttuale arriva a 3 (e i giocatori sono 3), 3 % 3 = 0. Riparte da solo!
+            // Se indiceGiocatoreAttuale arriva a 3 (e i giocatori sono 3), 3 % 3 = 0, quindi ricomincia il giro
             int indiceSicuro = this.indiceGiocatoreAttuale % turno.getListaGiocatori().size();
             this.giocatoreInterrogato = turno.getListaGiocatori().get(indiceSicuro);
             if (giocatoreInterrogato.getMano().getCarteMano().isEmpty()) {
@@ -45,7 +46,7 @@ public class FaseModificatoriSfida implements Fase {
                 //turno.inviaEvento(new NotificaMessaggio(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico."));
                 turno.addMessage(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico.");
 
-                // Incremento l'indice e riavvio il loop istantaneamente!
+                // Incremento l'indice e riavvio il loop
                 this.indiceGiocatoreAttuale++;
                 this.indiceSkip++;
                 return this.eseguiFase(turno, tavolo);
@@ -56,11 +57,15 @@ public class FaseModificatoriSfida implements Fase {
             return false;
 
         } else if (this.step == 1) {
+            Object input = turno.popInput();
+            if (input != null && !(input instanceof Integer)) {
+                return false;
+            }
             //Rimuove la carta dalla mano del giocatore e la salva nella fase
-            Integer indiceCartaScelta = (Integer) turno.popInput();
+            Integer indiceCartaScelta = (Integer) input;
             if (indiceCartaScelta == null) {
                 this.indiceGiocatoreAttuale++; // Passo al prossimo
-                this.indiceSkip++;             // Registro lo skip!
+                this.indiceSkip++;             // Registro lo skip
                 this.step = 0;
                 return this.eseguiFase(turno, tavolo);
             } else {
@@ -72,29 +77,32 @@ public class FaseModificatoriSfida implements Fase {
             }
 
         } else if (this.step == 2) {
+            Object input = turno.popInput();
+            if (input != null && !(input instanceof GiocataSceltaModificatoreSfida)) {
+                return false;
+            }
             // 1. Prendo il Payload
-            GiocataSceltaModificatoreSfida giocata = (GiocataSceltaModificatoreSfida) turno.popInput();
+            GiocataSceltaModificatoreSfida giocata = (GiocataSceltaModificatoreSfida) input;
 
-            // 2. Capisco QUALE valore devo usare dalla carta in sospeso
+            // 2. Vedo quale valore devo usare dalla carta in sospeso
+            assert giocata != null;
             int valoreDaApplicare = (giocata.tipoEffetto() == TipoEffetto.POSITIVO)
                     ? this.cartaModificatoreScelta.getValorePositivo()
                     : this.cartaModificatoreScelta.getValoreNegativo();
 
-            // 3. Lo applico al BERSAGLIO corretto
+            // 3. E su chi
             if (giocata.bersaglio() == BersaglioModificatore.GIOCATORE_DI_TURNO) {
                 this.punteggioGiocatoreDiTurno += valoreDaApplicare;
             } else {
                 this.punteggioSfidante += valoreDaApplicare;
             }
 
-            // Log per avvisare tutti!
             turno.addMessage("I nuovi punteggi sono -> " + turno.getGiocatoreDiTurno().getNome() + ": " + this.punteggioGiocatoreDiTurno + " | " + sfidante.getNome() + ": " + this.punteggioSfidante);
-
             // Azzero la carta e riparto
             tavolo.aggiungiCartaPilaScarti(cartaModificatoreScelta);
             this.cartaModificatoreScelta = null;
-            this.indiceGiocatoreAttuale++; // Passo la palla al prossimo giocatore per farlo rispondere!
-            this.indiceSkip = 0;           // Qualcuno ha agito! Il contatore dei "passo" si azzera!
+            this.indiceGiocatoreAttuale++; // Passo la palla al prossimo giocatore per farlo rispondere.
+            this.indiceSkip = 0;           // Qualcuno ha agito, tutti hanno di nuovo la possibilità di parlare
             this.step = 0;
             return this.eseguiFase(turno, tavolo);
         }

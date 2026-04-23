@@ -31,7 +31,6 @@ public class FaseGiocaCartaEroe implements Fase {
 
             // Consumo il punto azione
             turno.consumaPA(1);
-            // ---> INIETTO LA SFIDA NELLA PILA! <---
             turno.aggiungiFaseInCima(new FaseSfida(this.cartaScelta));
             this.step = 2;
             return false;
@@ -39,9 +38,14 @@ public class FaseGiocaCartaEroe implements Fase {
 
         // --- STEP 2: CONTROLLO ESITO SFIDA ---
         else if (this.step == 2) {
-            Boolean sopravvissuta = (Boolean) turno.popRisultatoSottoFase();
-            if (!sopravvissuta) {
-                // La carta è stata distrutta dalla sfida. Il turno finisce qui, niente effetti!
+            Object input = turno.popRisultatoSottoFase();
+            if (input != null && !(input instanceof Boolean)) {
+                System.out.println("LOG Motore: Scartato input sporco (" + input.getClass().getSimpleName() + "). Aspetto un Boolean.");
+                return false;
+            }
+            Boolean sopravvissuta = (Boolean) input;
+            if (Boolean.FALSE.equals(sopravvissuta)) {
+                // La carta è stata distrutta dalla sfida. Il turno finisce qui.
                 tavolo.aggiungiCartaPilaScarti(cartaScelta);
                 cartaScelta = null;
                 return true;
@@ -61,9 +65,13 @@ public class FaseGiocaCartaEroe implements Fase {
         
         // --- STEP 3: RICHIESTA EFFETTO ---
         else if (this.step == 3) {
-            Boolean vuoleAttivare = (Boolean) turno.popInput();
+            Object input = turno.popInput();
+            if (input != null && !(input instanceof Boolean)) {
+                return false;
+            }
+            Boolean vuoleAttivare = (Boolean) input;
             
-            if (vuoleAttivare) {
+            if (Boolean.TRUE.equals(vuoleAttivare)) {
                 turno.aggiungiFaseInCima(new FaseEffetto(this.cartaScelta)); 
                 
                 this.step = 4;

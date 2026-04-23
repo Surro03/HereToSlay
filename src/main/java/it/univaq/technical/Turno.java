@@ -19,11 +19,12 @@ public class Turno {
     private ContestoAttesa contestoAttesa;
     private List<String> messagesBuffer = new ArrayList<>();
     private Deque<Fase> pilaFasi;
+    private GeneratoreDiEventi generatoreDiEventi;
     
     // Variabile "Posta in arrivo" per i dati che ci manda la UI
     private Object inputInSospeso;
 
-    public Turno(Player giocatoreDiTurno, Tavolo tavolo, List<Player> avversari, List<Player> elencoGiocatori) {
+    public Turno(Player giocatoreDiTurno, Tavolo tavolo, List<Player> avversari, List<Player> elencoGiocatori, GeneratoreDiEventi generatoreDiEventi) {
         this.giocatoreDiTurno = giocatoreDiTurno;
         this.paRimanenti = 3;
         this.pilaFasi = new ArrayDeque<>();
@@ -31,6 +32,7 @@ public class Turno {
         this.tavolo = tavolo;
         this.avversari = avversari;
         this.elencoGiocatori = elencoGiocatori;
+        this.generatoreDiEventi = generatoreDiEventi;
     }
 
     // --- GRASP: INFORMATION EXPERT (Gestione PA) ---
@@ -142,6 +144,25 @@ public class Turno {
     public List<Player> getListaGiocatori() {
         return this.elencoGiocatori;
     }
+
+    public void avviaTimer(Fase fase) {
+        if (this.generatoreDiEventi != null) {
+            this.generatoreDiEventi.startTimer(fase);
+        }
+    }
+
+    public void fermaTimerGiocatore(Fase fase) {
+        if (this.generatoreDiEventi != null) {
+            this.generatoreDiEventi.stopTimerGiocatore(fase);
+        }
+    }
+
+    public void resetTimer(Fase fase) {
+        if (this.generatoreDiEventi != null) {
+            this.generatoreDiEventi.resetTimer(fase);
+        }
+    }
+
 }
 
 

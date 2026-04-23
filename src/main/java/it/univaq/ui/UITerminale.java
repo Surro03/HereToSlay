@@ -146,7 +146,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class UITerminale implements GameObserver, FinestraTemporaleObserver {
+public class UITerminale implements GameObserver{
 
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;
@@ -340,7 +340,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
                 System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
             } else {
                 if (scelta == 0){
-                    controller.scegliCarta(null);
+                    controller.scegliCarta(-1);
                 }else {
                     int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
                     // Richiama il metodo esplicito per le carte
@@ -476,7 +476,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
         }
 
         System.out.println("-".repeat(30));
-        System.out.println("[ 0 ]  | PASSA (Non usare sfide)");
+        System.out.println("[0]  | PASSA (Non usare sfide)");
 
         this.numeroMassimoScelte = sceltaVisiva - 1;
 
@@ -692,7 +692,7 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
 
     @Override
     public void timerStarted(int durata, Fase fase) {
-        System.out.println("\n--- Avete " + durata + " secondi a testa per giocare una carta, avanti il prossimo!--- ");
+        System.out.println("\n--- Timer attivo, hai " + durata + " secondi per per rispondere--- ");
     }
 
     @Override
@@ -703,13 +703,14 @@ public class UITerminale implements GameObserver, FinestraTemporaleObserver {
 
     @Override
     public void timerStopped(Fase fase) {
-        System.out.println("\n---Tempo scaduto per la fase " + fase.getClass().getSimpleName() + "! ---");
+        System.out.println("\n--- TIMEOUT, dovevi pensare più in fretta, inserisci qualcosa per mandare avanti il gioco---");
         System.out.print("> ");
+
     }
 
     @Override
     public void timerInterrupted(Fase fase) {
-        System.out.println("\n--- Timer interrotto dai giocatori, "+fase.getClass().getSimpleName()+" terminata ---");
+        System.out.println("\n--- Timer interrotto---");
     }
 
 }

@@ -9,22 +9,22 @@ public class Main {
 
         System.out.println("=== BENVENUTO IN HERE TO SLAY ===");
 
-        // 1. Creo l'oggetto che si occuperà di preparare la partita
         HereToSlaySetup hereToSlaySetup = new HereToSlaySetup();
 
-        // 2. Dico al setup di fare la sua magia. 
-        // Lui imposterà la partita
-        // Alla fine mi restituirà il Controller pronto all'uso.
+        // 1. Creo il motore di gioco
         HereToSlay hereToSlay = hereToSlaySetup.setupGioco();
 
-        //Creo la UI e la collego al Controllore
+        // 2. Creo la UI passandogli il backend
         UITerminale gui = new UITerminale(hereToSlay);
-        hereToSlay.addObserver(gui);
 
-        // 3. Accendiamo il motore
+        // 3. Faccio i collegamenti
+        hereToSlay.addObserver(gui);      // Iscrivo la UI ai messaggi del Turno
+        hereToSlay.addTimerObserver(gui); // Iscrivo la UI al Timer
+
+        // 4. Accendiamo il motore
         hereToSlay.iniziaPartita();
 
-        //4. Mettiamo la macchina in attesa che l'utente prema l'acceleratore
+        // 5. Mettiamo il gioco in attesa che l'utente scriva
         gui.avviaLoopInput();
     }
 }

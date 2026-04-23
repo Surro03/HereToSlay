@@ -33,17 +33,11 @@ public class FaseEffetto implements Fase {
             return false; // Mi metto in pausa
         }
         
-        // --- STEP 1: VERIFICA ED ESECUZIONE (Dopo i modificatori) ---
+        // --- STEP 1: ESITO FASE MODIFICATORI ---
         else if (this.step == 1) {
-            
-
             RisultatoFaseModificatoriNormale punteggioFinale = (RisultatoFaseModificatoriNormale) turno.popRisultatoSottoFase();
-            
             turno.addMessage("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale.punteggioFinale());
-            
-            // 4. Controllo se l'effetto si attiva (passando il Float)
             if (carta.checkAttivazioneEffetto(punteggioFinale.punteggioFinale())) {
-
                 turno.addMessage("Successo! Effetto attivato: " + carta.getEffetto());
                 
                 // [!] QUI ANDRÀ LA LOGICA REALE DELL'EFFETTO [!]
@@ -51,14 +45,12 @@ public class FaseEffetto implements Fase {
             } else {
                 turno.addMessage("Fallito! Il punteggio " + punteggioFinale + " non basta.");
             }
-            
             return true; // La Fase Effetto è conclusa!
         }
         
         return true;
     }
-
-    // Metodo di servizio per simulare i dadi
+    
     private int lanciaDadi(int numDadi) {
         int risultato = 0;
         for (int i = 0; i < numDadi; i++) {

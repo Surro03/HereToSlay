@@ -6,8 +6,8 @@ import java.util.Map;
 
 public class Tavolo {
 
-    private PilaScarti pilaScarti;
-	private Map<Integer, Party> partyMap;
+    private final PilaScarti pilaScarti;
+	private final Map<Integer, Party> partyMap;
 
 	public Tavolo(List<Player> players) {
         this.pilaScarti = new PilaScarti();
@@ -20,16 +20,6 @@ public class Tavolo {
 	}
 
 	public record VittoriaPerClassi(Boolean vittoria, int numClassiDiverse) {}
-
-	/**
-	 * 
-	 * @param carta
-	 */
-	public void scartaCarta(Carta carta) {
-
-        pilaScarti.aggiungiCarta(carta);
-	}
-
 	/**
 	 *
 	 * @param playerId
