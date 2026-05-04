@@ -2,12 +2,13 @@ package it.univaq.ui;
 
 import it.univaq.entity.*;
 import it.univaq.technical.FinestraTemporaleObserver;
+import it.univaq.technical.VoceMenu;
 
 import java.util.List;
 
 public interface GameObserver extends FinestraTemporaleObserver {
 
-    void menuSelezioneMossa(Player giocatoreAttivo, boolean presenzaEroi, int paRimasti);
+    void menuSelezioneMossa(Player giocatoreAttivo, List<VoceMenu> catalogoMosse, int paRimasti);
 
     void erroreSelezioneMossa(String errore);
 

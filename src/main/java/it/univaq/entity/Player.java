@@ -51,7 +51,7 @@ public class Player {
                 .toList();
     }
 
-    public boolean verificaTipoDiCarteInMano(Class<? extends Carta> classeCercata) {
+    public boolean haCarteDiTipoInMano(Class<? extends Carta> classeCercata) {
         return this.mano.getCarteMano().stream()
                 .anyMatch(classeCercata::isInstance);
     }
@@ -62,4 +62,5 @@ public class Player {
                 "nome='" + nome + '\'' +
                 '}';
     }
+
 }

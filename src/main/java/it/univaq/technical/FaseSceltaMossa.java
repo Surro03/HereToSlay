@@ -4,6 +4,8 @@ import it.univaq.entity.CartaEroe;
 import it.univaq.entity.Player;
 import it.univaq.entity.Tavolo;
 
+import java.util.List;
+
 public class FaseSceltaMossa implements Fase {
     
     private int step = 0;
@@ -25,9 +27,15 @@ public class FaseSceltaMossa implements Fase {
             // La fase NON stampa nulla. Dice semplicemente al Turno di cosa ha bisogno.
             this.step = 1;
             Player attivo = turno.getGiocatoreDiTurno();
-            boolean haEroi = attivo.verificaTipoDiCarteInMano(CartaEroe.class);
+            List<SceltaMossa> tutteLeMosse = List.of(
+                    new SceltaGiocaCartaEroe()
+            );
 
-            ContestoAttesa payload = new ContestoAttesaMossaPrincipale(attivo, haEroi, pa);
+            // Mando alla UI solo le mosse che il giocatore può effettivamente fare ora!
+            List<VoceMenu> menuPronto = tutteLeMosse.stream()
+                    .map(mossa -> new VoceMenu(mossa, mossa.isDisponibile(turno)))
+                    .toList();
+            ContestoAttesa payload = new ContestoAttesaMossaPrincipale(attivo, menuPronto, pa);
 
             turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE, payload);
             return false; // Restituisce false per fermare il while del Turno.

@@ -353,39 +353,36 @@ public class UITerminale implements GameObserver{
     }
 
     @Override
-    public void menuSelezioneMossa(Player giocatoreAttivo, boolean presenzaEroi, int paRimasti) {
-
+    public void menuSelezioneMossa(Player giocatoreAttivo, List<VoceMenu> vociMenu, int paRimasti){
         System.out.println("\n" + "=".repeat(50));
         System.out.println("Turno di: " + giocatoreAttivo.getNome() + " | PA disponibili: " + paRimasti);
         System.out.println(giocatoreAttivo.getMano());
+
         this.mappaScelteGiocatore.clear();
         int sceltaVisiva = 1;
-        System.out.println("\n--- SCEGLI LA TUA MOSSA ---");
+
+        System.out.println("\n--- SCEGLI LA TUA MOSSA TRA QUELLE DISPONIBILI---");
         System.out.printf("%-3s | %-30s | %-10s%n", "ID", "AZIONE", "COSTO PA");
         System.out.println("-".repeat(50));
 
-        if (!presenzaEroi) {
-            System.out.println("   Non hai Eroi da giocare nella tua mano   ");
-        } else {
-            System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Eroe               | 1 PA");
-            mappaScelteGiocatore.put(sceltaVisiva, new SceltaGiocaCartaEroe());
-            sceltaVisiva++;
+        for (VoceMenu voce : vociMenu) {
+            SceltaMossa mossa = voce.mossa();
+
+            if (voce.isGiocabile()) {
+                // Opzione SELEZIONABILE
+                System.out.printf(" %-2d | %-30s | %d PA%n", sceltaVisiva, mossa.getNomeAzione(), mossa.getCostoPA());
+                this.mappaScelteGiocatore.put(sceltaVisiva, mossa);
+                sceltaVisiva++;
+            } else {
+                // Opzione BLOCCATA
+                System.out.printf(" X  | %-30s | %d PA (Requisiti non soddisfatti)%n", mossa.getNomeAzione(), mossa.getCostoPA());
+            }
         }
-        System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Oggetto            | 1 PA");
-        sceltaVisiva++;
-        System.out.println(" "+ sceltaVisiva +"  | Gioca Carta Magia              | 1 PA");
-        sceltaVisiva++;
-        System.out.println(" "+ sceltaVisiva +"  | Pesca Carta dal Mazzo          | 1 PA");
-        sceltaVisiva++;
-        System.out.println(" "+ sceltaVisiva +"  | Utilizza Effetto Eroe          | 1 PA");
-        sceltaVisiva++;
-        System.out.println(" "+ sceltaVisiva +"  | Attacca un Mostro              | 2 PA");
-        sceltaVisiva++;
-        System.out.println(" "+ sceltaVisiva +"  | Scarta Mano e Pesca 5          | 3 PA");
-        sceltaVisiva++;
+
         System.out.println("-".repeat(50));
         System.out.print("> Digita il numero della mossa: ");
-        this.numeroMassimoScelte = sceltaVisiva - 1;
+
+        this.numeroMassimoScelte = this.mappaScelteGiocatore.size(); // Solo le mosse giocabili
         this.statoAttuale = StatoUI.SCELTA_MOSSA;
     }
 
