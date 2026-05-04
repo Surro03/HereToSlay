@@ -27,10 +27,9 @@ public class FaseGiocaCartaEroe implements Fase {
             //Rimuove la carta dalla mano del giocatore e la salva nella fase
             this.cartaScelta = (CartaEroe) turno.getGiocatoreDiTurno().getMano().rimuoviCarta((int) turno.popInput());
 
-            if (this.cartaScelta == null) return true; // L'utente ha annullato
+            //if (this.cartaScelta == null) return true; // L'utente ha annullato
 
-            // Consumo il punto azione
-            turno.consumaPA(1);
+
             turno.aggiungiFaseInCima(new FaseSfida(this.cartaScelta));
             this.step = 2;
             return false;
@@ -40,7 +39,6 @@ public class FaseGiocaCartaEroe implements Fase {
         else if (this.step == 2) {
             Object input = turno.popRisultatoSottoFase();
             if (input != null && !(input instanceof Boolean)) {
-                System.out.println("LOG Motore: Scartato input sporco (" + input.getClass().getSimpleName() + "). Aspetto un Boolean.");
                 return false;
             }
             Boolean sopravvissuta = (Boolean) input;

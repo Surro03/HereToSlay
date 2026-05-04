@@ -4,6 +4,12 @@ public record SceltaGiocaCartaEroe() implements SceltaMossa{
 
     @Override
     public Fase eseguiMossa(Turno turno) {
-        return turno.aggiungiFaseInCima(new FaseGiocaCartaEroe());
+        // Consumo il punto azione
+        boolean sufficienti = turno.consumaPA(1);
+        if (sufficienti) {
+            return new FaseGiocaCartaEroe();
+        }else {
+            return null;
+        }
     }
 }

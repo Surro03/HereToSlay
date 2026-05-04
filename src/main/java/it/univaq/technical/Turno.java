@@ -17,9 +17,9 @@ public class Turno {
     private Object risultatoSottoFase;
     private TipoAttesa tipoAttesa;
     private ContestoAttesa contestoAttesa;
-    private List<String> messagesBuffer = new ArrayList<>();
-    private Deque<Fase> pilaFasi;
-    private GeneratoreDiEventi generatoreDiEventi;
+    private final List<String> messagesBuffer = new ArrayList<>();
+    private final Deque<Fase> pilaFasi;
+    private final GeneratoreDiEventi generatoreDiEventi;
     
     // Variabile "Posta in arrivo" per i dati che ci manda la UI
     private Object inputInSospeso;

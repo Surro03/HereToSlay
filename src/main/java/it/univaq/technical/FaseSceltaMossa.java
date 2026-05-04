@@ -13,7 +13,6 @@ public class FaseSceltaMossa implements Fase {
     public boolean eseguiFase(Turno turno, Tavolo tavolo) {
 
         if (this.step == 0) {
-            System.out.println("LOG: FaseSceltaMossa iniziata. Calcolo i PA disponibili...");
 
             int pa = turno.getPaRimasti();
 
@@ -35,18 +34,32 @@ public class FaseSceltaMossa implements Fase {
         }
 
         else if (this.step == 1) {
-            SceltaMossa mossaScelta = (SceltaMossa) turno.popInput();
+            Object input = turno.popInput();
+
+            if (input != null && !(input instanceof SceltaMossa)) {
+                return false;
+            }
+
+            //Ora il cast è blindato
+            SceltaMossa mossaScelta = (SceltaMossa) input;
 
             if (mossaScelta != null) {
-                mossaScelta.eseguiMossa(turno);
-                //Mi resetto allo step 0, così quando mi sveglierò ricalcolerò i PA
+                Fase faseSuccessiva = mossaScelta.eseguiMossa(turno);
                 this.step = 0;
-                return false;
+                if (faseSuccessiva == null) {
+                    //Richiedo la mossa perché i PA non bastavano
+                    turno.addMessage("PA insufficienti, scegliere un'altra mossa.");
+                    return this.eseguiFase(turno, tavolo);
+                } else {
+                    turno.aggiungiFaseInCima(faseSuccessiva);
+                    //Mi resetto allo step 0, così quando mi sveglierò ricalcolerò i PA
+                    return false;
+                }
             }
 
             // Se l'input era nullo o errato, richiedo semplicemente
             this.step = 0;
-            return this.eseguiFase(turno, tavolo); // Salto Quantico
+            return this.eseguiFase(turno, tavolo);
         }
         return true;
     }
