@@ -37,10 +37,11 @@ public class FaseSceltaMossa implements Fase {
                     new SceltaUtilizzaEffettoEroe()
             );
 
-            // Mando alla UI solo le mosse che il giocatore può effettivamente fare ora!
+            // Mando alla UI le mosse e se si possono eseguire oppure no
             List<VoceMenu> menuPronto = tutteLeMosse.stream()
                     .map(mossa -> new VoceMenu(mossa, mossa.isDisponibile(turno)))
                     .toList();
+
             ContestoAttesa payload = new ContestoAttesaMossaPrincipale(attivo, menuPronto, pa);
 
             turno.setAttesa(TipoAttesa.SCELTA_MOSSA_PRINCIPALE, payload);
