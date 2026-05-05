@@ -28,7 +28,13 @@ public class FaseSceltaMossa implements Fase {
             this.step = 1;
             Player attivo = turno.getGiocatoreDiTurno();
             List<SceltaMossa> tutteLeMosse = List.of(
-                    new SceltaGiocaCartaEroe()
+                    new SceltaGiocaCartaEroe(),
+                    new SceltaGiocaCartaMagia(),
+                    new SceltaGiocaCartaOggetto(),
+                    new SceltaAttaccaMostro(),
+                    new SceltaPescaCarta(),
+                    new SceltaScartaManoPescaCinque(),
+                    new SceltaUtilizzaEffettoEroe()
             );
 
             // Mando alla UI solo le mosse che il giocatore può effettivamente fare ora!

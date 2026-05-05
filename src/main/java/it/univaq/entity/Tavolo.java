@@ -46,4 +46,5 @@ public class Tavolo {
 			this.partyMap.get(playerId).inserisciCarta(carta);
 	}
 
+	public Party getParty(Integer playerId){ return this.partyMap.get(playerId); }
 }

@@ -145,6 +145,8 @@ public class Turno {
         return this.elencoGiocatori;
     }
 
+    public Tavolo getTavolo() {return this.tavolo;}
+
     public void avviaTimer(Fase fase) {
         if (this.generatoreDiEventi != null) {
             this.generatoreDiEventi.startTimer(fase);

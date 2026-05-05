@@ -1,8 +1,5 @@
 package it.univaq.entity;
 
-import it.univaq.technical.FaseGiocaCartaEroe;
-import it.univaq.entity.CartaMostro;
-
 import java.util.*;
 import java.util.List;
 
@@ -37,13 +34,12 @@ public class Party {
 		return classiPresenti.size();
 	}
 
-	/**
-	 * 
-	 * @param player
-	 */
-	public void ottieniNumClassi(int player) {
-		// TODO - implement party.ottieniNumClassi
-		throw new UnsupportedOperationException();
+	public boolean hasPartyEmpty() {
+		return party.isEmpty();
+	}
+
+	public Integer getPlayer() {
+		return player;
 	}
 
 	/**
