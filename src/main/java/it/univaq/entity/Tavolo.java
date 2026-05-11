@@ -8,14 +8,12 @@ import java.util.Map;
 
 public class Tavolo {
 
-	// Mazzi e Pila (Tipizzati e sicuri!)
 	private final MazzoPesca mazzoPesca;
 	private final MazzoMostri mazzoMostri;
 	private final PilaDegliScarti pilaScarti;
-
-	// Spazio in campo
 	private final List<CartaMostro> mostriAttiviInCampo;
 	private final Map<Integer, Party> partyMap;
+	private final Dado dado;
 
 	// Il costruttore ora riceve i mazzi preparati dalla Factory!
 	public Tavolo(List<Player> players, MazzoPesca mazzoPesca, MazzoMostri mazzoMostri) {
@@ -24,13 +22,14 @@ public class Tavolo {
 		this.pilaScarti = new PilaDegliScarti();
 		this.mostriAttiviInCampo = new ArrayList<>();
 		this.partyMap = new HashMap<>();
+		this.dado = new Dado(6);
 
 		for (Player p : players) {
 			this.partyMap.put(p.getId(), new Party());
 		}
 
 		// Appena appare il tavolo, giriamo le prime 3 carte Mostro!
-		this.giraCartaMostro();
+		this.giraCarteMostro();
 	}
 
 	// --- CONDIZIONI DI VITTORIA ---
@@ -42,7 +41,7 @@ public class Tavolo {
 		return new VittoriaPerClassi(partyPlayer.checkVittoria(), partyPlayer.numClassiDiverse());
 	}
 
-	public void giraCartaMostro() {
+	public void giraCarteMostro() {
 		// Gira automaticamente una carta mostro quando viene sconfitta
 		while (this.mostriAttiviInCampo.size() < 3 && !this.mazzoMostri.isEmpty()) {
 			CartaMostro nuovoMostro = this.mazzoMostri.pescaDallaCima();
@@ -54,7 +53,7 @@ public class Tavolo {
 
 	public void rimuoviMostroSconfitto(CartaMostro mostro) {
 		this.mostriAttiviInCampo.remove(mostro);
-		this.giraCartaMostro();
+		this.giraCarteMostro();
 	}
 
 	public List<CartaMostro> getMostriAttiviInCampo() {
@@ -81,5 +80,13 @@ public class Tavolo {
 
 	public MazzoPesca getMazzoPesca() {
 		return this.mazzoPesca;
+	}
+
+	public int lanciaDadi(int numeroDiDadi) {
+		int totale = 0;
+		for (int i = 0; i < numeroDiDadi; i++) {
+			totale += dado.tiraDado();
+		}
+		return totale;
 	}
 }

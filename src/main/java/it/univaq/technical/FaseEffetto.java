@@ -8,7 +8,6 @@ public class FaseEffetto implements Fase {
 
     private final CartaEroe carta;
     private int step = 0;
-    private final Dado dado = new Dado(6);
 
     // GRASP (Information Expert): Inietto la carta direttamente alla nascita
     public FaseEffetto(CartaEroe carta) {
@@ -23,7 +22,7 @@ public class FaseEffetto implements Fase {
             System.out.println("LOG: FaseEffetto avviata per " + carta.getNome());
             
             // 1. Tiro i dadi
-            int punteggioDadiBase = lanciaDadi(2);
+            int punteggioDadiBase = tavolo.lanciaDadi(2);
             turno.addMessage("\n--- RISULTATO TIRO---\n"+ "Il valore del tiro di " + turno.getGiocatoreDiTurno().getNome() + " è : " + punteggioDadiBase + " |\n");
             
             // 2. Chiamo la fase dei Modificatori
@@ -49,13 +48,5 @@ public class FaseEffetto implements Fase {
         }
         
         return true;
-    }
-    
-    private int lanciaDadi(int numDadi) {
-        int risultato = 0;
-        for (int i = 0; i < numDadi; i++) {
-            risultato = risultato + dado.tiraDado();
-        }
-        return risultato;
     }
 }

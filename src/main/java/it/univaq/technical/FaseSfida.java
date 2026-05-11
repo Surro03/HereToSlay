@@ -8,7 +8,6 @@ public class FaseSfida implements Fase {
 
     private int step = 0;
     private final Carta cartaGiocata;
-    private final Dado dado = new Dado(6);
     private int indiceAvversarioAttuale = 0;
     private Player avversarioAttuale;
     public FaseSfida(Carta cartaGiocata) {
@@ -78,8 +77,8 @@ public class FaseSfida implements Fase {
                 turno.addMessage(" --- " + this.avversarioAttuale.getNome() + " HA LANCIATO UNA SFIDA! ---");
 
                 // Tiriamo i dadi
-                int valorePlayer = lanciaDadi(2);
-                int valoreSfidante = lanciaDadi(2);
+                int valorePlayer = tavolo.lanciaDadi(2);
+                int valoreSfidante = tavolo.lanciaDadi(2);
 
                 turno.addMessage("\n--- RISULTATI INIZIALI SFIDA ---\n"+ "Tiro di " + turno.getGiocatoreDiTurno().getNome() + ": " + valorePlayer + " |\n" + "Tiro di " + avversarioAttuale.getNome() + ": " + valoreSfidante +" |");
                 // Lancio la fase modificatori
@@ -110,13 +109,5 @@ public class FaseSfida implements Fase {
         }
 
         return true;
-    }
-
-    private int lanciaDadi(int numDadi) {
-        int risultato = 0;
-        for (int i = 0; i < numDadi; i++) {
-            risultato = risultato + dado.tiraDado();
-        }
-        return risultato;
     }
 }
