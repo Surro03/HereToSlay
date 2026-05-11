@@ -237,43 +237,11 @@ public class UITerminale implements GameObserver{
     }
 
     private void gestisciInputRispostaSceltaModificatoreSfida(String input) {
-        try {
-            int scelta = Integer.parseInt(input);
-
-            if (scelta < 0 || scelta > this.numeroMassimoScelte) {
-                System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
-            } else {
-                if (scelta == 0){
-                    controller.scegliCarta(null);
-                }else {
-                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
-                    // Richiama il metodo esplicito per le carte
-                    controller.scegliCarta(indiceRealeNellaMano);
-                }
-            }
-        } catch (NumberFormatException e) {
-            System.out.print("[!] Devi inserire un NUMERO: ");
-        }
+        checkIntegerInput(input);
     }
 
     private void gestisciInputRispostaSceltaModificatoreNormale(String input) {
-        try {
-            int scelta = Integer.parseInt(input);
-
-            if (scelta < 0 || scelta > this.numeroMassimoScelte) {
-                System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
-            } else {
-                if (scelta == 0){
-                    controller.scegliCarta(null);
-                }else {
-                    int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
-                    // Richiama il metodo esplicito per le carte
-                    controller.scegliCarta(indiceRealeNellaMano);
-                }
-            }
-        } catch (NumberFormatException e) {
-            System.out.print("[!] Devi inserire un NUMERO: ");
-        }
+        checkIntegerInput(input);
     }
 
 
@@ -333,6 +301,10 @@ public class UITerminale implements GameObserver{
     }
 
     private void gestisciInputRispostaSfida(String input) {
+        checkIntegerInput(input);
+    }
+
+    private void checkIntegerInput(String input) {
         try {
             int scelta = Integer.parseInt(input);
 
@@ -340,7 +312,7 @@ public class UITerminale implements GameObserver{
                 System.out.print("[!] Digita un numero compreso tra 0 e " + this.numeroMassimoScelte + ": ");
             } else {
                 if (scelta == 0){
-                    controller.scegliCarta(-1);
+                    controller.passa();
                 }else {
                     int indiceRealeNellaMano = mappaIndiciUniversali.get(scelta);
                     // Richiama il metodo esplicito per le carte

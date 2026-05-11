@@ -20,21 +20,23 @@ public class HereToSlaySetup {
         System.out.println("=== SETUP GIOCO ===");
 
         //TODO aggiungere la possibilità di inserire numero di giocatori, Nomi dei giocatori, eventuali opzioni (Numero di mostri necessari, numero di classi diverse, durata timer)
+
         //Creiamo i giocatori con le loro mani
         List<Player> playerList = this.setupPlayers(2, null);
         //Creiamo il motore degli Eventi
         GeneratoreDiEventi generatoreDiEventi = new GeneratoreDiEventi(15);
+        //Qui andrebbe sul DB e prenderebbe tutte le carte per creare i mazzi
+        MazzoPesca mazzoPesca = new MazzoPesca();
+        mazzoPesca.mischia();
+        MazzoMostri mazzoMostri = new MazzoMostri();
+        mazzoMostri.mischia();
+        Tavolo tavolo = new Tavolo(playerList, mazzoPesca, mazzoMostri);
         //Creiamo il GameEngine (Controller) in base all impostazioni fornite dall'utente
-        HereToSlay controller = new HereToSlay(playerList, generatoreDiEventi);
+        HereToSlay controller = new HereToSlay(playerList, generatoreDiEventi, tavolo);
         // Il controller si iscrive da solo al timer
         generatoreDiEventi.addObserver(controller);
 
         return controller;
-    }
-
-    public List<Carta> mischiaMazzo(){
-        //TODO prende le carte dalla memoria e le mischia, poi le carica sul tavolo
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public List<Player> setupPlayers(int numPlayers, List<Carta> mazzoMischiato){

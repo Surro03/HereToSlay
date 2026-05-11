@@ -17,7 +17,7 @@ public record SceltaPescaCarta() implements SceltaMossa{
 
     @Override
     public String getNomeAzione() {
-        return "Pesca una Carta dal Mazzo";
+        return "Pesca una Carta dal PilaDiCarte";
     }
 
     @Override

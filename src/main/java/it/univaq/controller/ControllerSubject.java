@@ -17,6 +17,8 @@ public interface ControllerSubject {
 
     void selezionaMossa(SceltaMossa mossa);
 
+    void passa();
+
     void scegliCarta(Integer indiceRealeNellaMano);
 
     void confermaAttivazioneEffetto(boolean vuoleAttivare);
@@ -24,7 +26,5 @@ public interface ControllerSubject {
     void sceltaBersaglioEffettoModificatore(GiocataGiocatore giocata);
 
     void annullaScelta();
-
-
 
 }

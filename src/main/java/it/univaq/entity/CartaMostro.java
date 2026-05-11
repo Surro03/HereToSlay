@@ -1,6 +1,6 @@
 package it.univaq.entity;
 
-public class CartaMostro {
+public class CartaMostro extends Carta {
 
 	private Integer condizioniVittoria;
 	private String descrizione;
@@ -8,10 +8,9 @@ public class CartaMostro {
 	private String nome;
 
     public CartaMostro(Integer condizioniVittoria, String descrizione, Integer requisito, String nome) {
+        super(descrizione, nome);
         this.condizioniVittoria = condizioniVittoria;
-        this.descrizione = descrizione;
         this.requisito = requisito;
-        this.nome = nome;
     }
 
     public Integer getCondizioniVittoria() {

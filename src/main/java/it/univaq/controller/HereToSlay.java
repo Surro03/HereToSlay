@@ -20,9 +20,9 @@ public class HereToSlay implements ControllerSubject, FinestraTemporaleObserver{
 
 
 
-    public HereToSlay(List<Player> elencoGiocatori, GeneratoreDiEventi generatoreDiEventi) {
+    public HereToSlay(List<Player> elencoGiocatori, GeneratoreDiEventi generatoreDiEventi,  Tavolo tavolo) {
         this.elencoGiocatori = elencoGiocatori;
-        this.tavolo = new Tavolo(elencoGiocatori);
+        this.tavolo = tavolo;
         this.observers = new ArrayList<>();
         this.generatoreDiEventi = generatoreDiEventi;
     }
@@ -101,6 +101,12 @@ public class HereToSlay implements ControllerSubject, FinestraTemporaleObserver{
     @Override
     public void selezionaMossa(SceltaMossa mossa) {
         this.inoltraAlTurno(mossa);
+    }
+
+    @Override
+    public void passa() {
+
+        this.inoltraAlTurno(null);
     }
 
     @Override

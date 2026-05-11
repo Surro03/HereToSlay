@@ -1,53 +1,43 @@
 package it.univaq.entity;
 
-import java.util.*;
 import java.util.List;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Party {
 
-	private Integer player;
-	private List<CartaEroe> party;
-	private Set<ClasseEroe> classiPresenti = new HashSet<>();
-
-
+	private final List<CartaEroe> eroiInGioco;
 
 	public Party() {
-		this.party = new ArrayList<>();
-	}
-
-	/**
-	 *
-	 * @param
-	 *
-	 */
-	public Boolean checkVittoria() {
-		for(CartaEroe cartaEroe: party){
-				classiPresenti.add(cartaEroe.getClasseEroe());
-		}
-        return classiPresenti.size() >= 6;
+		this.eroiInGioco = new ArrayList<>();
 	}
 
 	public int numClassiDiverse() {
-		for(CartaEroe cartaEroe: party){
-			classiPresenti.add(cartaEroe.getClasseEroe());
-		}
-		return classiPresenti.size();
+		return (int) this.eroiInGioco.stream()
+				.map(CartaEroe::getClasseEroe)
+				.distinct()
+				.count();
+	}
+
+	public boolean checkVittoria() {
+		return numClassiDiverse() >= 6;
 	}
 
 	public boolean hasPartyEmpty() {
-		return party.isEmpty();
+		return this.eroiInGioco.isEmpty();
 	}
 
-	public Integer getPlayer() {
-		return player;
+	public void inserisciEroe(CartaEroe cartaEroe) {
+		this.eroiInGioco.add(cartaEroe);
 	}
 
-	/**
-	 * 
-	 * @param cartaEroe
-	 */
-	public void inserisciCarta(CartaEroe cartaEroe) {
-		party.add(cartaEroe);
+	public void rimuoviEroe(CartaEroe cartaEroe) {
+		this.eroiInGioco.remove(cartaEroe);
 	}
 
+	// Se a qualche fase serve leggere gli eroi, restituisco una vista sicura!
+	public List<CartaEroe> getEroiNelParty() {
+		return Collections.unmodifiableList(this.eroiInGioco);
+	}
 }
