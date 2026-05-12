@@ -10,6 +10,7 @@ public class FaseSfida implements Fase {
     private final Carta cartaGiocata;
     private int indiceAvversarioAttuale = 0;
     private Player avversarioAttuale;
+
     public FaseSfida(Carta cartaGiocata) {
         this.cartaGiocata = cartaGiocata;
     }

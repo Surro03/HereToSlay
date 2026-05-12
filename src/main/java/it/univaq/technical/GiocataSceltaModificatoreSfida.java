@@ -5,5 +5,5 @@ public record GiocataSceltaModificatoreSfida(
         BersaglioModificatore bersaglio,
         TipoEffetto tipoEffetto
 )
-        implements GiocataGiocatore
+        implements SceltaModificatori
 {}
