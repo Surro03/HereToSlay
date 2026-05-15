@@ -1,7 +1,4 @@
 package it.univaq.technical;
-
-import it.univaq.ui.GameObserver;
-
 import java.time.Instant;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class GeneratoreDiEventi {
-	private List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
+	private final List<FinestraTemporaleObserver> finestraTemporaleObservers = new ArrayList<>();
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> countdownTask; // Riferimento per fermare il countdown

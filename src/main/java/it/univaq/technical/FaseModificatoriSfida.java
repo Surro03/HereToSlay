@@ -43,7 +43,7 @@ public class FaseModificatoriSfida implements Fase {
             if (giocatoreInterrogato.getMano().getCarteMano().isEmpty()) {
 
                 // Log per avvisare gli altri giocatori del salto automatico
-                //turno.inviaEvento(new NotificaMessaggio(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico."));
+                //GeneratorDiEventi.getInstance().inviaEvento(new NotificaMessaggio(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico."));
                 turno.addMessage(giocatoreInterrogato.getNome() + " ha 0 carte in mano e passa in automatico.");
 
                 // Incremento l'indice e riavvio il loop

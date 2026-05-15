@@ -11,9 +11,6 @@ import java.util.List;
 public class HereToSlaySetup {
 
     // 1. Costruttore privato: impedisce l'istanziazione.
-
-
-
     private HereToSlaySetup() {
         throw new IllegalStateException("Classe di Bootstrap - Non istanziabile");
     }
