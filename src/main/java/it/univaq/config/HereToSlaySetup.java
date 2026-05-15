@@ -19,7 +19,6 @@ public class HereToSlaySetup {
     }
 
     public static HereToSlay setupGioco() {
-        System.out.println("=== SETUP GIOCO ===");
 
         //TODO aggiungere la possibilità di inserire numero di giocatori, ecc.
 
