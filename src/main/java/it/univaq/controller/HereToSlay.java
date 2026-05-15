@@ -141,8 +141,7 @@ public class HereToSlay implements ControllerSubject, FinestraTemporaleObserver{
     @Override
     public void timerStopped(Fase fase) {
         // Il timer è scaduto (nessuno ha risposto in tempo).
-        // Il Controller inietta un "null" nel Turno forzando il "Passa" del giocatore
-        this.turno.riceviInput(null);
+        this.turno.riceviInput(-1);
     }
 
     public void addTimerObserver(FinestraTemporaleObserver obs) {

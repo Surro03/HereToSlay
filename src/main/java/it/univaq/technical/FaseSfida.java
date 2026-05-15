@@ -57,15 +57,14 @@ public class FaseSfida implements Fase {
             }
             Integer risposta = (Integer) input;
             if (risposta == null) {
-                // TIMEOUT
+                // PASSO MANUALE
+                turno.fermaTimerGiocatore(this);
                 indiceAvversarioAttuale++;
                 this.step = 0;
                 return this.eseguiFase(turno, tavolo);
 
             } else if (risposta == -1) {
-                // PASSO MANUALE
-                turno.fermaTimerGiocatore(this);
-
+                // TIMEOUT
                 indiceAvversarioAttuale++;
                 this.step = 0;
                 return this.eseguiFase(turno, tavolo);
