@@ -1,28 +1,53 @@
 package it.univaq.entity;
 
+
+import it.univaq.entity.EffettoStrategyComponent;
+
 public class CartaEroe extends Carta {
 
-	private Integer numOggetti;
+    private Integer numOggetti;
     private CartaOggetto cartaOggetto;
-	private Integer requisito;
-	private String effetto;
-	private Integer costo;
-	private ClasseEroe classeEroe;
+    private Integer requisito;
+    private String nome;
+    private String effetto; 
+    private Integer costo;
+    private ClasseEroe classeEroe;
 
-    @Override
-	public void eseguiEffetto() {
-		// TODO - implement Eroe.eseguiEffetto
-		throw new UnsupportedOperationException();
-	}
 
-    public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, Integer costo, ClasseEroe classeEroe) {
-        super("ciao", nome);
+    private EffettoStrategyComponent logicaEffetto;
+
+
+    public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, 
+                     Integer costo, ClasseEroe classeEroe, EffettoStrategyComponent logicaEffetto) {
+        super("ciao"); // Sostituisci pure con la chiamata corretta alla superclasse Carta
         this.numOggetti = numOggetti;
         this.requisito = requisito;
-        this.effetto = effetto;
+        this.nome = nome;
+        this.effetto = effetto; // Testo descrittivo
         this.costo = costo;
         this.classeEroe = classeEroe;
+        this.logicaEffetto = logicaEffetto; // Strategia concreta (Leaf o Composite)
     }
+
+
+    @Override
+    public void eseguiEffetto(Tavolo tavolo, Turno turno) {
+        System.out.println("[Strategy Context] " + this.nome + " sta attivando il suo potere...");
+        
+        // La carta non sa COSA farà questo effetto, lo lancia e basta.
+        this.logicaEffetto.risolvi(tavolo, turno);
+    }
+
+    // Getti e Setter per la logica dell'effetto (Utile se un domani un oggetto modifica il potere dell'eroe!)
+    public EffettoStrategyComponent getLogicaEffetto() {
+        return logicaEffetto;
+    }
+
+    public void setLogicaEffetto(EffettoStrategyComponent logicaEffetto) {
+        this.logicaEffetto = logicaEffetto;
+    }
+
+    // --- Sotto rimangono invariati i tuoi Getter e Setter preesistenti ---
 
     public Integer getNumOggetti() {
         return numOggetti;
@@ -38,6 +63,14 @@ public class CartaEroe extends Carta {
 
     public void setRequisito(Integer requisito) {
         this.requisito = requisito;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getEffetto() {
@@ -68,5 +101,4 @@ public class CartaEroe extends Carta {
     public Boolean checkAttivazioneEffetto(float punteggioDefinitivo) {
         return punteggioDefinitivo >= requisito;
     }
-
 }
