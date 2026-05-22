@@ -1,7 +1,7 @@
 package it.univaq.entity;
 
 
-import it.univaq.entity.EffettoStrategyComponent;
+import it.univaq.technical.Turno;
 
 public class CartaEroe extends Carta {
 
@@ -9,22 +9,15 @@ public class CartaEroe extends Carta {
     private CartaOggetto cartaOggetto;
     private Integer requisito;
     private String nome;
-    private String effetto; 
-    private Integer costo;
     private ClasseEroe classeEroe;
-
-
     private EffettoStrategyComponent logicaEffetto;
 
 
-    public CartaEroe(Integer numOggetti, Integer requisito, String nome, String effetto, 
-                     Integer costo, ClasseEroe classeEroe, EffettoStrategyComponent logicaEffetto) {
-        super("ciao"); // Sostituisci pure con la chiamata corretta alla superclasse Carta
+    public CartaEroe(Integer numOggetti, Integer requisito, String nome, ClasseEroe classeEroe, EffettoStrategyComponent logicaEffetto) {
+        super("descrizione", "nome"); // Sostituisci pure con la chiamata corretta alla superclasse Carta
         this.numOggetti = numOggetti;
         this.requisito = requisito;
         this.nome = nome;
-        this.effetto = effetto; // Testo descrittivo
-        this.costo = costo;
         this.classeEroe = classeEroe;
         this.logicaEffetto = logicaEffetto; // Strategia concreta (Leaf o Composite)
     }
@@ -32,8 +25,7 @@ public class CartaEroe extends Carta {
 
     @Override
     public void eseguiEffetto(Tavolo tavolo, Turno turno) {
-        System.out.println("[Strategy Context] " + this.nome + " sta attivando il suo potere...");
-        
+        //System.out.println("[Strategy Context] " + this.nome + " sta attivando il suo potere...");
         // La carta non sa COSA farà questo effetto, lo lancia e basta.
         this.logicaEffetto.risolvi(tavolo, turno);
     }
@@ -74,20 +66,13 @@ public class CartaEroe extends Carta {
     }
 
     public String getEffetto() {
-        return effetto;
+        return logicaEffetto.toString();
     }
 
-    public void setEffetto(String effetto) {
-        this.effetto = effetto;
+    public void setEffetto(EffettoStrategyComponent effetto) {
+        this.logicaEffetto = effetto;
     }
 
-    public Integer getCosto() {
-        return costo;
-    }
-
-    public void setCosto(Integer costo) {
-        this.costo = costo;
-    }
 
     public ClasseEroe getClasseEroe() {
         return classeEroe;
