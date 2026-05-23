@@ -43,19 +43,19 @@ public class HereToSlaySetup {
     private static List<Player> setupPlayers(int numPlayers, List<Carta> mazzoMischiato){
 
         List<Carta> manoGiocatore1 = new ArrayList<>(Arrays.asList(
-                new CartaEroe(0, 6, "Ascia Sfascia", "Distruggi un eroe avversario", 1, ClasseEroe.GUERRIERO),
+                new CartaEroe(0, 6, "Ascia Sfascia", ClasseEroe.GUERRIERO, new EffettoPescaLeaf(1)),
                 new CartaModificatore(1, -1, "Aggiungi +1 o sottrai -1 al tiro"),
                 new CartaSfida(),
-                new CartaEroe(0, 7, "Ezio Miaoditore", "Pesca due carte dal mazzo", 1, ClasseEroe.LADRO),
+                new CartaEroe(0, 7, "Ezio Miaoditore", ClasseEroe.LADRO, new EffettoRubaLeaf(2) ),
                 new CartaModificatore(2, "Aggiungi +2 al tuo tiro")
         ));
 
         List<Carta> manoGiocatore2 = new ArrayList<>(Arrays.asList(
-                new CartaEroe(0, 5, "Gatto Ladro", "Ruba una carta dalla mano di un giocatore", 1, null),
+                new CartaEroe(0, 5, "Gatto Ladro", ClasseEroe.LADRO,  new EffettoRubaLeaf(1)),
                 new CartaSfida(2),
                 new CartaModificatore(3, -3, "Aggiungi +3 o sottrai -3 al tiro"),
                 new CartaSfida(),
-                new CartaEroe(0, 8, "Fenicottero Bardo", "Tira di nuovo un dado", 1, null)
+                new CartaEroe(0, 8, "Fenicottero Bardo", ClasseEroe.BARDO, new EffettoRubaLeaf(2))
         ));
 
         Mano manoP1 = new Mano(manoGiocatore1);

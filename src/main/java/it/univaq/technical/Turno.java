@@ -14,7 +14,7 @@ public class Turno {
     private final Player giocatoreDiTurno;
     private final List<Player> avversari;
     private final List<Player> elencoGiocatori;
-    private Object risultatoSottoFase;
+    private RisultatoFase risultatoSottoFase;
     private TipoAttesa tipoAttesa;
     private ContestoAttesa contestoAttesa;
     private final List<String> messagesBuffer = new ArrayList<>();
@@ -116,7 +116,7 @@ public class Turno {
         this.messagesBuffer.add(message);
     }
 
-    public void salvaRisultatoSottoFase(Object risultato) {
+    public void salvaRisultatoSottoFase(RisultatoFase risultato) {
         this.risultatoSottoFase = risultato;
     }
 

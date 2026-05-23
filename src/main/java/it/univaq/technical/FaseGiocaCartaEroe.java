@@ -38,11 +38,12 @@ public class FaseGiocaCartaEroe implements Fase {
         // --- STEP 2: CONTROLLO ESITO SFIDA ---
         else if (this.step == 2) {
             Object input = turno.popRisultatoSottoFase();
-            if (input != null && !(input instanceof Boolean)) {
+            if (input != null && !(input instanceof RisultatoFase)) {
                 return false;
             }
-            Boolean sopravvissuta = (Boolean) input;
-            if (Boolean.FALSE.equals(sopravvissuta)) {
+            RisultatoFaseSfida sopravvissuta = (RisultatoFaseSfida) input;
+            assert sopravvissuta != null;
+            if (!sopravvissuta.risultato()) {
                 // La carta è stata distrutta dalla sfida. Il turno finisce qui.
                 tavolo.aggiungiCartaPilaScarti(cartaScelta);
                 cartaScelta = null;

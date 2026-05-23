@@ -24,7 +24,7 @@ public class FaseSfida implements Fase {
 
             if (this.indiceAvversarioAttuale >= turno.getAvversari().size()) {
                 turno.addMessage("Nessuno ha sfidato la carta!");
-                turno.salvaRisultatoSottoFase(true); // Sopravvissuta = true
+                turno.salvaRisultatoSottoFase(new RisultatoFaseSfida(true)); // Sopravvissuta = true
                 return true; // La fase Sfida finisce
             }
 
@@ -100,10 +100,10 @@ public class FaseSfida implements Fase {
             // In caso di parità, vince lo sfidante!
             if (punteggioFinaleGiocatoreDiTurno > punteggioFinaleSfidante) {
                 turno.addMessage(turno.getGiocatoreDiTurno().getNome() + " vince la sfida! La carta entra in gioco.");
-                turno.salvaRisultatoSottoFase(true); // Sopravvissuta
+                turno.salvaRisultatoSottoFase(new RisultatoFaseSfida(true)); // Sopravvissuta
             } else {
                 turno.addMessage(this.avversarioAttuale.getNome() + " vince la sfida! La carta " + cartaGiocata.getNome() + " viene distrutta.");
-                turno.salvaRisultatoSottoFase(false); // Distrutta
+                turno.salvaRisultatoSottoFase(new RisultatoFaseSfida(false)); // Distrutta
             }
             return true;
         }
