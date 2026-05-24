@@ -1,7 +1,6 @@
 package it.univaq.entity;
 
 import it.univaq.entity.Tavolo;
-import it.univaq.technical.Turno;
 import java.util.List;
 
 public class MacroEffettoComposite implements EffettoStrategyComponent {
@@ -18,12 +17,12 @@ public class MacroEffettoComposite implements EffettoStrategyComponent {
     }
 
     @Override
-    public void risolvi(Tavolo tavolo, Turno turno) {
+    public void risolvi(Tavolo tavolo) {
         System.out.println("[Composite] Inizio risoluzione del Macro-Effetto combinato...");
 
         // Il Composite delega il lavoro a ciascuno dei suoi figli in modo polimorfico
         for (EffettoStrategyComponent effetto : sottoEffetti) {
-            effetto.risolvi(tavolo, turno); 
+            effetto.risolvi(tavolo);
         }
 
         //System.out.println("[Composite] Fine risoluzione del Macro-Effetto.");

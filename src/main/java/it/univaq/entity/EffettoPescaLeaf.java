@@ -1,7 +1,6 @@
 package it.univaq.entity;
 
 import it.univaq.entity.Tavolo;
-import it.univaq.technical.Turno;
 
 public class EffettoPescaLeaf implements EffettoStrategyComponent {
 
@@ -13,7 +12,7 @@ public class EffettoPescaLeaf implements EffettoStrategyComponent {
     }
 
     @Override
-    public void risolvi(Tavolo tavolo, Turno turno) {
+    public void risolvi(Tavolo tavolo) {
 
         // Ad esempio, recuperare il giocatore di turno e fargli pescare dal mazzo.
         

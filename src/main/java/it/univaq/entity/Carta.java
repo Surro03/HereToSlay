@@ -1,6 +1,5 @@
 package it.univaq.entity;
 
-import it.univaq.technical.Turno;
 
 import java.sql.Blob;
 
@@ -18,7 +17,7 @@ public abstract class Carta {
         //Immagine = immagine;
     }
 
-    public void eseguiEffetto(Tavolo tavolo, Turno turno){
+    public void eseguiEffetto(Tavolo tavolo){
 
     }
 

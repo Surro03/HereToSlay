@@ -1,7 +1,6 @@
 package it.univaq.entity;
 
 
-import it.univaq.technical.Turno;
 
 public class CartaEroe extends Carta {
 
@@ -24,10 +23,10 @@ public class CartaEroe extends Carta {
 
 
     @Override
-    public void eseguiEffetto(Tavolo tavolo, Turno turno) {
+    public void eseguiEffetto(Tavolo tavolo) {
         //System.out.println("[Strategy Context] " + this.nome + " sta attivando il suo potere...");
         // La carta non sa COSA farà questo effetto, lo lancia e basta.
-        this.logicaEffetto.risolvi(tavolo, turno);
+        this.logicaEffetto.risolvi(tavolo);
     }
 
     // Getti e Setter per la logica dell'effetto (Utile se un domani un oggetto modifica il potere dell'eroe!)
