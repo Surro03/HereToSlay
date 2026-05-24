@@ -138,15 +138,16 @@
 package it.univaq.ui;
 
 import it.univaq.controller.ControllerSubject;
-import it.univaq.entity.*;
 import it.univaq.technical.*;
+import it.univaq.entity.*;
+
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class UITerminale implements GameObserver{
+public class UITerminale implements GameObserver {
 
     private final Scanner scanner = new Scanner(System.in);
     private final ControllerSubject controller;

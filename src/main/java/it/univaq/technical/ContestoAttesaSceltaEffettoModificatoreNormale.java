@@ -2,7 +2,6 @@ package it.univaq.technical;
 
 import it.univaq.entity.CartaModificatore;
 import it.univaq.entity.Player;
-import it.univaq.ui.GameObserver;
 
 public record ContestoAttesaSceltaEffettoModificatoreNormale(
         int punteggioAttuale,

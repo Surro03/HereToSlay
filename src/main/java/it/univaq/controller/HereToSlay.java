@@ -2,7 +2,6 @@ package it.univaq.controller;
 
 import it.univaq.entity.*;
 import it.univaq.technical.*;
-import it.univaq.ui.GameObserver;
 
 import java.util.ArrayList;
 import java.util.List;

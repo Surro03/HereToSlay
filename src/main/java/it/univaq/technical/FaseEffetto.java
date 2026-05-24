@@ -1,7 +1,6 @@
 package it.univaq.technical;
 
 import it.univaq.entity.CartaEroe;
-import it.univaq.entity.Dado;
 import it.univaq.entity.Tavolo;
 
 public class FaseEffetto implements Fase {

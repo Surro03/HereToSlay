@@ -1,9 +1,8 @@
 package it.univaq.controller;
 
-import it.univaq.entity.CartaModificatore;
+import it.univaq.technical.GameObserver;
 import it.univaq.technical.GiocataGiocatore;
 import it.univaq.technical.SceltaMossa;
-import it.univaq.ui.GameObserver;
 
 /**
  * Interfaccia che definisce le operazioni principali che il Controller (HereToSlay)

@@ -1,8 +1,6 @@
-package it.univaq.ui;
+package it.univaq.technical;
 
 import it.univaq.entity.*;
-import it.univaq.technical.FinestraTemporaleObserver;
-import it.univaq.technical.VoceMenu;
 
 import java.util.List;
 
