@@ -16,7 +16,12 @@ public class EffettoPescaLeaf implements EffettoStrategyComponent {
 
         // Ad esempio, recuperare il giocatore di turno e fargli pescare dal mazzo.
         
-        System.out.println("-> Risoluzione Effetto: Il giocatore pesca " + numeroCarte + " carte.");
+        //System.out.println("-> Risoluzione Effetto: Il giocatore pesca " + numeroCarte + " carte.");
         
+    }
+
+    @Override
+    public String toString(){
+        return "Pesca " + numeroCarte +" carte. \n";
     }
 }

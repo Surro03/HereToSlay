@@ -37,9 +37,7 @@ public class FaseEffetto implements Fase {
             turno.addMessage("Il punteggio finale, calcolati i modificatori, è: " + punteggioFinale.punteggioFinale());
             if (carta.checkAttivazioneEffetto(punteggioFinale.punteggioFinale())) {
                 turno.addMessage("Successo! Effetto attivato: " + carta.getEffetto());
-                
-                // [!] QUI ANDRÀ LA LOGICA REALE DELL'EFFETTO [!]
-                
+                carta.eseguiEffetto(tavolo);
             } else {
                 turno.addMessage("Fallito! Il punteggio " + punteggioFinale + " non basta.");
             }

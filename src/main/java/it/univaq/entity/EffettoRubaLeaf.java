@@ -1,7 +1,5 @@
 package it.univaq.entity;
 
-import it.univaq.entity.Tavolo;
-
 public class EffettoRubaLeaf implements EffettoStrategyComponent {
 
     private final int numeroCarteDaRubare;
@@ -12,7 +10,7 @@ public class EffettoRubaLeaf implements EffettoStrategyComponent {
 
     @Override
     public void risolvi(Tavolo tavolo) {
-        System.out.println("-> Risoluzione Effetto: Il giocatore deve rubare " + numeroCarteDaRubare + " carta/e.");
+        //System.out.println("-> Risoluzione Effetto: Il giocatore deve rubare " + numeroCarteDaRubare + " carta/e.");
 
         // Siccome per rubare devo chiedere alla UI *chi* è il bersaglio, 
         // non posso risolvere la logica istantaneamente. 
@@ -34,5 +32,10 @@ public class EffettoRubaLeaf implements EffettoStrategyComponent {
          
          // Quando la UI risponderà, invierà un nuovo "Command Message" in ingresso
          // (es. SceltaAvversarioRubaRecord) e il Turno applicherà lo scambio di carte!
+    }
+
+    @Override
+    public String toString(){
+        return "Ruba " + numeroCarteDaRubare +" carte. \n";
     }
 }
